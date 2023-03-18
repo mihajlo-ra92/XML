@@ -25,33 +25,11 @@ type UsersHandler struct {
 }
 
 // Injecting the logger makes this code much more testable.
-func NewPatientsHandler(l *log.Logger, r *data.PatientRepo) *PatientsHandler {
-	return &PatientsHandler{l, r}
-}
-
 func NewUsersHandler(l *log.Logger, r *data.UserRepo) *UsersHandler {
 	return &UsersHandler{l, r}
 }
 
-func (p *PatientsHandler) GetAllPatients(rw http.ResponseWriter, h *http.Request) {
-	patients, err := p.repo.GetAll()
-	if err != nil {
-		p.logger.Print("Database exception: ", err)
-	}
-
-	if patients == nil {
-		return
-	}
-
-	err = patients.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		p.logger.Fatal("Unable to convert to json :", err)
-		return
-	}
-}
-
-func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h*http.Request){
+func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h* http.Request){
 	users, err := u.repo.GetAll()
 	if err != nil {
 		u.logger.Print("Database exception: ", err)
@@ -66,6 +44,13 @@ func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h*http.Request){
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		u.logger.Fatal("Unable to convert to json :", err)
 		return 
+	}
+}
+
+func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h* http.Request){
+	err := u.repo.DropCollection()
+	if err != nil {
+		u.logger.Print("Database exception: ", err)
 	}
 }
 
@@ -110,12 +95,6 @@ func (p *PatientsHandler) GetPatientsByName(rw http.ResponseWriter, h *http.Requ
 		p.logger.Fatal("Unable to convert to json :", err)
 		return
 	}
-}
-
-func (p *PatientsHandler) PostPatient(rw http.ResponseWriter, h *http.Request) {
-	patient := h.Context().Value(KeyProduct{}).(*data.Patient)
-	p.repo.Insert(patient)
-	rw.WriteHeader(http.StatusCreated)
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
@@ -308,16 +287,6 @@ func (p *PatientsHandler) MiddlewareAddressDeserialization(next http.Handler) ht
 
 		ctx := context.WithValue(h.Context(), KeyProduct{}, address)
 		h = h.WithContext(ctx)
-
-		next.ServeHTTP(rw, h)
-	})
-}
-
-func (p *PatientsHandler) MiddlewareContentTypeSet(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		p.logger.Println("Method [", h.Method, "] - Hit path :", h.URL.Path)
-
-		rw.Header().Add("Content-Type", "application/json")
 
 		next.ServeHTTP(rw, h)
 	})

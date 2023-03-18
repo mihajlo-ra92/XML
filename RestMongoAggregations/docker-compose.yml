@@ -19,6 +19,7 @@ services:
       # NoSQL: environment variable holding connection URI for Mongo database
       # protocol://username:password@hostname:port
       - MONGO_DB_URI=mongodb://root:pass@mongo:27017
+      - TEST=YES
       # - MONGO_DB_URI=mongodb://mongo:27017
     # NoSQL: Our service will try to connect to Mongo before it is up
     # in order to avoid that problem, we specify that it depends on mongo service
@@ -30,7 +31,7 @@ services:
 
   # NoSQL: MongoDB
   mongo:
-    image: mongo
+    image: mongo:6.0
     restart: always
     ports:
       - "27017:27017"

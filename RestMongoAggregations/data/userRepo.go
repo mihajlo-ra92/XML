@@ -116,24 +116,21 @@ func (ur *UserRepo) Ping() {
 	fmt.Println(databases)
 }
 
-func (pr *PatientRepo) GetAll() (Patients, error) {
-	// Initialise context (after 5 seconds timeout, abort operation)
+func (ur *UserRepo) DropCollection() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+	dbName := "mongoDemo"
+	usersCollectionName := "users"
+	userDatabase := ur.cli.Database(dbName)
 
-	patientsCollection := pr.getCollection()
+	test := os.Getenv("TEST")
 
-	var patients Patients
-	patientsCursor, err := patientsCollection.Find(ctx, bson.M{})
-	if err != nil {
-		pr.logger.Println(err)
-		return nil, err
+	if test == "YES" {
+		usersCollection := userDatabase.Collection(usersCollectionName+"_test")
+		usersCollection.Drop(ctx)
+		return nil
 	}
-	if err = patientsCursor.All(ctx, &patients); err != nil {
-		pr.logger.Println(err)
-		return nil, err
-	}
-	return patients, nil
+	return nil
 }
 
 func (ur *UserRepo) GetAll() (Users, error) {
@@ -188,20 +185,6 @@ func (pr *PatientRepo) GetByName(name string) (Patients, error) {
 		return nil, err
 	}
 	return patients, nil
-}
-
-func (pr *PatientRepo) Insert(patient *Patient) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	patientsCollection := pr.getCollection()
-
-	result, err := patientsCollection.InsertOne(ctx, &patient)
-	if err != nil {
-		pr.logger.Println(err)
-		return err
-	}
-	pr.logger.Printf("Documents ID: %v\n", result.InsertedID)
-	return nil
 }
 
 func (ur *UserRepo) Insert(user *User) error {
@@ -440,7 +423,16 @@ func (pr *PatientRepo) getCollection() *mongo.Collection {
 }
 
 func (ur *UserRepo) getCollection() *mongo.Collection{
-	userDatabase := ur.cli.Database("mongoDemo")
+	dbName := "mongoDemo"
+	usersCollectionName := "users"
+	userDatabase := ur.cli.Database(dbName)
+
+	test := os.Getenv("TEST")
+
+	if test == "YES" {
+		usersCollection := userDatabase.Collection(usersCollectionName+"_test")
+		return usersCollection
+	}
 	usersCollection := userDatabase.Collection("users")
 	return usersCollection
 }

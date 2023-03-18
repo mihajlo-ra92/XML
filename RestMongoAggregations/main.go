@@ -50,10 +50,12 @@ func main() {
 
 	// getRouter := router.Methods(http.MethodGet).Subrouter()
 	// getRouter.HandleFunc("/", patientsHandler.GetAllPatients)
-	
+
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
 
+	initRouter := router.Methods(http.MethodGet).Subrouter()
+	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
 	// postRouter := router.Methods(http.MethodPost).Subrouter()
 	// postRouter.HandleFunc("/", patientsHandler.PostPatient)
 	// postRouter.Use(patientsHandler.MiddlewarePatientDeserialization)

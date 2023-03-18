@@ -23,6 +23,10 @@ type User struct {
 	Username 	string				`bson:"username" json:"username"`
 	Password	string				`bson:"password" json:"password"`
 }
+// type UserNoID struct{
+// 	Username 	string				`bson:"username" json:"username"`
+// 	Password	string				`bson:"password" json:"password"`
+// }
 
 type Address struct {
 	Street  string `bson:"street,omitempty" json:"street"`
