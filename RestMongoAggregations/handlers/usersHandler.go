@@ -51,6 +51,24 @@ func (p *PatientsHandler) GetAllPatients(rw http.ResponseWriter, h *http.Request
 	}
 }
 
+func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h*http.Request){
+	users, err := u.repo.GetAll()
+	if err != nil {
+		u.logger.Print("Database exception: ", err)
+	}
+
+	if users == nil {
+		return
+	}
+	
+	err = users.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to convert to json :", err)
+		return 
+	}
+}
+
 func (p *PatientsHandler) GetPatientById(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]

@@ -136,6 +136,25 @@ func (pr *PatientRepo) GetAll() (Patients, error) {
 	return patients, nil
 }
 
+func (ur *UserRepo) GetAll() (Users, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	usersCollection := ur. getCollection()
+
+	var users Users
+	usersCursor, err := usersCollection.Find(ctx, bson.M{})
+	if err != nil {
+		ur.logger.Println(err)
+		return nil, err
+	}
+	if err = usersCursor.All(ctx, &users); err != nil {
+		ur.logger.Println(err)
+		return nil, err
+	}
+	return users, nil
+}
+
 func (pr *PatientRepo) GetById(id string) (*Patient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

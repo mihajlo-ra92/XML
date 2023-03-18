@@ -43,9 +43,16 @@ type Therapy struct {
 
 type Patients []*Patient
 
+type Users []*User
+
 func (p *Patients) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(p)
+}
+
+func (u *Users) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
 }
 
 func (p *Patient) ToJSON(w io.Writer) error {
