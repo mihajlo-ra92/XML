@@ -96,6 +96,25 @@ func (p *PatientsHandler) GetPatientsByName(rw http.ResponseWriter, h *http.Requ
 		return
 	}
 }
+func (u *UsersHandler) GetUsersByUsername(rw http.ResponseWriter, h *http.Request) {
+	username := h.URL.Query().Get("username")
+
+	users, err := u.repo.GetByUsername(username)
+	if err != nil {
+		u.logger.Print("Database exception: ", err)
+	}
+
+	if users == nil {
+		return
+	}
+
+	err = users.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to convert to json: ", err)
+		return
+	}
+}
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
 	user := h.Context().Value(KeyProduct{}).(*data.User)

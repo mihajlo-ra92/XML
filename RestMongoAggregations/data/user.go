@@ -22,11 +22,8 @@ type User struct {
 	ID			primitive.ObjectID	`bson:"_id,omitempty" json:"id"`
 	Username 	string				`bson:"username" json:"username"`
 	Password	string				`bson:"password" json:"password"`
+	UserType	string				`bson:"userType" json:"userType"`
 }
-// type UserNoID struct{
-// 	Username 	string				`bson:"username" json:"username"`
-// 	Password	string				`bson:"password" json:"password"`
-// }
 
 type Address struct {
 	Street  string `bson:"street,omitempty" json:"street"`

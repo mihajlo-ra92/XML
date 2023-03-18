@@ -56,9 +56,6 @@ func main() {
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
-	// postRouter := router.Methods(http.MethodPost).Subrouter()
-	// postRouter.HandleFunc("/", patientsHandler.PostPatient)
-	// postRouter.Use(patientsHandler.MiddlewarePatientDeserialization)
 
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", usersHandler.PostUser)
@@ -66,6 +63,9 @@ func main() {
 
 	// getByNameRouter := router.Methods(http.MethodGet).Subrouter()
 	// getByNameRouter.HandleFunc("/filter", patientsHandler.GetPatientsByName)
+
+	getByUsernameRouter := router.Methods(http.MethodGet).Subrouter()
+	getByUsernameRouter.HandleFunc("/read-by-username", usersHandler.GetUsersByUsername)
 
 	// receiptRouter := router.Methods(http.MethodGet).Subrouter()
 	// receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)

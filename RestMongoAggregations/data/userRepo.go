@@ -186,6 +186,23 @@ func (pr *PatientRepo) GetByName(name string) (Patients, error) {
 	}
 	return patients, nil
 }
+func (ur *UserRepo) GetByUsername(username string) (Users, error){
+	ctx, cancel := context.WithTimeout(context.Background(),  5*time.Second)
+	defer cancel()
+
+	usersCollectoin := ur.getCollection()
+	var users Users
+	usersCursor, err := usersCollectoin.Find(ctx, bson.M{"username": username})
+	if err != nil {
+		ur.logger.Println(err)
+		return nil, err
+	}
+	if err = usersCursor.All(ctx, &users); err != nil {
+		ur.logger.Println(err)
+		return nil, err
+	}
+	return users, nil
+}
 
 func (ur *UserRepo) Insert(user *User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

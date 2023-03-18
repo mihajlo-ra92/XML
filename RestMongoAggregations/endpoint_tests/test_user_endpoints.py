@@ -9,7 +9,15 @@ def test_init():
     assert req.status_code == 200 
 
 def test_create_user():
-    req = requests.post(url="http://localhost:8080", json={"username": "naz1", "password": "123"})
+    req = requests.post(url="http://localhost:8080", json={"username": "naz1", "password": "123", "userType":"regular"})
     req = requests.get("http://localhost:8080/")
     #checking only username and passoword, not ID
-    assert list(map(lambda x: {x["username"], x["password"]},req.json())) == [{"naz1", "123"}]
+    assert list(map(lambda x: {x["username"], x["password"], x["userType"]},req.json())) == [{"naz1", "123", "regular"}]
+
+    req = requests.post(url="http://localhost:8080", json={"username": "naz2", "password": "123", "userType":"admin"})
+    req = requests.get("http://localhost:8080/")
+    assert list(map(lambda x: {x["username"], x["password"], x["userType"]},req.json())) == [{"naz1", "123", "regular"}, {"naz2", "123", "admin"}]
+
+def test_read_by_username():
+    req = requests.get("http://localhost:8080/read-by-username?username=naz1")
+    assert list(map(lambda x: {x["username"], x["password"], x["userType"]},req.json())) == [{"naz1", "123", "regular"}]
