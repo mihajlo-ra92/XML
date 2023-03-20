@@ -299,6 +299,22 @@ func (pr *PatientRepo) Delete(id string) error {
 	return nil
 }
 
+func (ur *UserRepo) Delete(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	usersCollection := ur.getCollection()
+
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
+	result, err := usersCollection.DeleteOne(ctx, filter)
+	if err != nil {
+		ur.logger.Println(err)
+		return err
+	}
+	ur.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
+	return nil
+}
+
 func (pr *PatientRepo) AddAnamnesis(id string, anamnesis *Anamnesis) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

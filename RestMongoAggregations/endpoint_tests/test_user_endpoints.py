@@ -28,3 +28,8 @@ def test_patch_user():
     req = requests.patch("http://localhost:8080/"+pytest.first_user_id, json={"username": "naz1_update", "password": "123_update"})
     req = requests.get("http://localhost:8080/read-by-username?username=naz1_update")
     assert list(map(lambda x: {x["username"], x["password"], x["userType"]},req.json())) == [{"naz1_update", "123_update", "regular"}]
+
+def test_delete_user():
+    req = requests.delete("http://localhost:8080/"+pytest.first_user_id, json={"username": "naz1_update", "password": "123_update"})
+    req = requests.get("http://localhost:8080/")
+    assert list(map(lambda x: {x["username"], x["password"], x["userType"]},req.json())) == [{"naz2", "123", "admin"}]

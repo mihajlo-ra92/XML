@@ -164,6 +164,14 @@ func (p *PatientsHandler) DeletePatient(rw http.ResponseWriter, h *http.Request)
 	rw.WriteHeader(http.StatusNoContent)
 }
 
+func (u *UsersHandler) DeleteUser(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+	
+	u.repo.Delete(id)
+	rw.WriteHeader(http.StatusNoContent)
+}
+
 func (p *PatientsHandler) AddAnamnesis(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]

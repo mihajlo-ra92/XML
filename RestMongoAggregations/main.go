@@ -41,15 +41,11 @@ func main() {
 	store.Ping()
 
 	//Initialize the handler and inject said logger
-	// patientsHandler := handlers.NewPatientsHandler(logger, store)
 	usersHandler := handlers.NewUsersHandler(logger, store)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
 	router.Use(usersHandler.MiddlewareContentTypeSet)
-
-	// getRouter := router.Methods(http.MethodGet).Subrouter()
-	// getRouter.HandleFunc("/", patientsHandler.GetAllPatients)
 
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
@@ -60,9 +56,6 @@ func main() {
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", usersHandler.PostUser)
 	postRouter.Use(usersHandler.MiddlewareUserDeserialization)
-
-	// getByNameRouter := router.Methods(http.MethodGet).Subrouter()
-	// getByNameRouter.HandleFunc("/filter", patientsHandler.GetPatientsByName)
 
 	getByUsernameRouter := router.Methods(http.MethodGet).Subrouter()
 	getByUsernameRouter.HandleFunc("/read-by-username", usersHandler.GetUsersByUsername)
@@ -75,10 +68,6 @@ func main() {
 
 	// getByIdRouter := router.Methods(http.MethodGet).Subrouter()
 	// getByIdRouter.HandleFunc("/{id}", patientsHandler.GetPatientById)
-
-	// patchRouter := router.Methods(http.MethodPatch).Subrouter()
-	// patchRouter.HandleFunc("/{id}", patientsHandler.PatchPatient)
-	// patchRouter.Use(patientsHandler.MiddlewarePatientDeserialization)
 
 	patchUserRouter := router.Methods(http.MethodPatch).Subrouter()
 	patchUserRouter.HandleFunc("/{id}", usersHandler.PatchUser)
@@ -101,6 +90,9 @@ func main() {
 
 	// deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	// deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
+
+	deleteUserRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteUserRouter.HandleFunc("/{id}", usersHandler.DeleteUser)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
