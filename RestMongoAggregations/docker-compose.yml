@@ -20,6 +20,7 @@ services:
       # protocol://username:password@hostname:port
       - MONGO_DB_URI=mongodb://root:pass@mongo:27017
       - TEST=YES
+      - SECRET_KEY=secretkey
       # - MONGO_DB_URI=mongodb://mongo:27017
     # NoSQL: Our service will try to connect to Mongo before it is up
     # in order to avoid that problem, we specify that it depends on mongo service

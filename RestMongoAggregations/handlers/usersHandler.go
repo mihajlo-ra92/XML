@@ -6,8 +6,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -105,13 +108,33 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 		u.logger.Fatal("Unable to login: ", err)
 		return
 	}
-	rw.WriteHeader(http.StatusAccepted)
-	err = retUser.ToJSON(rw)
+
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": retUser.Username,
+		"userType": retUser.UserType,
+		"exp": time.Now().Add(24 * time.Hour).Unix(),
+	})
+
+	secretKey := os.Getenv("SECRET_KEY")
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		u.logger.Fatal("Unable to convert to json: ", err)
+		http.Error(rw, "Unable to create token", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to create token: ", err)
 		return
 	}
+	rw.Write([]byte(tokenString))
+
+	rw.WriteHeader(http.StatusAccepted)
+	// rw.WriteHeader(tokenString)
+	// err = retUser.ToJSON(rw)
+	// if err != nil {
+	// 	http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+	// 	u.logger.Fatal("Unable to convert to json: ", err)
+	// 	return
+	// }
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
