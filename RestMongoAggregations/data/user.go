@@ -46,24 +46,9 @@ type Patients []*Patient
 
 type Users []*User
 
-func (p *Patients) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
 func (u *Users) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)
-}
-
-func (p *Patient) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Patient) FromJSON(r io.Reader) error {
-	d := json.NewDecoder(r)
-	return d.Decode(p)
 }
 
 func (u *User) FromJSON(r io.Reader) error {
@@ -71,32 +56,7 @@ func (u *User) FromJSON(r io.Reader) error {
 	return d.Decode(u)
 }
 
-func (p *Anamnesis) ToJSON(w io.Writer) error {
+func (u *User) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Anamnesis) FromJSON(r io.Reader) error {
-	d := json.NewDecoder(r)
-	return d.Decode(p)
-}
-
-func (p *Therapy) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Therapy) FromJSON(r io.Reader) error {
-	d := json.NewDecoder(r)
-	return d.Decode(p)
-}
-
-func (p *Address) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Address) FromJSON(r io.Reader) error {
-	d := json.NewDecoder(r)
-	return d.Decode(p)
+	return e.Encode(u)
 }

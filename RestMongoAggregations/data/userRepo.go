@@ -28,25 +28,6 @@ type UserRepo struct {
 }
 
 // NoSQL: Constructor which reads db configuration from environment
-func New(ctx context.Context, logger *log.Logger) (*PatientRepo, error) {
-	dburi := os.Getenv("MONGO_DB_URI")
-
-	client, err := mongo.NewClient(options.Client().ApplyURI(dburi))
-	if err != nil {
-		return nil, err
-	}
-
-	err = client.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &PatientRepo{
-		cli:    client,
-		logger: logger,
-	}, nil
-}
-
 func NewUserRepo(ctx context.Context, logger *log.Logger) (*UserRepo, error) {
 	dburi := os.Getenv("MONGO_DB_URI")
 	client, err := mongo.NewClient(options.Client().ApplyURI(dburi))
@@ -64,40 +45,12 @@ func NewUserRepo(ctx context.Context, logger *log.Logger) (*UserRepo, error) {
 	}, nil
 }
 
-// Disconnect from database
-func (pr *PatientRepo) Disconnect(ctx context.Context) error {
-	err := pr.cli.Disconnect(ctx)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (ur *UserRepo) DisconnectUserRepo(ctx context.Context) error {
 	err := ur.cli.Disconnect(ctx)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-// Check database connection
-func (pr *PatientRepo) Ping() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	// Check connection -> if no error, connection is established
-	err := pr.cli.Ping(ctx, readpref.Primary())
-	if err != nil {
-		pr.logger.Println(err)
-	}
-
-	// Print available databases
-	databases, err := pr.cli.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		pr.logger.Println(err)
-	}
-	fmt.Println(databases)
 }
 
 func (ur *UserRepo) Ping() {
@@ -131,6 +84,23 @@ func (ur *UserRepo) DropCollection() error {
 		return nil
 	}
 	return nil
+}
+
+func (ur *UserRepo) LoginUser(username string, password string) (*User, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(),  5*time.Second)
+	defer cancel()
+	ur.logger.Println("Username: " + username)
+	ur.logger.Println("Password: " + password)
+
+	usersCollectoin := ur.getCollection()
+	var user User
+	err := usersCollectoin.FindOne(ctx, bson.M{"username": username, "password": password}).Decode(&user)
+	if err != nil {
+		ur.logger.Println(err)
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (ur *UserRepo) GetAll() (Users, error) {
@@ -168,24 +138,6 @@ func (pr *PatientRepo) GetById(id string) (*Patient, error) {
 	return &patient, nil
 }
 
-func (pr *PatientRepo) GetByName(name string) (Patients, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	patientsCollection := pr.getCollection()
-
-	var patients Patients
-	patientsCursor, err := patientsCollection.Find(ctx, bson.M{"name": name})
-	if err != nil {
-		pr.logger.Println(err)
-		return nil, err
-	}
-	if err = patientsCursor.All(ctx, &patients); err != nil {
-		pr.logger.Println(err)
-		return nil, err
-	}
-	return patients, nil
-}
 func (ur *UserRepo) GetByUsername(username string) (Users, error){
 	ctx, cancel := context.WithTimeout(context.Background(),  5*time.Second)
 	defer cancel()
@@ -215,28 +167,6 @@ func (ur *UserRepo) Insert(user *User) error {
 		return err
 	}
 	ur.logger.Printf("Documents ID: %v\n", result.InsertedID)
-	return nil
-}
-
-func (pr *PatientRepo) Update(id string, patient *Patient) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	patientsCollection := pr.getCollection()
-
-	objID, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{"_id": objID}
-	update := bson.M{"$set": bson.M{
-		"name":    patient.Name,
-		"surname": patient.Surname,
-	}}
-	result, err := patientsCollection.UpdateOne(ctx, filter, update)
-	pr.logger.Printf("Documents matched: %v\n", result.MatchedCount)
-	pr.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
-
-	if err != nil {
-		pr.logger.Println(err)
-		return err
-	}
 	return nil
 }
 
@@ -283,21 +213,6 @@ func (pr *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
 	return nil
 }
 
-func (pr *PatientRepo) Delete(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	patientsCollection := pr.getCollection()
-
-	objID, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objID}}
-	result, err := patientsCollection.DeleteOne(ctx, filter)
-	if err != nil {
-		pr.logger.Println(err)
-		return err
-	}
-	pr.logger.Printf("Documents deleted: %v\n", result.DeletedCount)
-	return nil
-}
 
 func (ur *UserRepo) Delete(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

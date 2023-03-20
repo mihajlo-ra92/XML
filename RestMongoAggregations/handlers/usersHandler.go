@@ -54,48 +54,29 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h* http.Request){
 	}
 }
 
-func (p *PatientsHandler) GetPatientById(rw http.ResponseWriter, h *http.Request) {
-	vars := mux.Vars(h)
-	id := vars["id"]
+// func (p *PatientsHandler) GetPatientById(rw http.ResponseWriter, h *http.Request) {
+// 	vars := mux.Vars(h)
+// 	id := vars["id"]
 
-	patient, err := p.repo.GetById(id)
-	if err != nil {
-		p.logger.Print("Database exception: ", err)
-	}
+// 	patient, err := p.repo.GetById(id)
+// 	if err != nil {
+// 		p.logger.Print("Database exception: ", err)
+// 	}
 
-	if patient == nil {
-		http.Error(rw, "Patient with given id not found", http.StatusNotFound)
-		p.logger.Printf("Patient with id: '%s' not found", id)
-		return
-	}
+// 	if patient == nil {
+// 		http.Error(rw, "Patient with given id not found", http.StatusNotFound)
+// 		p.logger.Printf("Patient with id: '%s' not found", id)
+// 		return
+// 	}
 
-	err = patient.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		p.logger.Fatal("Unable to convert to json :", err)
-		return
-	}
-}
+// 	err = patient.ToJSON(rw)
+// 	if err != nil {
+// 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+// 		p.logger.Fatal("Unable to convert to json :", err)
+// 		return
+// 	}
+// }
 
-func (p *PatientsHandler) GetPatientsByName(rw http.ResponseWriter, h *http.Request) {
-	name := h.URL.Query().Get("name")
-
-	patients, err := p.repo.GetByName(name)
-	if err != nil {
-		p.logger.Print("Database exception: ", err)
-	}
-
-	if patients == nil {
-		return
-	}
-
-	err = patients.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		p.logger.Fatal("Unable to convert to json :", err)
-		return
-	}
-}
 func (u *UsersHandler) GetUsersByUsername(rw http.ResponseWriter, h *http.Request) {
 	username := h.URL.Query().Get("username")
 
@@ -116,23 +97,27 @@ func (u *UsersHandler) GetUsersByUsername(rw http.ResponseWriter, h *http.Reques
 	}
 }
 
-func (u *UsersHandler) Login(ew http.ResponseWriter, h *http.Request){
-
+func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
+	user := h.Context().Value(KeyProduct{}).(*data.User)
+	retUser, err := u.repo.LoginUser(user.Username, user.Password)
+	if err != nil {
+		http.Error(rw, "Unable to login", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to login: ", err)
+		return
+	}
+	rw.WriteHeader(http.StatusAccepted)
+	err = retUser.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to convert to json: ", err)
+		return
+	}
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
 	user := h.Context().Value(KeyProduct{}).(*data.User)
 	u.repo.Insert(user)
 	rw.WriteHeader(http.StatusCreated)
-}
-
-func (p *PatientsHandler) PatchPatient(rw http.ResponseWriter, h *http.Request) {
-	vars := mux.Vars(h)
-	id := vars["id"]
-	patient := h.Context().Value(KeyProduct{}).(*data.Patient)
-
-	p.repo.Update(id, patient)
-	rw.WriteHeader(http.StatusOK)
 }
 
 func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request){
@@ -154,14 +139,6 @@ func (p *PatientsHandler) AddPhoneNumber(rw http.ResponseWriter, h *http.Request
 
 	p.repo.AddPhoneNumber(id, phoneNumber)
 	rw.WriteHeader(http.StatusOK)
-}
-
-func (p *PatientsHandler) DeletePatient(rw http.ResponseWriter, h *http.Request) {
-	vars := mux.Vars(h)
-	id := vars["id"]
-
-	p.repo.Delete(id)
-	rw.WriteHeader(http.StatusNoContent)
 }
 
 func (u *UsersHandler) DeleteUser(rw http.ResponseWriter, h *http.Request) {
@@ -246,23 +223,6 @@ func (p *PatientsHandler) Report(rw http.ResponseWriter, h *http.Request) {
 	e.Encode(report)
 }
 
-func (p *PatientsHandler) MiddlewarePatientDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		patient := &data.Patient{}
-		err := patient.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			p.logger.Fatal(err)
-			return
-		}
-
-		ctx := context.WithValue(h.Context(), KeyProduct{}, patient)
-		h = h.WithContext(ctx)
-
-		next.ServeHTTP(rw, h)
-	})
-}
-
 func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
 		user := &data.User{}
@@ -281,56 +241,56 @@ func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Han
 }
 
 // Solution: we added middlewares for Anamnesis, Therapy and Address objects
-func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		anamnesis := &data.Anamnesis{}
-		err := anamnesis.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			p.logger.Fatal(err)
-			return
-		}
+// func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
+// 		anamnesis := &data.Anamnesis{}
+// 		err := anamnesis.FromJSON(h.Body)
+// 		if err != nil {
+// 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+// 			p.logger.Fatal(err)
+// 			return
+// 		}
 
-		ctx := context.WithValue(h.Context(), KeyProduct{}, anamnesis)
-		h = h.WithContext(ctx)
+// 		ctx := context.WithValue(h.Context(), KeyProduct{}, anamnesis)
+// 		h = h.WithContext(ctx)
 
-		next.ServeHTTP(rw, h)
-	})
-}
+// 		next.ServeHTTP(rw, h)
+// 	})
+// }
 
-func (p *PatientsHandler) MiddlewareTherapyDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		therapy := &data.Therapy{}
-		err := therapy.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			p.logger.Fatal(err)
-			return
-		}
+// func (p *PatientsHandler) MiddlewareTherapyDeserialization(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
+// 		therapy := &data.Therapy{}
+// 		err := therapy.FromJSON(h.Body)
+// 		if err != nil {
+// 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+// 			p.logger.Fatal(err)
+// 			return
+// 		}
 
-		ctx := context.WithValue(h.Context(), KeyProduct{}, therapy)
-		h = h.WithContext(ctx)
+// 		ctx := context.WithValue(h.Context(), KeyProduct{}, therapy)
+// 		h = h.WithContext(ctx)
 
-		next.ServeHTTP(rw, h)
-	})
-}
+// 		next.ServeHTTP(rw, h)
+// 	})
+// }
 
-func (p *PatientsHandler) MiddlewareAddressDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
-		address := &data.Address{}
-		err := address.FromJSON(h.Body)
-		if err != nil {
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-			p.logger.Fatal(err)
-			return
-		}
+// func (p *PatientsHandler) MiddlewareAddressDeserialization(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
+// 		address := &data.Address{}
+// 		err := address.FromJSON(h.Body)
+// 		if err != nil {
+// 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+// 			p.logger.Fatal(err)
+// 			return
+// 		}
 
-		ctx := context.WithValue(h.Context(), KeyProduct{}, address)
-		h = h.WithContext(ctx)
+// 		ctx := context.WithValue(h.Context(), KeyProduct{}, address)
+// 		h = h.WithContext(ctx)
 
-		next.ServeHTTP(rw, h)
-	})
-}
+// 		next.ServeHTTP(rw, h)
+// 	})
+// }
 
 func (u *UsersHandler) MiddlewareContentTypeSet(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
