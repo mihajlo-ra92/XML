@@ -80,6 +80,10 @@ func main() {
 	// patchRouter.HandleFunc("/{id}", patientsHandler.PatchPatient)
 	// patchRouter.Use(patientsHandler.MiddlewarePatientDeserialization)
 
+	patchUserRouter := router.Methods(http.MethodPatch).Subrouter()
+	patchUserRouter.HandleFunc("/{id}", usersHandler.PatchUser)
+	patchUserRouter.Use(usersHandler.MiddlewareUserDeserialization)
+
 	// changePhoneRouter := router.Methods(http.MethodPatch).Subrouter()
 	// changePhoneRouter.HandleFunc("/phone/{id}/{index}", patientsHandler.ChangePhone)
 

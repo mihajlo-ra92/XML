@@ -240,6 +240,28 @@ func (pr *PatientRepo) Update(id string, patient *Patient) error {
 	return nil
 }
 
+func (ur *UserRepo) Update(id string, user *User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	usersCollection := ur.getCollection()
+
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": objID}
+	update := bson.M{"$set": bson.M{
+		"username": user.Username,
+		"password": user.Password,
+	}}
+	result, err := usersCollection.UpdateOne(ctx, filter, update)
+	ur.logger.Printf("Documents matched: %v\n", result.MatchedCount)
+	ur.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
+
+	if err != nil{
+		ur.logger.Println(err)
+		return err
+	}
+	return nil
+}
+
 func (pr *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

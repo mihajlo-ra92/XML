@@ -116,6 +116,10 @@ func (u *UsersHandler) GetUsersByUsername(rw http.ResponseWriter, h *http.Reques
 	}
 }
 
+func (u *UsersHandler) Login(ew http.ResponseWriter, h *http.Request){
+
+}
+
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
 	user := h.Context().Value(KeyProduct{}).(*data.User)
 	u.repo.Insert(user)
@@ -128,6 +132,15 @@ func (p *PatientsHandler) PatchPatient(rw http.ResponseWriter, h *http.Request) 
 	patient := h.Context().Value(KeyProduct{}).(*data.Patient)
 
 	p.repo.Update(id, patient)
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request){
+	vars := mux.Vars(h)
+	id := vars["id"]
+	user := h.Context().Value(KeyProduct{}).(*data.User)
+
+	u.repo.Update(id, user)
 	rw.WriteHeader(http.StatusOK)
 }
 
