@@ -12,14 +12,15 @@ services:
     #Mapping ports
     ports:
       # <port_on_local>:<port_in_machine>
-      - 8088:8088
+      - 8080:8080
     #Will be accessible through os.Getenv("PORT")
     environment:
-      - PORT=8088
+      - PORT=8080
       # NoSQL: environment variable holding connection URI for Mongo database
       # protocol://username:password@hostname:port
       - MONGO_DB_URI=mongodb://root:pass@mongo:27017
       - TEST=YES
+      - SECRET_KEY=secretkey
       # - MONGO_DB_URI=mongodb://mongo:27017
     # NoSQL: Our service will try to connect to Mongo before it is up
     # in order to avoid that problem, we specify that it depends on mongo service

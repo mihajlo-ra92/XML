@@ -4,10 +4,14 @@ import (
 	"Rest/data"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -30,6 +34,8 @@ func NewUsersHandler(l *log.Logger, r *data.UserRepo) *UsersHandler {
 }
 
 func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h* http.Request){
+	u.logger.Println(h.Header.Get("username"))
+	u.logger.Println(h.Header.Get("userType"))
 	users, err := u.repo.GetAll()
 	if err != nil {
 		u.logger.Print("Database exception: ", err)
@@ -40,6 +46,8 @@ func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h* http.Request){
 	}
 	
 	err = users.ToJSON(rw)
+	u.logger.Println("rw")
+	u.logger.Println(rw)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		u.logger.Fatal("Unable to convert to json :", err)
@@ -52,6 +60,13 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h* http.Request){
 	if err != nil {
 		u.logger.Print("Database exception: ", err)
 	}
+	user :=  data.User{
+		Username: "naz1",
+		Password: "123",
+		UserType: "regular",
+
+	}
+	u.repo.Insert(&user)
 }
 
 // func (p *PatientsHandler) GetPatientById(rw http.ResponseWriter, h *http.Request) {
@@ -105,13 +120,35 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 		u.logger.Fatal("Unable to login: ", err)
 		return
 	}
-	rw.WriteHeader(http.StatusAccepted)
-	err = retUser.ToJSON(rw)
+
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": retUser.Username,
+		"userType": retUser.UserType,
+		"exp": time.Now().Add(24 * time.Hour).Unix(),
+	})
+
+	secretKey := os.Getenv("SECRET_KEY")
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-		u.logger.Fatal("Unable to convert to json: ", err)
+		http.Error(rw, "Unable to create token", http.StatusInternalServerError)
+		u.logger.Fatal("Unable to create token: ", err)
 		return
 	}
+	// rw.Write([]byte(tokenString))
+	// rw.Header().Add("test_add","da")
+	// rw.Header().Set("test_set", "da")
+	rw.Header().Set("Bearer",tokenString)
+	rw.WriteHeader(http.StatusAccepted)
+	// rw.WriteHeader(tokenString)
+	// err = retUser.ToJSON(rw)
+	// if err != nil {
+	// 	http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+	// 	u.logger.Fatal("Unable to convert to json: ", err)
+	// 	return
+	// }
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
@@ -239,6 +276,58 @@ func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Han
 		next.ServeHTTP(rw, h)
 	})
 }
+
+func (u *UsersHandler) MiddlewareLogin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
+		user := &data.User{}
+		err := user.FromJSON(h.Body)
+		if err != nil {
+			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+			u.logger.Fatal(err)
+			return
+		}
+
+		ctx := context.WithValue(h.Context(), KeyProduct{}, user)
+		h = h.WithContext(ctx)
+
+		next.ServeHTTP(rw, h)
+	})
+}
+
+func (u *UsersHandler) MiddlewareAuth(next http.Handler) http.Handler {
+	return  http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
+		bearer := h.Header["Bearer"]
+		if bearer != nil {
+
+			tokenString := bearer[0]
+			u.logger.Println(tokenString)
+		
+			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+				// Don't forget to validate the alg is what you expect:
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			secretKey := os.Getenv("SECRET_KEY")
+			u.logger.Println(secretKey)
+			return []byte(secretKey), nil
+		})
+		u.logger.Println("TOKEN: ")
+		u.logger.Println(token)
+		
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			u.logger.Println("Valid jwt")
+			u.logger.Println(claims["username"], claims["userType"])
+			h.Header.Set("username",claims["username"].(string))
+			h.Header.Set("userType",claims["userType"].(string))
+			next.ServeHTTP(rw, h)
+			} else {
+				u.logger.Println(err)
+			}
+		}
+	})
+}
+
+
 
 // Solution: we added middlewares for Anamnesis, Therapy and Address objects
 // func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) http.Handler {
