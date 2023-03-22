@@ -1,4 +1,4 @@
-import requests, os, jwt, pytest
+import requests, os, pytest
 
 def pytest_configure():
     pytest.TOKEN = ""
