@@ -25,7 +25,7 @@ type PatientsHandler struct {
 
 type UsersHandler struct {
 	logger *log.Logger
-	repo *data.UserRepo
+	repo   *data.UserRepo
 }
 
 // Injecting the logger makes this code much more testable.
@@ -33,7 +33,7 @@ func NewUsersHandler(l *log.Logger, r *data.UserRepo) *UsersHandler {
 	return &UsersHandler{l, r}
 }
 
-func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h* http.Request){
+func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h *http.Request) {
 	u.logger.Println(h.Header.Get("username"))
 	u.logger.Println(h.Header.Get("userType"))
 	users, err := u.repo.GetAll()
@@ -44,27 +44,26 @@ func (u *UsersHandler) GetAllUsers(rw http.ResponseWriter, h* http.Request){
 	if users == nil {
 		return
 	}
-	
+
 	err = users.ToJSON(rw)
 	u.logger.Println("rw")
 	u.logger.Println(rw)
 	if err != nil {
 		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
 		u.logger.Fatal("Unable to convert to json :", err)
-		return 
+		return
 	}
 }
 
-func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h* http.Request){
+func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 	err := u.repo.DropCollection()
 	if err != nil {
 		u.logger.Print("Database exception: ", err)
 	}
-	user :=  data.User{
+	user := data.User{
 		Username: "naz1",
 		Password: "123",
 		UserType: "regular",
-
 	}
 	u.repo.Insert(&user)
 }
@@ -112,7 +111,7 @@ func (u *UsersHandler) GetUsersByUsername(rw http.ResponseWriter, h *http.Reques
 	}
 }
 
-func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
+func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 	user := h.Context().Value(KeyProduct{}).(*data.User)
 	retUser, err := u.repo.LoginUser(user.Username, user.Password)
 	if err != nil {
@@ -126,7 +125,7 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": retUser.Username,
 		"userType": retUser.UserType,
-		"exp": time.Now().Add(24 * time.Hour).Unix(),
+		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 	secretKey := os.Getenv("SECRET_KEY")
@@ -140,7 +139,7 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 	// rw.Write([]byte(tokenString))
 	// rw.Header().Add("test_add","da")
 	// rw.Header().Set("test_set", "da")
-	rw.Header().Set("Bearer",tokenString)
+	rw.Header().Set("Bearer", tokenString)
 	rw.WriteHeader(http.StatusAccepted)
 	// rw.WriteHeader(tokenString)
 	// err = retUser.ToJSON(rw)
@@ -151,13 +150,13 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 	// }
 }
 
-func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
+func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request) {
 	user := h.Context().Value(KeyProduct{}).(*data.User)
 	u.repo.Insert(user)
 	rw.WriteHeader(http.StatusCreated)
 }
 
-func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request){
+func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
 	user := h.Context().Value(KeyProduct{}).(*data.User)
@@ -181,7 +180,7 @@ func (p *PatientsHandler) AddPhoneNumber(rw http.ResponseWriter, h *http.Request
 func (u *UsersHandler) DeleteUser(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	
+
 	u.repo.Delete(id)
 	rw.WriteHeader(http.StatusNoContent)
 }
@@ -261,7 +260,7 @@ func (p *PatientsHandler) Report(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		user := &data.User{}
 		err := user.FromJSON(h.Body)
 		if err != nil {
@@ -278,7 +277,7 @@ func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Han
 }
 
 func (u *UsersHandler) MiddlewareLogin(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		user := &data.User{}
 		err := user.FromJSON(h.Body)
 		if err != nil {
@@ -295,39 +294,37 @@ func (u *UsersHandler) MiddlewareLogin(next http.Handler) http.Handler {
 }
 
 func (u *UsersHandler) MiddlewareAuth(next http.Handler) http.Handler {
-	return  http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request){
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		bearer := h.Header["Bearer"]
 		if bearer != nil {
 
 			tokenString := bearer[0]
 			u.logger.Println(tokenString)
-		
+
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				// Don't forget to validate the alg is what you expect:
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-			}
-			secretKey := os.Getenv("SECRET_KEY")
-			u.logger.Println(secretKey)
-			return []byte(secretKey), nil
-		})
-		u.logger.Println("TOKEN: ")
-		u.logger.Println(token)
-		
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			u.logger.Println("Valid jwt")
-			u.logger.Println(claims["username"], claims["userType"])
-			h.Header.Set("username",claims["username"].(string))
-			h.Header.Set("userType",claims["userType"].(string))
-			next.ServeHTTP(rw, h)
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				}
+				secretKey := os.Getenv("SECRET_KEY")
+				u.logger.Println(secretKey)
+				return []byte(secretKey), nil
+			})
+			u.logger.Println("TOKEN: ")
+			u.logger.Println(token)
+
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				u.logger.Println("Valid jwt")
+				u.logger.Println(claims["username"], claims["userType"])
+				h.Header.Set("username", claims["username"].(string))
+				h.Header.Set("userType", claims["userType"].(string))
+				next.ServeHTTP(rw, h)
 			} else {
 				u.logger.Println(err)
 			}
 		}
 	})
 }
-
-
 
 // Solution: we added middlewares for Anamnesis, Therapy and Address objects
 // func (p *PatientsHandler) MiddlewareAnamnesisDeserialization(next http.Handler) http.Handler {
