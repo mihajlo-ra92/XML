@@ -91,8 +91,11 @@ func main() {
 	getFlightByIdRouter.HandleFunc("/getFlightById", flightsHandler.GetFlightById)
 
 	patchFlightRouter := router.Methods(http.MethodPatch).Subrouter()
-	patchFlightRouter.HandleFunc("/flight/{id}", flightsHandler.PatchUser)
+	patchFlightRouter.HandleFunc("/flight/{id}", flightsHandler.PatchFlight)
 	patchFlightRouter.Use(flightsHandler.MiddlewareFlightDeserialization)
+
+	deleteFlightRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteFlightRouter.HandleFunc("/flight/{id}", flightsHandler.DeleteFlight)
 
 	// receiptRouter := router.Methods(http.MethodGet).Subrouter()
 	// receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)

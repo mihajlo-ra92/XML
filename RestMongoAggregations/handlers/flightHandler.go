@@ -80,11 +80,19 @@ func (f *FlightsHandler) GetFlightById(rw http.ResponseWriter, h *http.Request) 
 	}
 }
 
-func (u *FlightsHandler) PatchUser(rw http.ResponseWriter, h *http.Request) {
+func (u *FlightsHandler) PatchFlight(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
 	flight := h.Context().Value(KeyProduct{}).(*data.Flight)
 
 	u.repo.Update(id, flight)
 	rw.WriteHeader(http.StatusOK)
+}
+
+func (f *FlightsHandler) DeleteFlight(rw http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	id := vars["id"]
+
+	f.repo.Delete(id)
+	rw.WriteHeader(http.StatusNoContent)
 }
