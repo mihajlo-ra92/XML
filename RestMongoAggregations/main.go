@@ -49,6 +49,7 @@ func main() {
 
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
+	getRouter.Use(usersHandler.MiddlewareAuth)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
