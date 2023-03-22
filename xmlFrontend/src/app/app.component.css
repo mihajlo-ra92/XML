@@ -1,0 +1,5 @@
+
+.navbar-nav > li:last-child {
+    right: 0;
+    position: absolute;
+ }
