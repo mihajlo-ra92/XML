@@ -29,6 +29,7 @@ func main() {
 	//Initialize the logger we are going to use, with prefix and datetime for every log
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
 	storeLogger := log.New(os.Stdout, "[user-store] ", log.LstdFlags)
+	flightLogger := log.New(os.Stdout, "[flight-store] ", log.LstdFlags)
 
 	// NoSQL: Initialize Product Repository store
 	store, err := data.NewUserRepo(timeoutContext, storeLogger)
@@ -37,21 +38,33 @@ func main() {
 	}
 	defer store.DisconnectUserRepo(timeoutContext)
 
+	flightStore, err := data.NewFlightRepo(timeoutContext, flightLogger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer flightStore.DisconnectFlightRepo(timeoutContext)
+
 	// NoSQL: Checking if the connection was established
 	store.Ping()
+	flightStore.Ping()
 
 	//Initialize the handler and inject said logger
 	usersHandler := handlers.NewUsersHandler(logger, store)
+	flightsHandler := handlers.NewFlightsHandler(logger, flightStore)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
 	router.Use(usersHandler.MiddlewareContentTypeSet)
 
-	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
+	loginRouter := router.Methods(http.MethodPost).Subrouter()
+	loginRouter.HandleFunc("/login", usersHandler.Login)
+	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
+
+	getRouter := router.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
 
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", usersHandler.PostUser)
@@ -59,6 +72,30 @@ func main() {
 
 	getByUsernameRouter := router.Methods(http.MethodGet).Subrouter()
 	getByUsernameRouter.HandleFunc("/read-by-username", usersHandler.GetUsersByUsername)
+
+	patchUserRouter := router.Methods(http.MethodPatch).Subrouter()
+	patchUserRouter.HandleFunc("/{id}", usersHandler.PatchUser)
+	patchUserRouter.Use(usersHandler.MiddlewareUserDeserialization)
+
+	deleteUserRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteUserRouter.HandleFunc("/{id}", usersHandler.DeleteUser)
+
+	postFlightRouter := router.Methods(http.MethodPost).Subrouter()
+	postFlightRouter.HandleFunc("/flight", flightsHandler.PostFlight)
+	postFlightRouter.Use(flightsHandler.MiddlewareFlightDeserialization)
+
+	getFlightRouter := router.Methods(http.MethodGet).Subrouter()
+	getFlightRouter.HandleFunc("/flight", flightsHandler.GetAllFlights)
+
+	getFlightByIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getFlightByIdRouter.HandleFunc("/getFlightById", flightsHandler.GetFlightById)
+
+	patchFlightRouter := router.Methods(http.MethodPatch).Subrouter()
+	patchFlightRouter.HandleFunc("/flight/{id}", flightsHandler.PatchFlight)
+	patchFlightRouter.Use(flightsHandler.MiddlewareFlightDeserialization)
+
+	deleteFlightRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteFlightRouter.HandleFunc("/flight/{id}", flightsHandler.DeleteFlight)
 
 	// receiptRouter := router.Methods(http.MethodGet).Subrouter()
 	// receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)
@@ -68,14 +105,6 @@ func main() {
 
 	// getByIdRouter := router.Methods(http.MethodGet).Subrouter()
 	// getByIdRouter.HandleFunc("/{id}", patientsHandler.GetPatientById)
-
-	patchUserRouter := router.Methods(http.MethodPatch).Subrouter()
-	patchUserRouter.HandleFunc("/{id}", usersHandler.PatchUser)
-	patchUserRouter.Use(usersHandler.MiddlewareUserDeserialization)
-
-	loginRouter := router.Methods(http.MethodPost).Subrouter()
-	loginRouter.HandleFunc("/login", usersHandler.Login)
-	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
 	// changePhoneRouter := router.Methods(http.MethodPatch).Subrouter()
 	// changePhoneRouter.HandleFunc("/phone/{id}/{index}", patientsHandler.ChangePhone)
@@ -94,9 +123,6 @@ func main() {
 
 	// deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	// deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
-
-	deleteUserRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteUserRouter.HandleFunc("/{id}", usersHandler.DeleteUser)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
