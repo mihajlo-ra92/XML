@@ -10,11 +10,17 @@ def test_init():
 
 def test_login():
     req = requests.post(url="http://localhost:8080/login", json={"username": "naz1", "password": "123"})
-    pytest.TOKEN = req.headers['Bearer']
+    pytest.TOKEN = req.json()['Bearer']
+    print(pytest.TOKEN)
     assert pytest.TOKEN.startswith("ey")
 
-def test_create_user():
+def test_create_user_invalid():
     req = requests.post(url="http://localhost:8080/user", json={"username": "naz2", "password": "123", "userType":"regular"})
+    assert req.status_code == 400 
+
+def test_create_user():
+    req = requests.post(url="http://localhost:8080/user", json={"username": "naz2", "password": "123", "userType":"regular", "email":"naz2@gmail.com", "firstName": "Fname2", "lastName":"Lname2"})
+    assert req.status_code == 201
     resp = requests.get("http://localhost:8080/user", headers={"Bearer":pytest.TOKEN})
     pytest.first_user_id = resp.json()[0]['id']
     #checking only username and passoword, not ID
