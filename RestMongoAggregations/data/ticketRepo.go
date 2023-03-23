@@ -93,6 +93,27 @@ func (tr *TicketRepo) getCollection() *mongo.Collection {
 	return ticketsCollection
 }
 
+func (tr *TicketRepo) CheckSeats(ticket *Ticket, flight *Flight) bool {
+
+	if flight == nil {
+		tr.logger.Println("Non-existent flight")
+		return false
+	}
+
+	if ticket.Capacity > flight.FreeSeats {
+		tr.logger.Println("There are not enough seats")
+		return false
+	}
+
+	if ticket.Capacity <= 0 {
+		tr.logger.Println("There are not enough seats")
+		return false
+	}
+
+	tr.logger.Printf("there are enough seats")
+	return true
+}
+
 func (tr *TicketRepo) Insert(ticket *Ticket) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -146,8 +167,8 @@ func (tr *TicketRepo) GetByIUserId(id string) (Tickets, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	objectId, err := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "userId", Value: objectId}}
+	//objectId, err := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "userId", Value: id}}
 
 	ticketsCollectoin := tr.getCollection()
 	var tickets Tickets
@@ -164,31 +185,6 @@ func (tr *TicketRepo) GetByIUserId(id string) (Tickets, error) {
 	}
 	return tickets, nil
 }
-
-/*
-func (tr *TicketRepo) GetTicketById(id string) (Tickets, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	objectId, err := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objectId}}
-
-	ticketsCollectoin := tr.getCollection()
-	var tickets Tickets
-
-	ticketsCursor, err := ticketsCollectoin.Find(ctx, filter)
-
-	if err != nil {
-		tr.logger.Println(err)
-		return nil, err
-	}
-	if err = ticketsCursor.All(ctx, &tickets); err != nil {
-		tr.logger.Println(err)
-		return nil, err
-	}
-	return tickets, nil
-}
-*/
 
 func (tr *TicketRepo) Update(id string, ticket *Ticket) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

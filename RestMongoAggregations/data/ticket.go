@@ -15,7 +15,8 @@ type Ticket struct {
 	StartPlace string             `bson:"startPlace" json:"startPlace"`
 	Capacity   int                `bson:"capacity" json:"capacity"`
 	Price      int                `bson:"price" json:"price"`
-	FreeSeats  int                `bson:"freeSeats" json:"freeSeats"`
+	FlightId   string             `bson:"flightId" json:"flightId"`
+	UserID     string             `bson:"userId,omitempty" json:"userId"`
 }
 
 type Tickets []*Ticket
