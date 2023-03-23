@@ -142,6 +142,29 @@ func (tr *TicketRepo) GetById(id string) (*Ticket, error) {
 	return &ticket, nil
 }
 
+func (tr *TicketRepo) GetByIUserId(id string) (Tickets, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "userId", Value: objectId}}
+
+	ticketsCollectoin := tr.getCollection()
+	var tickets Tickets
+
+	ticketsCursor, err := ticketsCollectoin.Find(ctx, filter)
+
+	if err != nil {
+		tr.logger.Println(err)
+		return nil, err
+	}
+	if err = ticketsCursor.All(ctx, &tickets); err != nil {
+		tr.logger.Println(err)
+		return nil, err
+	}
+	return tickets, nil
+}
+
 /*
 func (tr *TicketRepo) GetTicketById(id string) (Tickets, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -180,7 +203,7 @@ func (tr *TicketRepo) Update(id string, ticket *Ticket) error {
 		"startPlace": ticket.StartPlace,
 		"capacity":   ticket.Capacity,
 		"price":      ticket.Price,
-		"freeSeats":  ticket.FreeSeats,
+		"userId":     ticket.UserID,
 	}}
 	result, err := ticketsCollection.UpdateOne(ctx, filter, update)
 	tr.logger.Printf("Documents matched: %v\n", result.MatchedCount)

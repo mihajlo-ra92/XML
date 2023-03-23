@@ -18,7 +18,7 @@ type Ticket struct {
 	FreeSeats  int                `bson:"freeSeats" json:"freeSeats"`
 }
 
-type Tickets []*Flight
+type Tickets []*Ticket
 
 func (f *Tickets) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
