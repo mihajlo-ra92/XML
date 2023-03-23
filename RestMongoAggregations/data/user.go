@@ -23,6 +23,13 @@ type User struct {
 	Username string             `bson:"username" json:"username"`
 	Password string             `bson:"password" json:"password"`
 	UserType string             `bson:"userType" json:"userType"`
+	FirstName	string			`bson:"firstName" json:"firstName"`
+	LastName 	string			`bson:"lastName" json:"lastName"`
+	Gender		string			`bson:"gender" json:"gender"`
+	BirthDate	time.Time		`bson:"birthDate" json:"birthDate"`
+	Email		string			`bson:"email" json:"email"`
+	GovernmentId	string		`bson:"governmentId" json:"governmentId"`
+
 }
 
 type Address struct {

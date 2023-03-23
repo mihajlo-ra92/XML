@@ -138,17 +138,8 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request){
 		return
 	}
 	// rw.Write([]byte(tokenString))
-	// rw.Header().Add("test_add","da")
-	// rw.Header().Set("test_set", "da")
 	rw.Header().Set("Bearer",tokenString)
 	rw.WriteHeader(http.StatusAccepted)
-	// rw.WriteHeader(tokenString)
-	// err = retUser.ToJSON(rw)
-	// if err != nil {
-	// 	http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-	// 	u.logger.Fatal("Unable to convert to json: ", err)
-	// 	return
-	// }
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request){
