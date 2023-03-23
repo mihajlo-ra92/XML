@@ -23,8 +23,8 @@ type PatientRepo struct {
 }
 
 type UserRepo struct {
-	cli 	*mongo.Client
-	logger	*log.Logger 
+	cli    *mongo.Client
+	logger *log.Logger
 }
 
 // NoSQL: Constructor which reads db configuration from environment
@@ -40,8 +40,8 @@ func NewUserRepo(ctx context.Context, logger *log.Logger) (*UserRepo, error) {
 		return nil, err
 	}
 	return &UserRepo{
-		cli:	client,
-		logger:	logger,
+		cli:    client,
+		logger: logger,
 	}, nil
 }
 
@@ -79,7 +79,7 @@ func (ur *UserRepo) DropCollection() error {
 	test := os.Getenv("TEST")
 
 	if test == "YES" {
-		usersCollection := userDatabase.Collection(usersCollectionName+"_test")
+		usersCollection := userDatabase.Collection(usersCollectionName + "_test")
 		usersCollection.Drop(ctx)
 		return nil
 	}
@@ -88,7 +88,7 @@ func (ur *UserRepo) DropCollection() error {
 
 func (ur *UserRepo) LoginUser(username string, password string) (*User, error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(),  5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	ur.logger.Println("Username: " + username)
 	ur.logger.Println("Password: " + password)
@@ -107,7 +107,7 @@ func (ur *UserRepo) GetAll() (Users, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	usersCollection := ur. getCollection()
+	usersCollection := ur.getCollection()
 
 	var users Users
 	usersCursor, err := usersCollection.Find(ctx, bson.M{})
@@ -138,8 +138,8 @@ func (pr *PatientRepo) GetById(id string) (*Patient, error) {
 	return &patient, nil
 }
 
-func (ur *UserRepo) GetByUsername(username string) (Users, error){
-	ctx, cancel := context.WithTimeout(context.Background(),  5*time.Second)
+func (ur *UserRepo) GetByUsername(username string) (Users, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	usersCollectoin := ur.getCollection()
@@ -185,7 +185,7 @@ func (ur *UserRepo) Update(id string, user *User) error {
 	ur.logger.Printf("Documents matched: %v\n", result.MatchedCount)
 	ur.logger.Printf("Documents updated: %v\n", result.ModifiedCount)
 
-	if err != nil{
+	if err != nil {
 		ur.logger.Println(err)
 		return err
 	}
@@ -212,7 +212,6 @@ func (pr *PatientRepo) AddPhoneNumber(id string, phoneNumber string) error {
 	}
 	return nil
 }
-
 
 func (ur *UserRepo) Delete(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -392,7 +391,7 @@ func (pr *PatientRepo) getCollection() *mongo.Collection {
 	return patientsCollection
 }
 
-func (ur *UserRepo) getCollection() *mongo.Collection{
+func (ur *UserRepo) getCollection() *mongo.Collection {
 	dbName := "mongoDemo"
 	usersCollectionName := "users"
 	userDatabase := ur.cli.Database(dbName)
@@ -400,7 +399,7 @@ func (ur *UserRepo) getCollection() *mongo.Collection{
 	test := os.Getenv("TEST")
 
 	if test == "YES" {
-		usersCollection := userDatabase.Collection(usersCollectionName+"_test")
+		usersCollection := userDatabase.Collection(usersCollectionName + "_test")
 		return usersCollection
 	}
 	usersCollection := userDatabase.Collection("users")
