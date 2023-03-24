@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Flight } from '../model/flight';
+import { FlightService } from '../service/flight.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -7,9 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LandingPageComponent implements OnInit {
 
-  constructor() { }
+  allFlights : Array<Flight> = new Array
+
+  constructor(private flightService: FlightService) { }
 
   ngOnInit(): void {
+
+    this.allUsers()
+    
+  }
+
+  allUsers() {
+    this.flightService.getAllFlights().subscribe(res => {
+      let resJSON = JSON.parse(res)
+      this.allFlights = resJSON
+      console.log(this.allFlights)             
+    })
   }
 
 }

@@ -66,6 +66,7 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 		u.logger.Print("Database exception: ", err)
 	}
 	user := data.User{
+
 		Username:  "naz1",
 		Password:  "123",
 		UserType:  "regular",
@@ -148,6 +149,9 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 		return
 	}
 	// rw.Write([]byte(tokenString))
+	// rw.Header().Add("test_add","da")
+	// rw.Header().Set("test_set", "da")
+	rw.Header().Set("Bearer", tokenString)
 	rw.Header().Set("Bearer", tokenString)
 	jwt := Jwt{
 		Bearer: tokenString,

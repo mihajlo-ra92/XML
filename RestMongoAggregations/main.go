@@ -68,6 +68,10 @@ func main() {
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
 
+
+	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
+	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
+
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/user", usersHandler.PostUser)
 	postRouter.Use(usersHandler.MiddlewareUserDeserialization)
@@ -91,7 +95,7 @@ func main() {
 	getFlightRouter.HandleFunc("/flight", flightsHandler.GetAllFlights)
 
 	getFlightByIdRouter := router.Methods(http.MethodGet).Subrouter()
-	getFlightByIdRouter.HandleFunc("/getFlightById", flightsHandler.GetFlightById)
+	getFlightByIdRouter.HandleFunc("/get-flight-by-id", flightsHandler.GetFlightById)
 
 	patchFlightRouter := router.Methods(http.MethodPatch).Subrouter()
 	patchFlightRouter.HandleFunc("/flight/{id}", flightsHandler.PatchFlight)

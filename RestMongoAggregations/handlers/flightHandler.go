@@ -36,6 +36,13 @@ func (u *FlightsHandler) MiddlewareFlightDeserialization(next http.Handler) http
 	})
 }
 
+func (u *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
+	err := u.repo.DropCollection()
+	if err != nil {
+		u.logger.Print("Database exception: ", err)
+	}
+}
+
 func (f *FlightsHandler) PostFlight(rw http.ResponseWriter, h *http.Request) {
 	flight := h.Context().Value(KeyProduct{}).(*data.Flight)
 	f.repo.Insert(flight)

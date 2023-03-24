@@ -20,6 +20,23 @@ type FlightRepo struct {
 	logger *log.Logger
 }
 
+func (fr *FlightRepo) DropCollection() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	dbName := "mongoDemo"
+	flightsCollectionName := "flights"
+	flightDatabase := fr.cli.Database(dbName)
+
+	test := os.Getenv("TEST")
+
+	if test == "YES" {
+		flightsCollection := flightDatabase.Collection(flightsCollectionName + "_test")
+		flightsCollection.Drop(ctx)
+		return nil
+	}
+	return nil
+}
+
 func NewFlightRepo(ctx context.Context, logger *log.Logger) (*FlightRepo, error) {
 	dburi := os.Getenv("MONGO_DB_URI")
 	client, err := mongo.NewClient(options.Client().ApplyURI(dburi))
