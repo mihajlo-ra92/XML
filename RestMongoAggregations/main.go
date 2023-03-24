@@ -30,6 +30,7 @@ func main() {
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
 	storeLogger := log.New(os.Stdout, "[user-store] ", log.LstdFlags)
 	flightLogger := log.New(os.Stdout, "[flight-store] ", log.LstdFlags)
+	ticketLogger := log.New(os.Stdout, "[ticket-store] ", log.LstdFlags)
 
 	// NoSQL: Initialize Product Repository store
 	store, err := data.NewUserRepo(timeoutContext, storeLogger)
@@ -44,13 +45,21 @@ func main() {
 	}
 	defer flightStore.DisconnectFlightRepo(timeoutContext)
 
+	ticketStore, err := data.NewTicketRepo(timeoutContext, ticketLogger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer ticketStore.DisconnectTicketRepo(timeoutContext)
+
 	// NoSQL: Checking if the connection was established
 	store.Ping()
 	flightStore.Ping()
+	ticketStore.Ping()
 
 	//Initialize the handler and inject said logger
 	usersHandler := handlers.NewUsersHandler(logger, store)
 	flightsHandler := handlers.NewFlightsHandler(logger, flightStore)
+	ticketsHandler := handlers.NewTicketsHandler(logger, ticketStore, flightStore)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
@@ -68,6 +77,9 @@ func main() {
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
+
+	initTicketRouter := router.Methods(http.MethodGet).Subrouter()
+	initTicketRouter.HandleFunc("/init-ticket", ticketsHandler.InitTestDb)
 
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", usersHandler.PostUser)
@@ -126,6 +138,26 @@ func main() {
 
 	// deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	// deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
+
+	postTicketRouter := router.Methods(http.MethodPost).Subrouter()
+	postTicketRouter.HandleFunc("/ticket", ticketsHandler.PostTicket)
+	postTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
+
+	getTicketRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketRouter.HandleFunc("/tickets", ticketsHandler.GetAllTickets)
+
+	getTicketByIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketByIdRouter.HandleFunc("/get-ticket-by-id", ticketsHandler.GetTicketById)
+
+	patchTicketRouter := router.Methods(http.MethodPatch).Subrouter()
+	patchTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.PatchTicket)
+	patchTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
+
+	getTicketsByUserIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketsByUserIdRouter.HandleFunc("/get-tickets-by-user-id", ticketsHandler.GetTicketsByUserId)
+
+	deleteTicketRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.DeleteTicket)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
