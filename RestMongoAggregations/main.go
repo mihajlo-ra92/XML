@@ -56,20 +56,18 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(usersHandler.MiddlewareContentTypeSet)
 
-
 	//NOTE: User routers
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/user", usersHandler.GetAllUsers)
 	getRouter.Use(usersHandler.MiddlewareAuth)
 
-
 	loginRouter := router.Methods(http.MethodPost).Subrouter()
 	loginRouter.HandleFunc("/login", usersHandler.Login)
 	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
-
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
+
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)

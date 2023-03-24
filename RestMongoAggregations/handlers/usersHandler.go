@@ -18,7 +18,7 @@ import (
 
 type KeyProduct struct{}
 
-type Jwt struct{
+type Jwt struct {
 	Bearer string
 }
 
@@ -136,6 +136,7 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": retUser.Username,
 		"userType": retUser.UserType,
+		"userId":   retUser.ID,
 		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	})
 
