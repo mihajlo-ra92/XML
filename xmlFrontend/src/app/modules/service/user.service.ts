@@ -19,7 +19,7 @@ export class UserService {
 
   login(user: LoginUser): Observable<any> {
     console.log(user);
-    let response =  this.http.post(this.apiServerUrl + '/login', user, {headers: this.headers, observe: 'response', responseType: 'text'});
+    let response =  this.http.post(this.apiServerUrl + '/login', user, {headers: this.headers, observe: 'response', responseType: 'json'});
     console.log(this.headers2)
     return response
   }
