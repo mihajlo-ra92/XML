@@ -72,7 +72,7 @@ func main() {
 
 	loginRouter := router.Methods(http.MethodPost).Subrouter()
 	loginRouter.HandleFunc("/login", usersHandler.Login)
-	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
+	loginRouter.Use(usersHandler.MiddlewareLoginDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)

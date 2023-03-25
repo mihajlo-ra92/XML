@@ -6,8 +6,9 @@ export class User {
   firstName: String = '';
   lastName: String = '';
   gender: String = '';
-  birthDate!: Date;
+  birthDate: String = '';
   email: String = '';
+  governmentId: String = '';
   public constructor(obj?: any) {
     if (obj) {
       this.id = obj.id;
@@ -18,6 +19,7 @@ export class User {
       this.gender = obj.gender;
       this.birthDate = obj.birthDate;
       this.email = obj.email;
+      this.governmentId = obj.governmentId;
     }
   }
 }

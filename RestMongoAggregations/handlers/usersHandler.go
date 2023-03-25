@@ -162,15 +162,22 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request) {
-	user := h.Context().Value(KeyProduct{}).(*data.User)
+	value := h.Context().Value(KeyProduct{})
+	var user *data.User
+	if value == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	user = h.Context().Value(KeyProduct{}).(*data.User)
 	if user.Username == "" || user.UserType == "" || user.FirstName == "" ||
 		user.LastName == "" || user.Password == "" || user.Email == "" {
-		u.logger.Println("Please fill Username")
+		u.logger.Println("Invalid fields")
 		rw.WriteHeader(http.StatusBadRequest)
-	} else {
-		u.repo.Insert(user)
-		rw.WriteHeader(http.StatusCreated)
+		return
 	}
+	u.repo.Insert(user)
+	rw.WriteHeader(http.StatusCreated)
+
 }
 
 func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request) {
@@ -276,7 +283,7 @@ func (p *PatientsHandler) Report(rw http.ResponseWriter, h *http.Request) {
 	e.Encode(report)
 }
 
-func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
+func (u *UsersHandler) MiddlewareLoginDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		user := &data.User{}
 		err := user.FromJSON(h.Body)
@@ -285,6 +292,67 @@ func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Han
 			u.logger.Fatal(err)
 			return
 		}
+
+		ctx := context.WithValue(h.Context(), KeyProduct{}, user)
+		h = h.WithContext(ctx)
+
+		next.ServeHTTP(rw, h)
+	})
+}
+
+func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
+		b, _ := io.ReadAll(h.Body)
+		var res map[string]interface{}
+		json.Unmarshal(b, &res)
+		var timeStr string
+		if res["birthDate"] != nil {
+			timeStr = res["birthDate"].(string)
+			u.logger.Println(timeStr)
+		} else {
+			next.ServeHTTP(rw, h)
+			return
+		}
+		u.logger.Println("Parsing time...")
+		timeInt, err := strconv.ParseInt(timeStr, 10, 64)
+		if err != nil {
+			u.logger.Println(err)
+			next.ServeHTTP(rw, h)
+		}
+		u.logger.Println(timeInt)
+		tm := time.Unix(timeInt, 0)
+		u.logger.Println(tm)
+		uname := res["username"].(string)
+		u.logger.Println(uname)
+		pass := res["password"].(string)
+		u.logger.Println(pass)
+		uType := res["userType"].(string)
+		u.logger.Println(uType)
+		fName := res["firstName"].(string)
+		u.logger.Println(fName)
+		lName := res["lastName"].(string)
+		u.logger.Println(lName)
+		gender := res["gender"].(string)
+		u.logger.Println(gender)
+		email := res["email"].(string)
+		u.logger.Println(email)
+		govId := res["governmentId"].(string)
+		u.logger.Println(govId)
+
+		user := &data.User{
+			Username:     uname,
+			Password:     pass,
+			UserType:     uType,
+			FirstName:    fName,
+			LastName:     lName,
+			Gender:       gender,
+			BirthDate:    tm,
+			Email:        email,
+			GovernmentId: govId,
+		}
+
+		u.logger.Print("Parsed user: ")
+		u.logger.Println(user)
 
 		ctx := context.WithValue(h.Context(), KeyProduct{}, user)
 		h = h.WithContext(ctx)
