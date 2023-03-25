@@ -27,7 +27,7 @@ def test_create_flight():
 def test_get_all_flights():
     req = requests.get(url="http://localhost:8080/flight")
     pytest.first_flight_id = req.json()[0]['id']
-    #checking only username and passoword, not ID
+    #checking everythig but ID
     assert list(map(lambda x: {x["date"], x["endPlace"], x["startPlace"],  x["capacity"],  x["price"],  x["freeSeats"]},req.json())) == [{
         "2023-05-06T12:00:42.123Z",
         "London",
@@ -48,9 +48,6 @@ def test_get_flight_by_id():
         'price': 150, 
         'startPlace': 'Budapest'}
 
-# def test_delete_flight():
-#     req = requests.delete(url="http://localhost:8080/flight/"+pytest.first_flight_id)
-
 def test_update_flight():
     req = requests.patch(url="http://localhost:8080/flight/"+pytest.first_flight_id, json={
         'id': pytest.first_flight_id,
@@ -69,4 +66,17 @@ def test_update_flight():
         'freeSeats': 50,
         'price': 150, 
         'startPlace': 'Budapest'}
-    
+
+def test_delete_flight():
+    req = requests.delete(url="http://localhost:8080/flight/"+pytest.first_flight_id, json={
+        'id': pytest.first_flight_id,
+        'capacity': 200,
+        'date': '2023-12-31T12:00:42.123Z',
+        'endPlace': 'London',
+        'freeSeats': 50,
+        'price': 150, 
+        'startPlace': 'Budapest'})
+
+    req = requests.get(url="http://localhost:8080/flight")
+
+    assert list(map(lambda x: {x["date"], x["endPlace"], x["startPlace"],  x["capacity"],  x["price"],  x["freeSeats"]},req)) == []

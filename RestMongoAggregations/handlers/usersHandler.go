@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,10 @@ import (
 )
 
 type KeyProduct struct{}
+
+type Jwt struct {
+	Bearer string
+}
 
 type PatientsHandler struct {
 	logger *log.Logger
@@ -61,9 +66,15 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 		u.logger.Print("Database exception: ", err)
 	}
 	user := data.User{
-		Username: "naz1",
-		Password: "123",
-		UserType: "regular",
+
+		Username:  "naz1",
+		Password:  "123",
+		UserType:  "regular",
+		Email:     "naz1@gmail.com",
+		FirstName: "Fnaz",
+		LastName:  "Lnaz",
+		Gender:    "MALE",
+		// BirthDate: ,
 	}
 	u.repo.Insert(&user)
 }
@@ -125,6 +136,7 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": retUser.Username,
 		"userType": retUser.UserType,
+		"userId":   retUser.ID,
 		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	})
 
@@ -140,20 +152,25 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 	// rw.Header().Add("test_add","da")
 	// rw.Header().Set("test_set", "da")
 	rw.Header().Set("Bearer", tokenString)
+	rw.Header().Set("Bearer", tokenString)
+	jwt := Jwt{
+		Bearer: tokenString,
+	}
+	jwt.ToJson(rw)
+	// rw.Write([]byte(KeyProduct{"jwt": tokenString}))
 	rw.WriteHeader(http.StatusAccepted)
-	// rw.WriteHeader(tokenString)
-	// err = retUser.ToJSON(rw)
-	// if err != nil {
-	// 	http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
-	// 	u.logger.Fatal("Unable to convert to json: ", err)
-	// 	return
-	// }
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request) {
 	user := h.Context().Value(KeyProduct{}).(*data.User)
-	u.repo.Insert(user)
-	rw.WriteHeader(http.StatusCreated)
+	if user.Username == "" || user.UserType == "" || user.FirstName == "" ||
+		user.LastName == "" || user.Password == "" || user.Email == "" {
+		u.logger.Println("Please fill Username")
+		rw.WriteHeader(http.StatusBadRequest)
+	} else {
+		u.repo.Insert(user)
+		rw.WriteHeader(http.StatusCreated)
+	}
 }
 
 func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request) {
@@ -386,4 +403,9 @@ func (u *UsersHandler) MiddlewareContentTypeSet(next http.Handler) http.Handler 
 
 		next.ServeHTTP(rw, h)
 	})
+}
+
+func (jwt *Jwt) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(jwt)
 }

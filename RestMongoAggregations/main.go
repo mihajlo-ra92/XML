@@ -65,15 +65,18 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(usersHandler.MiddlewareContentTypeSet)
 
+	//NOTE: User routers
 	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", usersHandler.GetAllUsers)
+	getRouter.HandleFunc("/user", usersHandler.GetAllUsers)
 	getRouter.Use(usersHandler.MiddlewareAuth)
+
 	loginRouter := router.Methods(http.MethodPost).Subrouter()
 	loginRouter.HandleFunc("/login", usersHandler.Login)
 	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
+
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
@@ -82,19 +85,20 @@ func main() {
 	initTicketRouter.HandleFunc("/init-ticket", ticketsHandler.InitTestDb)
 
 	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/", usersHandler.PostUser)
+	postRouter.HandleFunc("/user", usersHandler.PostUser)
 	postRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
 	getByUsernameRouter := router.Methods(http.MethodGet).Subrouter()
-	getByUsernameRouter.HandleFunc("/read-by-username", usersHandler.GetUsersByUsername)
+	getByUsernameRouter.HandleFunc("/user/read-by-username", usersHandler.GetUsersByUsername)
 
 	patchUserRouter := router.Methods(http.MethodPatch).Subrouter()
-	patchUserRouter.HandleFunc("/{id}", usersHandler.PatchUser)
+	patchUserRouter.HandleFunc("/user/{id}", usersHandler.PatchUser)
 	patchUserRouter.Use(usersHandler.MiddlewareUserDeserialization)
 
 	deleteUserRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteUserRouter.HandleFunc("/{id}", usersHandler.DeleteUser)
+	deleteUserRouter.HandleFunc("/user/{id}", usersHandler.DeleteUser)
 
+	//NOTE: Flight routers
 	postFlightRouter := router.Methods(http.MethodPost).Subrouter()
 	postFlightRouter.HandleFunc("/flight", flightsHandler.PostFlight)
 	postFlightRouter.Use(flightsHandler.MiddlewareFlightDeserialization)

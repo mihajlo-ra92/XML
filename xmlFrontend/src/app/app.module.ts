@@ -8,6 +8,10 @@ import { LoginUserComponent } from './modules/login-user/login-user.component';
 import { LandingPageComponent } from './modules/landing-page/landing-page.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
 import { UserTicketsComponent } from './modules/user-tickets/user-tickets.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FlightService } from './modules/service/flight.service';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -15,12 +19,13 @@ import { UserTicketsComponent } from './modules/user-tickets/user-tickets.compon
     LoginUserComponent,
     LandingPageComponent,
     RegisterUserComponent,
-    UserTicketsComponent,
+    UserTicketsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
