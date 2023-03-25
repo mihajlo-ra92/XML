@@ -102,7 +102,6 @@ func (t *TicketsHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) 
 
 func (t *TicketsHandler) GetTicketsByUserId(rw http.ResponseWriter, h *http.Request) {
 	id := h.URL.Query().Get("id")
-
 	tickets, err := t.repo.GetByIUserId(id)
 	if err != nil {
 		t.logger.Print("Database exception: ", err)
