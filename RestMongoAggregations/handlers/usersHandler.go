@@ -74,7 +74,7 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 		FirstName: "Fnaz",
 		LastName:  "Lnaz",
 		Gender:    "MALE",
-		// BirthDate: ,
+		BirthDate: time.Unix(1735689600,0),
 	}
 	u.repo.Insert(&user)
 }
@@ -162,21 +162,34 @@ func (u *UsersHandler) Login(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (u *UsersHandler) PostUser(rw http.ResponseWriter, h *http.Request) {
-	user := h.Context().Value(KeyProduct{}).(*data.User)
+	value := h.Context().Value(KeyProduct{})
+	var user *data.User
+	if value == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	user = h.Context().Value(KeyProduct{}).(*data.User)
 	if user.Username == "" || user.UserType == "" || user.FirstName == "" ||
 		user.LastName == "" || user.Password == "" || user.Email == "" {
-		u.logger.Println("Please fill Username")
+		u.logger.Println("Invalid fields")
 		rw.WriteHeader(http.StatusBadRequest)
-	} else {
-		u.repo.Insert(user)
-		rw.WriteHeader(http.StatusCreated)
+		return
 	}
+	u.repo.Insert(user)
+	rw.WriteHeader(http.StatusCreated)
+
 }
 
 func (u *UsersHandler) PatchUser(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	user := h.Context().Value(KeyProduct{}).(*data.User)
+	value := h.Context().Value(KeyProduct{})
+	var user *data.User
+	if value == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	user = h.Context().Value(KeyProduct{}).(*data.User)
 
 	u.repo.Update(id, user)
 	rw.WriteHeader(http.StatusOK)
@@ -276,7 +289,7 @@ func (p *PatientsHandler) Report(rw http.ResponseWriter, h *http.Request) {
 	e.Encode(report)
 }
 
-func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
+func (u *UsersHandler) MiddlewareLoginDeserialization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
 		user := &data.User{}
 		err := user.FromJSON(h.Body)
@@ -285,6 +298,132 @@ func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Han
 			u.logger.Fatal(err)
 			return
 		}
+
+		ctx := context.WithValue(h.Context(), KeyProduct{}, user)
+		h = h.WithContext(ctx)
+
+		next.ServeHTTP(rw, h)
+	})
+}
+
+func (u *UsersHandler) MiddlewareUserDeserialization(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, h *http.Request) {
+		bodyByte, _ := io.ReadAll(h.Body)
+		var res map[string]interface{}
+		json.Unmarshal(bodyByte, &res)
+		var timeStr string
+		if res["birthDate"] != nil {
+			timeStr = res["birthDate"].(string)
+			u.logger.Println(timeStr)
+		} else {
+			u.logger.Println("No birthDate")
+			next.ServeHTTP(rw, h)
+			return
+		}
+		u.logger.Println("Parsing time...")
+		timeInt, err := strconv.ParseInt(timeStr, 10, 64)
+		if err != nil {
+			u.logger.Println(err)
+			next.ServeHTTP(rw, h)
+			return
+		}
+		u.logger.Println(timeInt)
+		tm := time.Unix(timeInt, 0)
+		u.logger.Println(tm)
+
+		var uName string
+		if res["username"] != nil {
+			uName = res["username"].(string)
+			u.logger.Println(uName)
+		} else {
+			u.logger.Println("No username")
+			next.ServeHTTP(rw, h)
+			return
+		}
+		
+		var pass string 
+		if res["password"] != nil {
+			pass = res["password"].(string)
+			u.logger.Println(pass)
+		} else {
+			u.logger.Println("No password")
+			next.ServeHTTP(rw, h)
+			return
+		}
+		var uType string
+		if res["userType"] != nil {
+			uType = res["userType"].(string)
+			u.logger.Println(uType)
+		} else {
+			u.logger.Println("No userType")
+			next.ServeHTTP(rw, h)
+			return
+		}
+
+		var fName string
+		if res["firstName"] != nil {
+			fName = res["firstName"].(string)
+			u.logger.Println(fName)
+		} else {
+			u.logger.Println("No firstName")
+			next.ServeHTTP(rw, h)
+			return
+		}
+
+		var lName string
+		if res["lastName"] != nil {
+			lName = res["lastName"].(string)
+			u.logger.Println(lName)
+		} else {
+			u.logger.Println("No lastName")
+			next.ServeHTTP(rw, h)
+			return
+		}
+
+		var gender string
+		if res["gender"] != nil {
+			gender = res["gender"].(string)
+			u.logger.Println(gender)
+		} else {
+			u.logger.Println("No gender")
+			next.ServeHTTP(rw, h)
+			return
+		}
+		
+		var email string
+		if res["email"] != nil {
+			email = res["email"].(string)
+			u.logger.Println(email)
+		} else {
+			u.logger.Println("No email")
+			next.ServeHTTP(rw, h)
+			return
+		}
+
+		var govId string
+		if res["governmentId"] != nil {
+			govId = res["governmentId"].(string)
+			u.logger.Println(govId)
+		}else {
+			u.logger.Println("No governmentId")
+			next.ServeHTTP(rw, h)
+			return
+		}
+
+		user := &data.User{
+			Username:     uName,
+			Password:     pass,
+			UserType:     uType,
+			FirstName:    fName,
+			LastName:     lName,
+			Gender:       gender,
+			BirthDate:    tm,
+			Email:        email,
+			GovernmentId: govId,
+		}
+
+		u.logger.Print("Parsed user: ")
+		u.logger.Println(user)
 
 		ctx := context.WithValue(h.Context(), KeyProduct{}, user)
 		h = h.WithContext(ctx)
