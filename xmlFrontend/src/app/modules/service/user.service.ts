@@ -32,7 +32,7 @@ export class UserService {
     let response = this.http.post(this.apiServerUrl + '/login', user, {
       headers: this.headers,
       observe: 'response',
-      responseType: 'text',
+      responseType: 'json',
     });
     console.log(this.headers2);
     return response;
