@@ -40,10 +40,8 @@ export class UserService {
 
   register(user: User): Observable<any> {
     console.log(user);
-    let response = this.http.post(this.apiServerUrl + '/', user, {
+    const response = this.http.post(this.apiServerUrl + '/', user, {
       headers: this.headers,
-      observe: 'response',
-      responseType: 'text',
     });
     return response;
   }
