@@ -125,3 +125,17 @@ def test_delete_flight():
         )
         == []
     )
+
+def test_create_flight_two():
+    req = requests.post(
+        url="http://localhost:8080/flight",
+        json={
+            "date": "2023-05-06T12:00:42.123Z",
+            "endPlace": "London",
+            "startPlace": "Budapest",
+            "capacity": 200,
+            "price": 150,
+            "freeSeats": 58,
+        },
+    )
+    assert req.status_code == 201
