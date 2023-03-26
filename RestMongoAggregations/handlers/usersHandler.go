@@ -471,9 +471,10 @@ func (u *UsersHandler) MiddlewareAuth(next http.Handler) http.Handler {
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				u.logger.Println("Valid jwt")
-				u.logger.Println(claims["username"], claims["userType"])
+				u.logger.Println(claims["username"], claims["userType"], claims["userId"])
 				h.Header.Set("username", claims["username"].(string))
 				h.Header.Set("userType", claims["userType"].(string))
+				h.Header.Set("userId", claims["userId"].(string))
 				next.ServeHTTP(rw, h)
 			} else {
 				u.logger.Println(err)

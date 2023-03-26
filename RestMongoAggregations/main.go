@@ -116,35 +116,11 @@ func main() {
 	deleteFlightRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteFlightRouter.HandleFunc("/flight/{id}", flightsHandler.DeleteFlight)
 
-	// receiptRouter := router.Methods(http.MethodGet).Subrouter()
-	// receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)
 
-	// reportRouter := router.Methods(http.MethodGet).Subrouter()
-	// reportRouter.HandleFunc("/report", patientsHandler.Report)
-
-	// getByIdRouter := router.Methods(http.MethodGet).Subrouter()
-	// getByIdRouter.HandleFunc("/{id}", patientsHandler.GetPatientById)
-
-	// changePhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	// changePhoneRouter.HandleFunc("/phone/{id}/{index}", patientsHandler.ChangePhone)
-
-	// pushPhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	// pushPhoneRouter.HandleFunc("/phone/{id}", patientsHandler.AddPhoneNumber)
-
-	// addAnamnesisRouter := router.Methods(http.MethodPatch).Subrouter()
-	// addAnamnesisRouter.HandleFunc("/anamnesis/{id}", patientsHandler.AddAnamnesis)
-
-	// addTherapyRouter := router.Methods(http.MethodPatch).Subrouter()
-	// addTherapyRouter.HandleFunc("/therapy/{id}", patientsHandler.AddTherapy)
-
-	// changeAddressRouter := router.Methods(http.MethodPatch).Subrouter()
-	// changeAddressRouter.HandleFunc("/address/{id}", patientsHandler.ChangeAddress)
-
-	// deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	// deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
-
+	//NOTE: Ticket routers
 	postTicketRouter := router.Methods(http.MethodPost).Subrouter()
 	postTicketRouter.HandleFunc("/ticket", ticketsHandler.PostTicket)
+	postTicketRouter.Use(usersHandler.MiddlewareAuth)
 	postTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
 
 	getTicketRouter := router.Methods(http.MethodGet).Subrouter()
@@ -159,6 +135,7 @@ func main() {
 
 	getTicketsByUserIdRouter := router.Methods(http.MethodGet).Subrouter()
 	getTicketsByUserIdRouter.HandleFunc("/get-tickets-by-user-id", ticketsHandler.GetTicketsByUserId)
+	getTicketsByUserIdRouter.Use(usersHandler.MiddlewareAuth)
 
 	deleteTicketRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.DeleteTicket)

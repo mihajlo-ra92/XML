@@ -46,7 +46,6 @@ def test_create_user():
     assert req.status_code == 201
     resp = requests.get("http://localhost:8080/user", headers={"Bearer": pytest.TOKEN})
     pytest.first_user_id = resp.json()[0]["id"]
-    # checking only username and passoword, not ID
     assert list(
         map(lambda x: {x["username"], x["password"], x["userType"], x["birthDate"]}, resp.json())
     ) == [{"naz1", "123", "regular", "2025-01-01T00:00:00Z"}, {"naz2", "123", "regular", "2021-01-06T00:00:00Z"}]
