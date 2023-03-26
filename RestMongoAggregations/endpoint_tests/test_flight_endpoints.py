@@ -126,6 +126,7 @@ def test_delete_flight():
         == []
     )
 
+
 def test_create_flight_two():
     req = requests.post(
         url="http://localhost:8080/flight",

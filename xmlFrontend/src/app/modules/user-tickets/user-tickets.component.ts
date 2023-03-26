@@ -6,21 +6,19 @@ import { Ticket } from '../ticket';
 @Component({
   selector: 'app-user-tickets',
   templateUrl: './user-tickets.component.html',
-  styleUrls: ['./user-tickets.component.css']
+  styleUrls: ['./user-tickets.component.css'],
 })
 export class UserTicketsComponent implements OnInit {
-
   public displayedColumns = ['number', 'floor'];
   public tickets: Ticket[] = [];
-  public userId: string = "";
+  public userId: string = '';
 
-  constructor(private ticketService: TicketService, private router: Router) { }
+  constructor(private ticketService: TicketService, private router: Router) {}
 
   ngOnInit(): void {
-    this.userId = "641d8131ae807b0dba698da6";
-    this.ticketService.getAllTickesByUserId(this.userId).subscribe(res => {
+    this.userId = '6420975c90683d3a30165f39';
+    this.ticketService.getAllTickesByUserId(this.userId).subscribe((res) => {
       this.tickets = res;
-    })
+    });
   }
-
 }

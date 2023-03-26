@@ -120,7 +120,7 @@ func main() {
 	//NOTE: Ticket routers
 	postTicketRouter := router.Methods(http.MethodPost).Subrouter()
 	postTicketRouter.HandleFunc("/ticket", ticketsHandler.PostTicket)
-	postTicketRouter.Use(usersHandler.MiddlewareAuth)
+	// postTicketRouter.Use(usersHandler.MiddlewareAuth)
 	postTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
 
 	getTicketRouter := router.Methods(http.MethodGet).Subrouter()

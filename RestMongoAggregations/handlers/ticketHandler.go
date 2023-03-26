@@ -24,6 +24,7 @@ func (u *TicketsHandler) MiddlewareTicketDeserialization(next http.Handler) http
 		ticket := &data.Ticket{}
 		err := ticket.FromJSON(h.Body)
 		u.logger.Println(h.Body)
+		u.logger.Println(ticket)
 		if err != nil {
 			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
 			u.logger.Fatal(err)
@@ -46,6 +47,8 @@ func (u *TicketsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 
 func (t *TicketsHandler) PostTicket(rw http.ResponseWriter, h *http.Request) {
 	ticket := h.Context().Value(KeyProduct{}).(*data.Ticket)
+	t.logger.Println("TICKET!!!")
+	t.logger.Println(ticket)
 	flight, err := t.flightRepo.GetFlightById(ticket.FlightId)
 	if err != nil {
 		t.logger.Print("Exception: ", err)
@@ -108,7 +111,7 @@ func (t *TicketsHandler) GetTicketsByUserId(rw http.ResponseWriter, h *http.Requ
 	if err != nil {
 		t.logger.Print("Database exception: ", err)
 	}
-
+	t.logger.Println(tickets)
 	if tickets == nil {
 		return
 	}
