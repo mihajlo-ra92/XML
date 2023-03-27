@@ -44,6 +44,8 @@ func (u *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (f *FlightsHandler) PostFlight(rw http.ResponseWriter, h *http.Request) {
+	f.logger.Println(h.Header.Get("userType"))
+
 	flight := h.Context().Value(KeyProduct{}).(*data.Flight)
 	f.repo.Insert(flight)
 	rw.WriteHeader(http.StatusCreated)

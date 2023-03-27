@@ -69,7 +69,7 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 
 		Username:  "naz1",
 		Password:  "123",
-		UserType:  "regular",
+		UserType:  "admin",
 		Email:     "naz1@gmail.com",
 		FirstName: "Fnaz",
 		LastName:  "Lnaz",
