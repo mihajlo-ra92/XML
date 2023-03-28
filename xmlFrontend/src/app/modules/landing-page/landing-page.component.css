@@ -5,6 +5,16 @@ body{
 /*=========================*/
 /* Team Boxes */
 /*=========================*/
+button{
+	background-color: #e7e7e7; /* Green */
+	border: none;
+	color: black;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
 .team-body {
     width:100%;
 	height:100%;

@@ -1,5 +1,5 @@
 export class Flight{
-    flightId: String = "";
+    id: String = "";
     date!: Date;
     endPlace: String = "";
     startPlace: String = "";
@@ -9,7 +9,7 @@ export class Flight{
     
     public constructor(obj?: any) {
         if (obj) {
-            this.flightId = obj.FlightId;
+            this.id = obj.FlightId;
             this.date = obj.Date;
             this.endPlace = obj.EndPlace;
             this.startPlace = obj.StartPlace;

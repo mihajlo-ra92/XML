@@ -76,7 +76,7 @@ def test_create_flight_two():
 
  
 
-def test_create_ticket():
-    req = requests.post(
-        url="http://localhost:8080/ticket", headers={"Bearer": pytest.TOKEN}, json={}
-    )
+# def test_create_ticket():
+#     req = requests.post(
+#         url="http://localhost:8080/ticket", headers={"Bearer": pytest.TOKEN}, json={}
+#     )

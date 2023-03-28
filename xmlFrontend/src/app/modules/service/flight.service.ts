@@ -23,4 +23,8 @@ export class FlightService {
     return flights
   }
 
+  deleteFlight(id: String): Observable<any>{
+    return this.http.delete(this.apiServerUrl + '/flight/' + id,{headers:this.headers, responseType: 'text'})
+  }
+
 }
