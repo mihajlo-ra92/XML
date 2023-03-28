@@ -11,6 +11,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FlightService } from './modules/service/flight.service';
 import { FormsModule } from '@angular/forms';
 import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
+import { ToastrModule } from 'ngx-toastr';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
 
 @NgModule({
   declarations: [
@@ -21,7 +24,14 @@ import { CreateFlightPageComponent } from './modules/create-flight-page/create-f
     CreateFlightPageComponent,
     UserTicketsComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
