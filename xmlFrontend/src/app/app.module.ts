@@ -10,6 +10,7 @@ import { UserTicketsComponent } from './modules/user-tickets/user-tickets.compon
 import { HttpClientModule } from '@angular/common/http';
 import { FlightService } from './modules/service/flight.service';
 import { FormsModule } from '@angular/forms';
+import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     LoginUserComponent,
     LandingPageComponent,
     RegisterUserComponent,
+    CreateFlightPageComponent,
     UserTicketsComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],

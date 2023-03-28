@@ -24,11 +24,11 @@
                     <h2>From : {{flight.startPlace}}</h2>
                     <h2>To : {{flight.endPlace}}</h2>
                     <p>
-                        Date : {{flight.date.toString().split("T")[0]}}
+                        Date : {{flight.date.toString().split(",")[0]}}
                     </p>
                     <p>
-                        Time : {{flight.date.toString().split("T")[1].split(".")[0].split(":")[0] +
-                        ":" + flight.date.toString().split("T")[1].split(".")[0].split(":")[1]}}
+                        Time : {{flight.date.toString().split(",")[1].split(".")[0].split(":")[0] +
+                        ":" + flight.date.toString().split(",")[1].split(".")[0].split(":")[1]}}
                     </p>
                 </div>
                 <div class="separator">

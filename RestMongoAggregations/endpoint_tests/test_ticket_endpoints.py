@@ -22,7 +22,7 @@ def test_create_user():
         json={
             "username": "nazTicket",
             "password": "123",
-            "userType": "regular",
+            "userType": "admin",
             "email": "nazTicket@gmail.com",
             "firstName": "Fname2",
             "lastName": "Lname2",
@@ -53,8 +53,8 @@ def test_check_user():
             resp.json(),
         )
     ) == [
-        {"naz1", "123", "regular", "2025-01-01T00:00:00Z"},
-        {"nazTicket", "123", "regular", "2021-01-06T00:00:00Z"},
+        {"naz1", "123", "admin", "2025-01-01T00:00:00Z"},
+        {"nazTicket", "123", "admin", "2021-01-06T00:00:00Z"},
     ]
 
 
@@ -69,6 +69,7 @@ def test_create_flight_two():
             "price": 150,
             "freeSeats": 58,
         },
+         headers={"Bearer":pytest.TOKEN}
     )
     assert req.status_code == 201
     req = requests.get(url="http://localhost:8080/flight")
