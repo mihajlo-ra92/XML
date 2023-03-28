@@ -10,21 +10,23 @@ import { Flight } from '../model/flight';
 export class FlightService {
 
   private apiServerUrl = 'http://localhost:8080';
-//   private token = localStorage.getItem('token')
+  private token = localStorage.getItem('token')
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json'});
-//   headers2: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}`});
-//   headers3: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
+  // headers2: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}`});
+  headers3: HttpHeaders = new HttpHeaders({'Bearer': `${this.token}`});
 
   constructor(private http: HttpClient) { }
 
   getAllFlights(): Observable<any> {
     let flights = this.http.get(this.apiServerUrl + '/flight', {headers: this.headers, responseType: 'text'});
-    console.log(flights)
     return flights
   }
 
   deleteFlight(id: String): Observable<any>{
     return this.http.delete(this.apiServerUrl + '/flight/' + id,{headers:this.headers, responseType: 'text'})
+  }
+    create(flight: Flight): Observable<any> {
+    return this.http.post(this.apiServerUrl + '/flight', flight, {headers: this.headers3, responseType: 'text'});
   }
 
 }

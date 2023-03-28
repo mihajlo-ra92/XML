@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,25 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'xmlFrontend';
+  loggedUserJwt = localStorage.getItem('token')
+  loggedUserRole = localStorage.getItem('loggedUserType')
+  loggedUserId = localStorage.getItem('loggedUserId')
+  loggedUsername = localStorage.getItem('loggedUsername')
+  constructor(private router: Router) {
+  }
+  ngOnInit(): void {
+console.log(this.loggedUserRole)
+    
+  }
+
+  onLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('loggedUserType')
+    localStorage.removeItem('loggedUserId')
+    localStorage.removeItem('loggedUsername')
+
+    console.log(localStorage.getItem('token'))
+    this.router.navigate(['/login']);
+    location.reload()
+  }
 }

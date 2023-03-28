@@ -8,29 +8,26 @@ def pytest_configure():
 
 def test_init():
     req = requests.get("http://localhost:8080/init-flight")
-    assert req.status_code == 200
+    req = requests.get("http://localhost:8080/init")
+    assert req.status_code == 200 
 
-
-# def test_login():
-#     req = requests.post(url="http://localhost:8080/login", json={"username": "naz1", "password": "123"})
-#     pytest.TOKEN = req.headers['Bearer']
-#     assert pytest.TOKEN.startswith("ey")
+def test_login():
+    req = requests.post(url="http://localhost:8080/login", json={"username": "naz1", "password": "123"})
+    pytest.TOKEN = req.headers['Bearer']
+    assert pytest.TOKEN.startswith("ey")
 
 
 def test_create_flight():
-    req = requests.post(
-        url="http://localhost:8080/flight",
-        json={
-            "date": "2023-05-06T12:00:42.123Z",
-            "endPlace": "London",
-            "startPlace": "Budapest",
-            "capacity": 200,
-            "price": 150,
-            "freeSeats": 58,
-        },
-    )
+    req = requests.post(url="http://localhost:8080/flight", json = {
+        "date": "2023-05-06T12:00:42.123Z",
+        "endPlace": "London",
+        "startPlace": "Budapest",
+        "capacity": 200,
+        "price": 150,
+        "freeSeats": 58
+    },
+     headers={"Bearer":pytest.TOKEN})
     assert req.status_code == 201
-
 
 def test_get_all_flights():
     req = requests.get(url="http://localhost:8080/flight")
@@ -126,6 +123,7 @@ def test_delete_flight():
         == []
     )
 
+
 def test_create_flight_two():
     req = requests.post(
         url="http://localhost:8080/flight",
@@ -137,5 +135,5 @@ def test_create_flight_two():
             "price": 150,
             "freeSeats": 58,
         },
-    )
+     headers={"Bearer":pytest.TOKEN})
     assert req.status_code == 201

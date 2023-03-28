@@ -10,25 +10,45 @@ import { FlightService } from '../service/flight.service';
 export class LandingPageComponent implements OnInit {
 
   allFlights : Array<Flight> = new Array
-  isAdmin = true;
+  isAdmin = false ;
 
   constructor(private flightService: FlightService) { }
 
   ngOnInit(): void {
-    // var token = localStorage.getItem('token')
-    // //  if(token.){
-
-    // // }
-    // console.log(token);
+    //  var loggedUserType = localStorage.getItem('loggedUserType')
+    //  console.log(loggedUserType);
+     
+    //     if(loggedUserType?.toString() === 'admin'){
+    //       console.log(this.isAdmin);
+          
+    //       this.isAdmin = true;
+    //    }
     
     this.allUsers()
     
   }
 
   allUsers() {
+    var loggedUserType = localStorage.getItem('loggedUserType')
+     console.log(loggedUserType);
+     
+        if(loggedUserType?.toString() === 'admin'){
+          console.log(this.isAdmin);
+          
+          this.isAdmin = true;
+       }
     this.flightService.getAllFlights().subscribe(res => {
       let resJSON = JSON.parse(res)
       this.allFlights = resJSON
+      this.allFlights.map((x) => {
+        const myDate = new Date(x.date)
+        // myDate.setHours(myDate.getHours() + 2) 
+        console.log(myDate)  
+        x.date = myDate.toLocaleString()
+        console.log(x.date)  
+
+      }
+      )
       console.log(this.allFlights)             
     })
   }

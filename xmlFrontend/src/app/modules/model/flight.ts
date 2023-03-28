@@ -1,6 +1,6 @@
 export class Flight{
     id: String = "";
-    date!: Date;
+    date!: string;
     endPlace: String = "";
     startPlace: String = "";
     capacity: number = 0;

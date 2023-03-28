@@ -9,9 +9,15 @@
         <li class="nav-item active">
            <a class="nav-link" routerLink="/register">Sing up</a>
         </li>
-        <li class="nav-item active">
+        <li *ngIf="loggedUserRole === 'admin'" class="nav-item active">
+          <a class="nav-link" routerLink="/create-flight">Create flight</a>
+       </li>
+        <li *ngIf="loggedUserJwt === null" class="nav-item active">
           <a class="nav-link" routerLink="/login">Login</a>
        </li>
+       <li *ngIf="loggedUserJwt !== null" class="nav-item active" (click)="onLogout()">
+        <a class="nav-link" routerLink="/login">Logout</a>
+     </li>
      </ul>
     </div>
   </nav>
