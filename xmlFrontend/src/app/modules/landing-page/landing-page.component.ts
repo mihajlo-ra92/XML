@@ -10,16 +10,33 @@ import { FlightService } from '../service/flight.service';
 export class LandingPageComponent implements OnInit {
 
   allFlights : Array<Flight> = new Array
+  isAdmin = false ;
 
   constructor(private flightService: FlightService) { }
 
   ngOnInit(): void {
-
+    //  var loggedUserType = localStorage.getItem('loggedUserType')
+    //  console.log(loggedUserType);
+     
+    //     if(loggedUserType?.toString() === 'admin'){
+    //       console.log(this.isAdmin);
+          
+    //       this.isAdmin = true;
+    //    }
+    
     this.allUsers()
     
   }
 
   allUsers() {
+    var loggedUserType = localStorage.getItem('loggedUserType')
+     console.log(loggedUserType);
+     
+        if(loggedUserType?.toString() === 'admin'){
+          console.log(this.isAdmin);
+          
+          this.isAdmin = true;
+       }
     this.flightService.getAllFlights().subscribe(res => {
       let resJSON = JSON.parse(res)
       this.allFlights = resJSON
@@ -34,6 +51,14 @@ export class LandingPageComponent implements OnInit {
       )
       console.log(this.allFlights)             
     })
+  }
+
+  deleteFlight(flight: Flight){
+    console.log(flight.id);
+     this.flightService.deleteFlight(flight.id).subscribe(res =>{
+       console.log(res);
+       this.allUsers();
+     })
   }
 
 }

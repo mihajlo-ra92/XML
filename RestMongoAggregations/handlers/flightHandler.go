@@ -5,7 +5,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-
+	"fmt"
 	"github.com/gorilla/mux"
 )
 
@@ -108,6 +108,7 @@ func (u *FlightsHandler) PatchFlight(rw http.ResponseWriter, h *http.Request) {
 func (f *FlightsHandler) DeleteFlight(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
+	fmt.Println("obrisali")
 
 	f.repo.Delete(id)
 	rw.WriteHeader(http.StatusNoContent)

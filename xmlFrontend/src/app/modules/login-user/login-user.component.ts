@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { LoginUser } from '../model/loginUser';
 import { UserService } from '../service/user.service';
 
@@ -11,7 +10,7 @@ import { UserService } from '../service/user.service';
 export class LoginUserComponent implements OnInit {
   user: LoginUser = new LoginUser()
   token : String = ""
-  constructor(private toastr: ToastrService, private userService: UserService) {}
+  constructor( private userService: UserService) {}
 
   ngOnInit(): void {}
 
