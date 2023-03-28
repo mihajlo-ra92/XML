@@ -44,11 +44,18 @@ func (u *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (f *FlightsHandler) PostFlight(rw http.ResponseWriter, h *http.Request) {
-	f.logger.Println(h.Header.Get("userType"))
+	userType := h.Header.Get("userType")
+	f.logger.Println(userType)
 
-	flight := h.Context().Value(KeyProduct{}).(*data.Flight)
-	f.repo.Insert(flight)
-	rw.WriteHeader(http.StatusCreated)
+	if userType == "admin" {
+		flight := h.Context().Value(KeyProduct{}).(*data.Flight)
+		f.repo.Insert(flight)
+		rw.WriteHeader(http.StatusCreated)
+	} else {
+		f.logger.Println("Not admin")
+		rw.WriteHeader(http.StatusUnauthorized)
+
+	}
 }
 
 func (f *FlightsHandler) GetAllFlights(rw http.ResponseWriter, h *http.Request) {

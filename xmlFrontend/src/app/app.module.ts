@@ -9,6 +9,7 @@ import { RegisterUserComponent } from './register-user/register-user.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FlightService } from './modules/service/flight.service';
 import { FormsModule } from '@angular/forms';
+import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { FormsModule } from '@angular/forms';
     LoginUserComponent,
     LandingPageComponent,
     RegisterUserComponent,
+    CreateFlightPageComponent,
   ],
   imports: [
     BrowserModule,

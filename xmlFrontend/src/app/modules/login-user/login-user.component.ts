@@ -21,6 +21,7 @@ export class LoginUserComponent implements OnInit {
       localStorage.setItem("token", res.body.Bearer)
       console.log(localStorage.getItem("token"))
 
+      
     })
   }
 

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
 import { LandingPageComponent } from './modules/landing-page/landing-page.component';
 import { LoginUserComponent } from './modules/login-user/login-user.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
@@ -9,6 +10,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/landing-page', pathMatch: 'full'},
   { path: 'login', component: LoginUserComponent},
   { path: 'register', component: RegisterUserComponent},
+  { path: 'create-flight', component: CreateFlightPageComponent},
 
 ];
 
