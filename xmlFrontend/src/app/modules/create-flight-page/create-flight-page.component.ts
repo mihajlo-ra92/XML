@@ -40,5 +40,8 @@ export class CreateFlightPageComponent implements OnInit {
       console.log(res)
       // console.log(resJSON)
     })
+
+    window.location.href = '/'
+
   }
 }
