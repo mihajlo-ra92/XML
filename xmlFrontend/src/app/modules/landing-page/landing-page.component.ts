@@ -44,7 +44,7 @@ export class LandingPageComponent implements OnInit {
         const myDate = new Date(x.date)
         // myDate.setHours(myDate.getHours() + 2) 
         console.log(myDate)  
-        x.date = myDate.toLocaleString()
+        x.date = myDate.toLocaleString('en-US',{ timeZone: 'America/New_York' })
         console.log(x.date)  
 
       }
