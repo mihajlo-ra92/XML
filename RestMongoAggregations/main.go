@@ -30,6 +30,7 @@ func main() {
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
 	storeLogger := log.New(os.Stdout, "[user-store] ", log.LstdFlags)
 	flightLogger := log.New(os.Stdout, "[flight-store] ", log.LstdFlags)
+	ticketLogger := log.New(os.Stdout, "[ticket-store] ", log.LstdFlags)
 
 	// NoSQL: Initialize Product Repository store
 	store, err := data.NewUserRepo(timeoutContext, storeLogger)
@@ -44,13 +45,21 @@ func main() {
 	}
 	defer flightStore.DisconnectFlightRepo(timeoutContext)
 
+	ticketStore, err := data.NewTicketRepo(timeoutContext, ticketLogger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer ticketStore.DisconnectTicketRepo(timeoutContext)
+
 	// NoSQL: Checking if the connection was established
 	store.Ping()
 	flightStore.Ping()
+	ticketStore.Ping()
 
 	//Initialize the handler and inject said logger
 	usersHandler := handlers.NewUsersHandler(logger, store)
 	flightsHandler := handlers.NewFlightsHandler(logger, flightStore)
+	ticketsHandler := handlers.NewTicketsHandler(logger, ticketStore, flightStore)
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
@@ -63,13 +72,16 @@ func main() {
 
 	loginRouter := router.Methods(http.MethodPost).Subrouter()
 	loginRouter.HandleFunc("/login", usersHandler.Login)
-	loginRouter.Use(usersHandler.MiddlewareUserDeserialization)
+	loginRouter.Use(usersHandler.MiddlewareLoginDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
 	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
+
+	initTicketRouter := router.Methods(http.MethodGet).Subrouter()
+	initTicketRouter.HandleFunc("/init-ticket", ticketsHandler.InitTestDb)
 
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/user", usersHandler.PostUser)
@@ -104,32 +116,29 @@ func main() {
 	deleteFlightRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteFlightRouter.HandleFunc("/flight/{id}", flightsHandler.DeleteFlight)
 
-	// receiptRouter := router.Methods(http.MethodGet).Subrouter()
-	// receiptRouter.HandleFunc("/receipt/{id}", patientsHandler.Receipt)
 
-	// reportRouter := router.Methods(http.MethodGet).Subrouter()
-	// reportRouter.HandleFunc("/report", patientsHandler.Report)
+	//NOTE: Ticket routers
+	postTicketRouter := router.Methods(http.MethodPost).Subrouter()
+	postTicketRouter.HandleFunc("/ticket", ticketsHandler.PostTicket)
+	// postTicketRouter.Use(usersHandler.MiddlewareAuth)
+	postTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
 
-	// getByIdRouter := router.Methods(http.MethodGet).Subrouter()
-	// getByIdRouter.HandleFunc("/{id}", patientsHandler.GetPatientById)
+	getTicketRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketRouter.HandleFunc("/tickets", ticketsHandler.GetAllTickets)
 
-	// changePhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	// changePhoneRouter.HandleFunc("/phone/{id}/{index}", patientsHandler.ChangePhone)
+	getTicketByIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketByIdRouter.HandleFunc("/get-ticket-by-id", ticketsHandler.GetTicketById)
 
-	// pushPhoneRouter := router.Methods(http.MethodPatch).Subrouter()
-	// pushPhoneRouter.HandleFunc("/phone/{id}", patientsHandler.AddPhoneNumber)
+	patchTicketRouter := router.Methods(http.MethodPatch).Subrouter()
+	patchTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.PatchTicket)
+	patchTicketRouter.Use(ticketsHandler.MiddlewareTicketDeserialization)
 
-	// addAnamnesisRouter := router.Methods(http.MethodPatch).Subrouter()
-	// addAnamnesisRouter.HandleFunc("/anamnesis/{id}", patientsHandler.AddAnamnesis)
+	getTicketsByUserIdRouter := router.Methods(http.MethodGet).Subrouter()
+	getTicketsByUserIdRouter.HandleFunc("/get-tickets-by-user-id", ticketsHandler.GetTicketsByUserId)
+	getTicketsByUserIdRouter.Use(usersHandler.MiddlewareAuth)
 
-	// addTherapyRouter := router.Methods(http.MethodPatch).Subrouter()
-	// addTherapyRouter.HandleFunc("/therapy/{id}", patientsHandler.AddTherapy)
-
-	// changeAddressRouter := router.Methods(http.MethodPatch).Subrouter()
-	// changeAddressRouter.HandleFunc("/address/{id}", patientsHandler.ChangeAddress)
-
-	// deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	// deleteRouter.HandleFunc("/{id}", patientsHandler.DeletePatient)
+	deleteTicketRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.DeleteTicket)
 
 	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
