@@ -9,11 +9,12 @@ import { Ticket } from '../ticket';
 export class TicketService {
 
   private apiServerUrl = 'http://localhost:8080';
-  headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json'});
+  private token = localStorage.getItem("token")
+  headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json',Bearer: `${this.token}`});
   constructor(private http: HttpClient) { }
   
     public getAllTickesByUserId(id: string): Observable<Ticket[]> {
-      let tickets = this.http.get<Ticket[]>(this.apiServerUrl + '/get-tickets-by-user-id?id='+id);
+      let tickets = this.http.get<Ticket[]>(this.apiServerUrl + '/get-tickets-by-user-id?id='+id,{headers: this.headers});
       console.log(tickets)
       return tickets;
     }
