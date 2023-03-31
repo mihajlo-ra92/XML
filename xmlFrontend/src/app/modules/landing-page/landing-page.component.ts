@@ -11,6 +11,10 @@ export class LandingPageComponent implements OnInit {
 
   allFlights : Array<Flight> = new Array
   isAdmin = false ;
+  startPlace: string = "";
+  endPlace: string = "";
+  startDate: Date | undefined;
+  endDate : Date | undefined;
 
   constructor(private flightService: FlightService) { }
 
@@ -59,6 +63,39 @@ export class LandingPageComponent implements OnInit {
        console.log(res);
        this.allUsers();
      })
+  }
+
+  search(){
+    if(this.startDate != undefined && this.endDate != undefined){
+
+      var startDateString = this.startDate.toString();
+      var startDateFormated = startDateString + "T00:00:00.123Z";
+
+      var endDateString = this.endDate.toString();
+      var endDateFormated = endDateString +  "T00:00:00.123Z";
+
+       this.flightService.searchFlights(this.startPlace, this.endPlace, startDateFormated, endDateFormated).subscribe(res=>{
+           console.log(res);
+           let resJSON = JSON.parse(res)
+      this.allFlights = resJSON
+      this.allFlights.map((x) => {
+        const myDate = new Date(x.date)
+        console.log(myDate)  
+        x.date = myDate.toLocaleString('en-US',{ timeZone: 'America/New_York' })
+        console.log(x.date)  
+
+      }
+      )
+        })
+        
+      }
+    }
+
+  switchPlaces(){
+    let newStartPlace:string;
+    newStartPlace = this.endPlace;
+    this.endPlace = this.startPlace;
+    this.startPlace = newStartPlace;
   }
 
 }

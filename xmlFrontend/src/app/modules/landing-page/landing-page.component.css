@@ -5,6 +5,11 @@ body{
 /*=========================*/
 /* Team Boxes */
 /*=========================*/
+.search-fields {
+	display: flex;
+	justify-content: space-between;
+	width: 15;
+  }
 button{
 	background-color: #e7e7e7; /* Green */
 	border: none;
