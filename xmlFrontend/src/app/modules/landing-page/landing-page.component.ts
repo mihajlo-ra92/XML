@@ -10,6 +10,8 @@ import { FlightService } from '../service/flight.service';
 export class LandingPageComponent implements OnInit {
   allFlights: Array<Flight> = new Array();
   isAdmin = false;
+  loggedUserRole = localStorage.getItem('loggedUserType')
+  clickBuy = false;
 
   constructor(private flightService: FlightService) {}
 

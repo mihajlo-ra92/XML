@@ -29,4 +29,8 @@ export class FlightService {
     return this.http.post(this.apiServerUrl + '/flight', flight, {headers: this.headers3, responseType: 'text'});
   }
 
+  getById(id: string): Observable<Flight[]>{
+    return this.http.get<Flight[]>(this.apiServerUrl + '/get-flight-by-id?id='+id,{headers: this.headers});
+  }
+
 }

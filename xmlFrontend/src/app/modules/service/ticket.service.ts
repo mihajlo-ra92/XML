@@ -19,8 +19,14 @@ export class TicketService {
       return tickets;
     }
 
-    createTicket(ticket: any): Observable<any> {
-      return this.http.post<any>(this.apiServerUrl + '/ticket', ticket, {headers: this.headers});
+    createTicket(ticket: Ticket): Observable<any> {
+      return this.http.post<Ticket>(this.apiServerUrl + '/ticket', {"date": ticket.date,
+      "endPlace": ticket.endPlace,
+      "startPlace": ticket.startPlace,
+      "capacity": ticket.capacity,
+      "price": ticket.price,
+      "flightId": ticket.flightId,
+      "userId": ticket.userId}, {headers: this.headers});
     }
 
 }

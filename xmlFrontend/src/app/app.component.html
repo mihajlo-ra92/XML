@@ -12,6 +12,9 @@
         <li *ngIf="loggedUserRole === 'admin'" class="nav-item active">
           <a class="nav-link" routerLink="/create-flight">Create flight</a>
        </li>
+       <li *ngIf="loggedUserRole === 'regular'" class="nav-item active">
+        <a class="nav-link" routerLink="/tickets">Tickets</a>
+     
         <li *ngIf="loggedUserJwt === null" class="nav-item active">
           <a class="nav-link" routerLink="/login">Login</a>
        </li>
