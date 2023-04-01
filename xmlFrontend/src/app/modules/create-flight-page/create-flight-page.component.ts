@@ -23,9 +23,11 @@ export class CreateFlightPageComponent implements OnInit {
     this.flight.capacity = Number(this.flight.capacity);
     this.flight.freeSeats = this.flight.capacity;
     this.flight.price = Number(this.flight.price);
-    // console.log(this.flightDate)
+    console.log(this.flightDate);
 
-    const flightDateString = new Date(this.flightDate).toISOString();
+    const flightDateString = new Date(
+      String(this.flightDate) + ':00.000Z'
+    ).toISOString();
     // let flightDateString = new Date(this.flightDate).toISOString()
 
     console.log(flightDateString);
@@ -39,6 +41,6 @@ export class CreateFlightPageComponent implements OnInit {
       // console.log(resJSON)
     });
 
-    window.location.href = '/';
+    // window.location.href = '/';
   }
 }
