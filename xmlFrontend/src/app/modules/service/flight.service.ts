@@ -29,7 +29,9 @@ export class FlightService {
     return this.http.post(this.apiServerUrl + '/flight', flight, {headers: this.headers3, responseType: 'text'});
   }
 
-  searchFlights(startPlace: string, endPlace: String, startDateString: string, endDateString: string):Observable<any> {
+  getById(id: string): Observable<Flight[]>{
+    return this.http.get<Flight[]>(this.apiServerUrl + '/get-flight-by-id?id='+id,{headers: this.headers});
+ searchFlights(startPlace: string, endPlace: String, startDateString: string, endDateString: string):Observable<any> {
     return this.http.get(this.apiServerUrl + '/flight/search?startPlace=' + startPlace + '&endPlace=' + endPlace + '&startDate=' + startDateString + '&endDate=' + endDateString,{headers: this.headers, responseType: 'text'})
   }
 

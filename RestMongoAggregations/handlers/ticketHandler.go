@@ -106,7 +106,7 @@ func (t *TicketsHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) 
 }
 
 func (t *TicketsHandler) GetTicketsByUserId(rw http.ResponseWriter, h *http.Request) {
-	// id := h.URL.Query().Get("id")
+	//id := h.URL.Query().Get("id")
 	t.logger.Println(h.Header.Get("userId"))
 	id := h.Header.Get("userId")
 	tickets, err := t.repo.GetByIUserId(id)

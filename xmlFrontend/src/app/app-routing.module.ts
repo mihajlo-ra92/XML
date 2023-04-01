@@ -5,6 +5,7 @@ import { LandingPageComponent } from './modules/landing-page/landing-page.compon
 import { LoginUserComponent } from './modules/login-user/login-user.component';
 import { UserTicketsComponent } from './modules/user-tickets/user-tickets.component';
 import { RegisterUserComponent } from './modules/register-user/register-user.component';
+import { BuyTicketsComponent } from './modules/buy-tickets/buy-tickets.component';
 
 const routes: Routes = [
   { path: 'create-flight', component: CreateFlightPageComponent},
@@ -13,6 +14,8 @@ const routes: Routes = [
   { path: 'login', component: LoginUserComponent },
   { path: 'register', component: RegisterUserComponent },
   { path: 'tickets', component: UserTicketsComponent },
+  { path: 'tickets/:flightId', component: BuyTicketsComponent },
+  
 ];
 
 @NgModule({
