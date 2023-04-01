@@ -38,10 +38,10 @@ func (u *TicketsHandler) MiddlewareTicketDeserialization(next http.Handler) http
 	})
 }
 
-func (u *TicketsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
-	err := u.repo.DropCollection()
+func (t *TicketsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
+	err := t.repo.DropCollection()
 	if err != nil {
-		u.logger.Print("Database exception: ", err)
+		t.logger.Print("Database exception: ", err)
 	}
 }
 

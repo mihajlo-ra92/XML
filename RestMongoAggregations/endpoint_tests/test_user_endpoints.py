@@ -7,13 +7,14 @@ def pytest_configure():
 
 
 def test_init():
-    req = requests.get("http://localhost:8080/init")
+    req = requests.get("http://localhost:8080/init-user")
     assert req.status_code == 200
 
 
 def test_login():
     req = requests.post(
-        url="http://localhost:8080/login", json={"username": "naz1", "password": "123"}
+        url="http://localhost:8080/login",
+        json={"username": "admin1", "password": "123"},
     )
     pytest.TOKEN = req.json()["Bearer"]
     print(pytest.TOKEN)
@@ -32,10 +33,10 @@ def test_create_user():
     req = requests.post(
         url="http://localhost:8080/user",
         json={
-            "username": "naz2",
+            "username": "test1",
             "password": "123",
             "userType": "regular",
-            "email": "naz2@gmail.com",
+            "email": "test1@gmail.com",
             "firstName": "Fname2",
             "lastName": "Lname2",
             "birthDate": "1609891200",
@@ -45,43 +46,34 @@ def test_create_user():
     )
     assert req.status_code == 201
     resp = requests.get("http://localhost:8080/user", headers={"Bearer": pytest.TOKEN})
-    pytest.first_user_id = resp.json()[0]["id"]
+    pytest.first_user_id = resp.json()[2]["id"]
     assert list(
         map(
             lambda x: {x["username"], x["password"], x["userType"], x["birthDate"]},
             resp.json(),
         )
     ) == [
-        {"naz1", "123", "admin", "2025-01-01T00:00:00Z"},
-        {"naz2", "123", "regular", "2021-01-06T00:00:00Z"},
+        {"admin1", "123", "admin", "2025-01-01T00:00:00Z"},
+        {"us1", "123", "regular", "2025-01-01T00:00:00Z"},
+        {"us2", "123", "regular", "2025-01-01T00:00:00Z"},
+        {"test1", "123", "regular", "2021-01-06T00:00:00Z"},
     ]
 
 
 def test_read_by_username():
-    req = requests.get("http://localhost:8080/user/read-by-username?username=naz1")
+    req = requests.get("http://localhost:8080/user/read-by-username?username=us1")
     assert list(
         map(lambda x: {x["username"], x["password"], x["userType"]}, req.json())
-    ) == [{"naz1", "123", "admin"}]
-
-
-def test_patch_user_invalid():
-    req = requests.patch(
-        "http://localhost:8080/user/" + pytest.first_user_id,
-        json={"username": "naz1_update", "password": "123_update"},
-    )
-    req = requests.get("http://localhost:8080/user/read-by-username?username=naz1")
-    assert list(
-        map(lambda x: {x["username"], x["password"], x["userType"]}, req.json())
-    ) == [{"naz1", "123", "admin"}]
+    ) == [{"us1", "123", "regular"}]
 
 
 def test_patch_user():
     req = requests.patch(
         "http://localhost:8080/user/" + pytest.first_user_id,
         json={
-            "username": "naz1_update",
+            "username": "us2_update",
             "password": "123_update",
-            "userType": "admin",
+            "userType": "regular",
             "email": "naz2@gmail.com",
             "firstName": "Fname2",
             "lastName": "Lname2",
@@ -91,14 +83,16 @@ def test_patch_user():
         },
     )
     req = requests.get(
-        "http://localhost:8080/user/read-by-username?username=naz1_update"
+        "http://localhost:8080/user/read-by-username?username=us2_update"
     )
     assert list(
         map(
             lambda x: {x["username"], x["password"], x["userType"], x["birthDate"]},
             req.json(),
         )
-    ) == [{"naz1_update", "123_update", "admin", "2025-01-01T00:00:00Z"}]
+    ) == [
+        {"us2_update", "123_update", "regular", "2025-01-01T00:00:00Z"},
+    ]
 
 
 def test_delete_user():
@@ -106,4 +100,8 @@ def test_delete_user():
     resp = requests.get("http://localhost:8080/user", headers={"Bearer": pytest.TOKEN})
     assert list(
         map(lambda x: {x["username"], x["password"], x["userType"]}, resp.json())
-    ) == [{"naz2", "123", "regular"}]
+    ) == [
+        {"admin1", "123", "admin"},
+        {"us1", "123", "regular"},
+        {"test1", "123", "regular"},
+    ]

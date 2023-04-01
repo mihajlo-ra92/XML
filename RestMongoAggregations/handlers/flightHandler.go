@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+
 	"github.com/gorilla/mux"
 )
 
@@ -70,11 +71,31 @@ func (f *FlightsHandler) SearchFlights(rw http.ResponseWriter, h *http.Request){
 	}
 }
 
-func (u *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
-	err := u.repo.DropCollection()
+func (f *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
+	err := f.repo.DropCollection()
 	if err != nil {
-		u.logger.Print("Database exception: ", err)
+		f.logger.Print("Database exception: ", err)
 	}
+	flight1 := data.Flight{
+		Date: time.Unix(1735689600,0),
+		EndPlace: "Belgrade",
+		StartPlace: "Subotica",
+		Capacity: 100,
+		Price: 111,
+		FreeSeats: 99,
+	}
+	f.repo.Insert(&flight1)
+
+	flight2 := data.Flight{
+		Date: time.Unix(1735689600,0),
+		EndPlace: "Belgrade",
+		StartPlace: "Novi Sad",
+		Capacity: 90,
+		Price: 112,
+		FreeSeats: 90,
+	}
+	f.repo.Insert(&flight2)
+
 }
 
 func (f *FlightsHandler) PostFlight(rw http.ResponseWriter, h *http.Request) {

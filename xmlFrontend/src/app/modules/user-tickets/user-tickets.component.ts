@@ -15,10 +15,9 @@ export class UserTicketsComponent implements OnInit {
   constructor(private ticketService: TicketService, private router: Router) {}
 
   ngOnInit(): void {
-    let userId = localStorage.getItem("loggedUserId")
-    if(userId != null){
-      this.userId = userId;
-      this.ticketService.getAllTickesByUserId(this.userId).subscribe((res) => {
+    let userId = localStorage.getItem('loggedUserId');
+    if (userId != null) {
+      this.ticketService.getAllTickesByUserId().subscribe((res) => {
         this.tickets = res;
       });
     }

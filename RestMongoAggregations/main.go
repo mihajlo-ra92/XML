@@ -79,7 +79,7 @@ func main() {
 	loginRouter.Use(usersHandler.MiddlewareLoginDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
-	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
+	initRouter.HandleFunc("/init-user", usersHandler.InitTestDb)
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
