@@ -85,6 +85,8 @@ func (f *TicketsHandler) GetAllTickets(rw http.ResponseWriter, h *http.Request) 
 
 func (t *TicketsHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) {
 	id := h.URL.Query().Get("id")
+	t.logger.Println("Sent id: ")
+	t.logger.Println(id)
 
 	ticket, err := t.repo.GetById(id)
 	if err != nil {

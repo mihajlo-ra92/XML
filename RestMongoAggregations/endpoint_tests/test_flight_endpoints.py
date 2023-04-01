@@ -137,3 +137,66 @@ def test_create_flight_two():
         },
      headers={"Bearer":pytest.TOKEN})
     assert req.status_code == 201
+
+def test_create_flights():
+    req = requests.post(url="http://localhost:8080/flight", json = {
+        "date": "2023-12-31T14:00:42.123Z",
+        "endPlace": "Belgrade",
+        "startPlace": "Amsterdam",
+        "capacity": 100,
+        "price": 50,
+        "freeSeats": 100
+    },
+     headers={"Bearer":pytest.TOKEN})
+    assert req.status_code == 201
+
+    req = requests.post(url="http://localhost:8080/flight", json = {
+        "date": "2023-12-31T14:00:42.123Z",
+        "endPlace": "Belgrade",
+        "startPlace": "Maldivi",
+        "capacity": 100,
+        "price": 50,
+        "freeSeats": 100
+    },
+     headers={"Bearer":pytest.TOKEN})
+    assert req.status_code == 201
+
+    req = requests.post(url="http://localhost:8080/flight", json = {
+        "date": "2023-12-30T15:00:42.123Z",
+        "endPlace": "Belgrade",
+        "startPlace": "Maldivi",
+        "capacity": 100,
+        "price": 50,
+        "freeSeats": 100
+    },
+     headers={"Bearer":pytest.TOKEN})
+    assert req.status_code == 201
+
+    req = requests.post(url="http://localhost:8080/flight", json = {
+        "date": "2023-12-30T11:00:42.123Z",
+        "endPlace": "Budapest",
+        "startPlace": "Istanbul",
+        "capacity": 100,
+        "price": 50,
+        "freeSeats": 100
+    },
+     headers={"Bearer":pytest.TOKEN})
+    assert req.status_code == 201
+
+# def test_get_all_flights_two():
+#     req = requests.get(url="http://localhost:8080/flight")
+#     pytest.first_flight_id = req.json()[0]["id"]
+#     # checking everythig but ID
+#     assert list(
+#         map(
+#             lambda x: {
+#                 x["date"],
+#                 x["endPlace"],
+#                 x["startPlace"],
+#                 x["capacity"],
+#                 x["price"],
+#                 x["freeSeats"],
+#             },
+#             req.json(),
+#         )
+#     ) == [{"2023-05-06T12:00:42.123Z", "London", "Budapest", 200, 150, 58}]
