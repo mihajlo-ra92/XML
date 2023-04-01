@@ -5,7 +5,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"fmt"
+	"time"
 	"github.com/gorilla/mux"
 )
 
@@ -34,6 +34,40 @@ func (u *FlightsHandler) MiddlewareFlightDeserialization(next http.Handler) http
 
 		next.ServeHTTP(rw, h)
 	})
+}
+
+func (f *FlightsHandler) SearchFlights(rw http.ResponseWriter, h *http.Request){
+	startPlace := h.URL.Query().Get("startPlace")
+	endPlace := h.URL.Query().Get("endPlace")
+	startDateString := h.URL.Query().Get("startDate")
+	endDateString := h.URL.Query().Get("endDate")
+	
+	layout := "2006-01-02T15:04:05.999Z"
+
+	startDate, err1 := time.Parse(layout, startDateString)
+	endDate, err2 := time.Parse(layout, endDateString)
+
+	if err1 != nil {
+		f.logger.Print("Parsing exception: ", err1)
+	}
+
+	if err2 != nil {
+		f.logger.Print("Parsing exception: ", err2)
+	}
+	
+	flights,err := f.repo.GetByPlaces(startPlace, endPlace, startDate, endDate)
+	if err != nil {
+		f.logger.Print("Database exception: ", err)
+	}
+	if flights == nil{
+		return
+	}
+	err = flights.ToJSON(rw)
+	if err != nil{
+		http.Error(rw, "Unable to convert to json", http.StatusInternalServerError)
+		f.logger.Fatal("Unable to convert to json: ", err)
+		return
+	}
 }
 
 func (u *FlightsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
@@ -108,7 +142,6 @@ func (u *FlightsHandler) PatchFlight(rw http.ResponseWriter, h *http.Request) {
 func (f *FlightsHandler) DeleteFlight(rw http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	id := vars["id"]
-	fmt.Println("obrisali")
 
 	f.repo.Delete(id)
 	rw.WriteHeader(http.StatusNoContent)

@@ -1,7 +1,21 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
 <div style="background-color: #9A616D;">
 <div class="container">
     <div class="row" >
+        <div class="search-fields" style="position: absolute; left: 0;">
+            <input type="text" placeholder="Start place"  [(ngModel)]="startPlace" />
+            <button class="btn btn-dark btn-lg btn-block" (click)="switchPlaces()"><i class="fas fa-sync-alt"></i> </button>
+            <input type="text" placeholder="End place" [(ngModel)]="endPlace" />  
+            <label>From date:</label>
+            <input type="date" #dateTimeInput class="form-control form-control-lg" value="0001-01-01T08:30:00" placeholder="Start date" [(ngModel)]="this.startDate" />
+            <label>To date:</label>
+            <input type="date" #dateTimeInput class="form-control form-control-lg" value="0001-01-01T08:30:00" placeholder="End date " [(ngModel)]="this.endDate" />
+
+            <button class="btn btn-dark btn-lg btn-block" (click)="search()"><i class="fas fa-search"></i> Search</button>
+        </div>
         <div class="col-md-4 col-sm-4 col-xs-12"  style="margin-top: 100px;">
             <div class="team-boxes" *ngFor="let flight of allFlights">
                 <div class="team-thumb overlay-image view-overlay">
