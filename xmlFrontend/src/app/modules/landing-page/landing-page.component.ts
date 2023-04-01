@@ -12,6 +12,10 @@ export class LandingPageComponent implements OnInit {
   isAdmin = false;
   loggedUserRole = localStorage.getItem('loggedUserType')
   clickBuy = false;
+  startPlace: string = '';
+  endPlace: string = '';
+  startDate: Date | undefined;
+  endDate: Date | undefined;
 
   constructor(private flightService: FlightService) {}
 
@@ -40,15 +44,15 @@ export class LandingPageComponent implements OnInit {
     this.flightService.getAllFlights().subscribe((res) => {
       let resJSON = JSON.parse(res);
       this.allFlights = resJSON;
-      this.allFlights.map((x) => {
-        const myDate = new Date(x.date);
-        // myDate.setHours(myDate.getHours() + 2)
-        console.log(myDate);
-        x.date = myDate.toLocaleString('en-US', {
-          timeZone: 'America/New_York',
-        });
-        console.log(x.date);
-      });
+      // this.allFlights.map((x) => {
+      //   const myDate = new Date(x.date);
+      //   // myDate.setHours(myDate.getHours() + 2)
+      //   console.log(myDate);
+      //   x.date = myDate.toLocaleString('en-US', {
+      //     timeZone: 'America/New_York',
+      //   });
+      //   console.log(x.date);
+      // });
       console.log(this.allFlights);
     });
   }
@@ -60,5 +64,48 @@ export class LandingPageComponent implements OnInit {
       this.allUsers();
       window.location.href = '/';
     });
+  }
+
+  search() {
+    if (this.startDate != undefined && this.endDate != undefined) {
+      var startDateString = this.startDate.toString();
+      var startDateFormated = startDateString + 'T00:00:00.123Z';
+
+      var endDateString = this.endDate.toString();
+      var endDateFormated = endDateString + 'T00:00:00.123Z';
+
+      this.flightService
+        .searchFlights(
+          this.startPlace,
+          this.endPlace,
+          startDateFormated,
+          endDateFormated
+        )
+        .subscribe((res) => {
+          console.log(res);
+          if (res !== null) {
+            let resJSON = JSON.parse(res);
+            // let resJSON = res;
+            this.allFlights = resJSON;
+            this.allFlights.map((x) => {
+              const myDate = new Date(x.date);
+              console.log(myDate);
+              x.date = myDate.toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+              });
+              console.log(x.date);
+            });
+          } else {
+            console.log('res je null');
+          }
+        });
+    }
+  }
+
+  switchPlaces() {
+    let newStartPlace: string;
+    newStartPlace = this.endPlace;
+    this.endPlace = this.startPlace;
+    this.startPlace = newStartPlace;
   }
 }

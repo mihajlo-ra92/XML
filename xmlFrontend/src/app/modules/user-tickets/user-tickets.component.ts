@@ -11,7 +11,6 @@ import { Ticket } from '../ticket';
 export class UserTicketsComponent implements OnInit {
   public displayedColumns = ['number', 'floor'];
   public tickets: Ticket[] = [];
-  public userId: string = '';
 
   constructor(private ticketService: TicketService, private router: Router) {}
 

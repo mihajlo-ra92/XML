@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 import { Ticket } from '../ticket';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TicketService {
-
   private apiServerUrl = 'http://localhost:8080';
   private token = localStorage.getItem("token")
   headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json',Bearer: `${this.token}`});
@@ -28,5 +27,4 @@ export class TicketService {
       "flightId": ticket.flightId,
       "userId": ticket.userId}, {headers: this.headers});
     }
-
 }

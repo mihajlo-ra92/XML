@@ -127,6 +127,26 @@ func (fr *FlightRepo) GetAll() (Flights, error) {
 	return flights, nil
 }
 
+func (fr *FlightRepo) GetByPlaces(startPlace string, endPlace string, startDate time.Time, endDate time.Time )(Flights, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	flightsCollection := fr.getCollection()
+	var flights Flights
+	
+	flightsCursor, err := flightsCollection.Find(ctx, bson.M{"startPlace": startPlace,"endPlace": endPlace,"date": bson.M{"$gt": startDate, "$lt": endDate}})
+
+	if err != nil {
+		fr.logger.Println(err)
+		return nil, err
+	}
+	if err = flightsCursor.All(ctx, &flights); err != nil {
+		fr.logger.Println(err)
+		return nil, err
+	}
+	return flights, nil
+}
+
 func (fr *FlightRepo) GetFlightById(id string) (Flights, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
