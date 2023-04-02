@@ -89,20 +89,27 @@ export class LandingPageComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           if (res !== null) {
+            try{
             let resJSON = JSON.parse(res);
             // let resJSON = res;
             this.allFlights = resJSON;
-            this.allFlights.map((x) => {
-              const myDate = new Date(x.date);
-              console.log(myDate);
-              x.date = myDate.toLocaleString('en-US', {
-                timeZone: 'America/New_York',
-              });
-              console.log(x.date);
-            });
+            // this.allFlights.map((x) => {
+            //   const myDate = new Date(x.date);
+            //   console.log(myDate);
+            //   x.date = myDate.toLocaleString('en-US', {
+            //     timeZone: 'America/New_York',
+            //   });
+            //   console.log(x.date);
+            // });
+            }
+            catch{
+              alert("No flights")
+            }
           } else {
             console.log('res je null');
+
           }
+          
         });
     }
   }

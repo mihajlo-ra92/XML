@@ -57,7 +57,9 @@
                                 <br>
                                 <i>Price : {{flight.price}}e<br>
                                     Capacity : {{flight.capacity}}<br>
-                                    Available seats : {{flight.freeSeats}}</i>
+                                    Available seats : {{flight.freeSeats}}<br>
+                                    Total price for all passengers : {{ flight.price * (flight.capacity - flight.freeSeats)}}<br>
+                                </i>
                             </p>
                         </div>
                     </div>
@@ -66,11 +68,11 @@
                     <h2>From : {{flight.startPlace}}</h2>
                     <h2>To : {{flight.endPlace}}</h2>
                     <p>
-                        Date : {{flight.date.toString().split(",")[0]}}
+                        Date : {{flight.date.toString().split("T")[0]}}
                     </p>
                     <p>
-                        Time : {{flight.date.toString().split(",")[1].split(".")[0].split(":")[0] +
-                        ":" + flight.date.toString().split(",")[1].split(".")[0].split(":")[1]}}
+                        Time : {{flight.date.toString().split("T")[1].split(".")[0].split(":")[0] +
+                        ":" + flight.date.toString().split("T")[1].split(".")[0].split(":")[1]}}
                     </p>
                 </div>
                 <div style="background-color: #9A616D;" class="separator">
@@ -79,6 +81,9 @@
                 <div class="pt-1 mb-4">
                     <button class="btn btn-dark btn-lg btn-block" *ngIf="isAdmin" (click)="deleteFlight(flight)">Delete flight</button>
                 </div>
+                <button class="btn btn-dark btn-lg btn-block" *ngIf="loggedUserRole === 'regular'" [routerLink]="'/tickets/'+ flight.id">
+                    Buy tickets
+                </button>
             </div>
         </div>
         
