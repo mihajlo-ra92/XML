@@ -14,6 +14,7 @@ export class LandingPageComponent implements OnInit {
   endPlace: string = "";
   startDate: Date | undefined;
   endDate : Date | undefined;
+  quantity: number = 0;
 
   constructor(private flightService: FlightService) { }
 
@@ -67,14 +68,14 @@ export class LandingPageComponent implements OnInit {
 
   search(){
     if(this.startDate != undefined && this.endDate != undefined){
-
+      
       var startDateString = this.startDate.toString();
       var startDateFormated = startDateString + "T00:00:00.123Z";
 
       var endDateString = this.endDate.toString();
       var endDateFormated = endDateString +  "T00:00:00.123Z";
 
-       this.flightService.searchFlights(this.startPlace, this.endPlace, startDateFormated, endDateFormated).subscribe(res=>{
+       this.flightService.searchFlights(this.startPlace, this.endPlace, startDateFormated, endDateFormated, this.quantity.toString()).subscribe(res=>{
            console.log(res);
            if(res !== null){
              let resJSON = JSON.parse(res)

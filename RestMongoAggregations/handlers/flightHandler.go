@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"strconv"
 	"github.com/gorilla/mux"
 )
 
@@ -41,11 +42,20 @@ func (f *FlightsHandler) SearchFlights(rw http.ResponseWriter, h *http.Request){
 	endPlace := h.URL.Query().Get("endPlace")
 	startDateString := h.URL.Query().Get("startDate")
 	endDateString := h.URL.Query().Get("endDate")
+	quantityString := h.URL.Query().Get("quantity")
+	
 	
 	layout := "2006-01-02T15:04:05.999Z"
-
+	
 	startDate, err1 := time.Parse(layout, startDateString)
 	endDate, err2 := time.Parse(layout, endDateString)
+	
+	quantity, errNum := strconv.ParseInt(quantityString,10,0)
+	
+
+	if errNum != nil{
+		f.logger.Print("Parsing exception: ", err1)
+	} 
 
 	if err1 != nil {
 		f.logger.Print("Parsing exception: ", err1)
@@ -55,7 +65,7 @@ func (f *FlightsHandler) SearchFlights(rw http.ResponseWriter, h *http.Request){
 		f.logger.Print("Parsing exception: ", err2)
 	}
 	
-	flights,err := f.repo.GetByPlaces(startPlace, endPlace, startDate, endDate)
+	flights,err := f.repo.GetByPlaces(startPlace, endPlace, startDate, endDate, int(quantity))
 	if err != nil {
 		f.logger.Print("Database exception: ", err)
 	}

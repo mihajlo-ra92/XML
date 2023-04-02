@@ -13,8 +13,10 @@
             <input type="date" #dateTimeInput class="form-control form-control-lg" value="0001-01-01T08:30:00" placeholder="Start date" [(ngModel)]="this.startDate" />
             <label>To date:</label>
             <input type="date" #dateTimeInput class="form-control form-control-lg" value="0001-01-01T08:30:00" placeholder="End date " [(ngModel)]="this.endDate" />
-
+            <label>Number of passengers:</label>
+            <input type="number" [(ngModel)]="this.quantity" min="0" max="200">
             <button class="btn btn-dark btn-lg btn-block" (click)="search()"><i class="fas fa-search"></i> Search</button>
+            <button class="btn btn-dark btn-lg btn-block" (click)="allUsers()"><i class="fas fa-search"></i> Review all flights</button>
         </div>
         <div class="col-md-4 col-sm-4 col-xs-12"  style="margin-top: 100px;">
             <div class="team-boxes" *ngFor="let flight of allFlights">
