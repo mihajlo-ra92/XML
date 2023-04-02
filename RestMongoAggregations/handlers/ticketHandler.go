@@ -38,10 +38,10 @@ func (u *TicketsHandler) MiddlewareTicketDeserialization(next http.Handler) http
 	})
 }
 
-func (u *TicketsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
-	err := u.repo.DropCollection()
+func (t *TicketsHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
+	err := t.repo.DropCollection()
 	if err != nil {
-		u.logger.Print("Database exception: ", err)
+		t.logger.Print("Database exception: ", err)
 	}
 }
 
@@ -85,6 +85,8 @@ func (f *TicketsHandler) GetAllTickets(rw http.ResponseWriter, h *http.Request) 
 
 func (t *TicketsHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) {
 	id := h.URL.Query().Get("id")
+	t.logger.Println("Sent id: ")
+	t.logger.Println(id)
 
 	ticket, err := t.repo.GetById(id)
 	if err != nil {
@@ -104,7 +106,7 @@ func (t *TicketsHandler) GetTicketById(rw http.ResponseWriter, h *http.Request) 
 }
 
 func (t *TicketsHandler) GetTicketsByUserId(rw http.ResponseWriter, h *http.Request) {
-	// id := h.URL.Query().Get("id")
+	//id := h.URL.Query().Get("id")
 	t.logger.Println(h.Header.Get("userId"))
 	id := h.Header.Get("userId")
 	tickets, err := t.repo.GetByIUserId(id)

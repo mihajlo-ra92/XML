@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FlightService } from './modules/service/flight.service';
 import { FormsModule } from '@angular/forms';
 import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
+import { BuyTicketsComponent } from './modules/buy-tickets/buy-tickets.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { CreateFlightPageComponent } from './modules/create-flight-page/create-f
     RegisterUserComponent,
     CreateFlightPageComponent,
     UserTicketsComponent,
+    BuyTicketsComponent,
   ],
   imports: [
     BrowserModule,

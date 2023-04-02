@@ -65,18 +65,44 @@ func (u *UsersHandler) InitTestDb(rw http.ResponseWriter, h *http.Request) {
 	if err != nil {
 		u.logger.Print("Database exception: ", err)
 	}
-	user := data.User{
+	userAdmin := data.User{
 
-		Username:  "naz1",
+		Username:  "admin1",
 		Password:  "123",
 		UserType:  "admin",
-		Email:     "naz1@gmail.com",
+		Email:     "admin@gmail.com",
 		FirstName: "Fnaz",
 		LastName:  "Lnaz",
 		Gender:    "MALE",
 		BirthDate: time.Unix(1735689600,0),
 	}
-	u.repo.Insert(&user)
+	u.repo.Insert(&userAdmin)
+
+	userRegular1 := data.User{
+
+		Username:  "us1",
+		Password:  "123",
+		UserType:  "regular",
+		Email:     "us1@gmail.com",
+		FirstName: "Fnaz",
+		LastName:  "Lnaz",
+		Gender:    "MALE",
+		BirthDate: time.Unix(1735689600,0),
+	}
+	u.repo.Insert(&userRegular1)
+
+	userRegular2 := data.User{
+
+		Username:  "us2",
+		Password:  "123",
+		UserType:  "regular",
+		Email:     "us2@gmail.com",
+		FirstName: "Fnaz",
+		LastName:  "Lnaz",
+		Gender:    "MALE",
+		BirthDate: time.Unix(1735689600,0),
+	}
+	u.repo.Insert(&userRegular2)
 }
 
 // func (p *PatientsHandler) GetPatientById(rw http.ResponseWriter, h *http.Request) {

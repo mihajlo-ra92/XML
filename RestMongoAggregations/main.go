@@ -60,9 +60,13 @@ func main() {
 	usersHandler := handlers.NewUsersHandler(logger, store)
 	flightsHandler := handlers.NewFlightsHandler(logger, flightStore)
 	ticketsHandler := handlers.NewTicketsHandler(logger, ticketStore, flightStore)
+	cors := gorillaHandlers.CORS(
+		gorillaHandlers.AllowedHeaders([]string{"Bearer", "Content-Type"}),
+		gorillaHandlers.AllowedOrigins([]string{"*"}))
 
 	//Initialize the router and add a middleware for all the requests
 	router := mux.NewRouter()
+	router.Use(cors)
 	router.Use(usersHandler.MiddlewareContentTypeSet)
 
 	//NOTE: User routers
@@ -75,7 +79,7 @@ func main() {
 	loginRouter.Use(usersHandler.MiddlewareLoginDeserialization)
 
 	initRouter := router.Methods(http.MethodGet).Subrouter()
-	initRouter.HandleFunc("/init", usersHandler.InitTestDb)
+	initRouter.HandleFunc("/init-user", usersHandler.InitTestDb)
 
 	initFlightRouter := router.Methods(http.MethodGet).Subrouter()
 	initFlightRouter.HandleFunc("/init-flight", flightsHandler.InitTestDb)
@@ -143,7 +147,7 @@ func main() {
 	deleteTicketRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteTicketRouter.HandleFunc("/ticket/{id}", ticketsHandler.DeleteTicket)
 
-	cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
+	//cors := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"*"}))
 
 	//Initialize the server
 	server := http.Server{
