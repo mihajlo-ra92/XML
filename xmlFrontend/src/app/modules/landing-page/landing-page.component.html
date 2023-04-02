@@ -91,17 +91,18 @@
               UTC
             </p>
           </div>
-          <div class="pt-1 mb-4">
-                        <button class="btn btn-dark btn-lg btn-block" *ngIf="loggedUserRole === 'regular'" [routerLink]="'/tickets/'+ flight.id">Buy tickets</button>
-                    </div>
+          <!-- <div class="pt-1 mb-4">
+                        <button class="btn btn-dark btn-lg btn-block" *ngIf="loggedUserRole === 'regular'" [routerLink]="'/tickets/'+ flight.id">
+                          Buy tickets
+                        </button>
+                    </div> -->
           <div style="background-color: #9a616d" class="separator"></div>
           <div class="pt-1 mb-4">
-            <button
-              class="btn btn-dark btn-lg btn-block"
-              *ngIf="isAdmin"
-              (click)="deleteFlight(flight)"
-            >
+            <button class="btn btn-dark btn-lg btn-block" *ngIf="isAdmin" (click)="deleteFlight(flight)">
               Delete flight
+            </button>
+            <button class="btn btn-dark btn-lg btn-block" *ngIf="loggedUserRole === 'regular'" [routerLink]="'/tickets/'+ flight.id">
+              Buy tickets
             </button>
           </div>
         </div>
