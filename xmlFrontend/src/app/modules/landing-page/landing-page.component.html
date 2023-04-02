@@ -61,7 +61,9 @@
                   <i
                     >Price : {{ flight.price }}e<br />
                     Capacity : {{ flight.capacity }}<br />
-                    Available seats : {{ flight.freeSeats }}</i
+                    Available seats : {{ flight.freeSeats }}<br />
+                    Total price for all passengers : {{ flight.price * (flight.capacity - flight.freeSeats) }}<br />
+                    </i
                   >
                 </p>
               </div>
