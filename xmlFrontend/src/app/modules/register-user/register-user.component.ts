@@ -25,7 +25,7 @@ export class RegisterUserComponent implements OnInit {
       console.log(res);
       this.router.navigateByUrl('/');
 
-      alert("Successfully logged in")
+      alert("Successfully registered")
 
     });
   }
