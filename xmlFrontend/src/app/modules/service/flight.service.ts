@@ -42,17 +42,21 @@ export class FlightService {
     });
   }
 
+
+ 
   getById(id: string): Observable<Flight[]> {
     return this.http.get<Flight[]>(
       this.apiServerUrl + '/get-flight-by-id?id=' + id,
       { headers: this.headers }
     );
   }
+
   searchFlights(
     startPlace: string,
     endPlace: String,
     startDateString: string,
-    endDateString: string
+    endDateString: string,
+    quantity : string
   ): Observable<any> {
     return this.http.get(
       this.apiServerUrl +
@@ -63,7 +67,9 @@ export class FlightService {
         '&startDate=' +
         startDateString +
         '&endDate=' +
-        endDateString,
+        endDateString +
+        '&quantity=' +
+         quantity,
       { headers: this.headers, responseType: 'text' }
     );
   }
