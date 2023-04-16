@@ -10,3 +10,13 @@ services:
     hostname: "api-gateway"
     ports:
       - 8010:8010
+
+  grpc-server:
+    build:
+      context: ./grpc-server
+      dockerfile: Dockerfile
+    restart: always
+    container_name: "grpc-server"
+    hostname: "grpc-server"
+    ports:
+      - 8011:8010
