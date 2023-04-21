@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/mihajlo-ra92/XML/user_service/domain"
-
 	pb "github.com/mihajlo-ra92/XML/common/proto/user_service"
+	"github.com/mihajlo-ra92/XML/user_service/domain"
+	// pb "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
 
 func mapUser(user *domain.User) *pb.User {

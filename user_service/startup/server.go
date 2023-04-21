@@ -5,12 +5,12 @@ import (
 	"log"
 
 	"github.com/mihajlo-ra92/XML/user_service/domain"
-	"github.com/mihajlo-ra92/XML/user_service/persistence"
+	"github.com/mihajlo-ra92/XML/user_service/infrastructure/persistence"
 
 	"github.com/mihajlo-ra92/XML/user_service/application"
-	"github.com/mihajlo-ra92/XML/user_service/config"
+	"github.com/mihajlo-ra92/XML/user_service/startup/config"
 
-	"github.com/mihajlo-ra92/XML/user_service/api"
+	"github.com/mihajlo-ra92/XML/user_service/infrastructure/api"
 
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 
