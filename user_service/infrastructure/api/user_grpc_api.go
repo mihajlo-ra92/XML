@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/user_service/application"
 
@@ -39,6 +40,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 }
 
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
+	fmt.Println("In GetAll grpc api")
 	users, err := handler.service.GetAll()
 	if err != nil {
 		return nil, err

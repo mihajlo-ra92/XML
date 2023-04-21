@@ -29,10 +29,6 @@ func NewServer(config *config.Config) *Server {
 	}
 }
 
-// const (
-// 	QueueGroup = "user_service"
-// )
-
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
@@ -80,6 +76,7 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler){
 	}
 	grpcServer := grpc.NewServer()
 	user.RegisterUserServiceServer(grpcServer, userHandler)
+	fmt.Println("Serving...")
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}

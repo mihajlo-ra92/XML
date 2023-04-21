@@ -12,6 +12,8 @@ type Config struct {
 	ShippingPort  string
 	InventoryHost string
 	InventoryPort string
+	UserHost		string
+	UserPort		string
 }
 
 func NewConfig() *Config {
@@ -25,5 +27,7 @@ func NewConfig() *Config {
 		ShippingPort:  os.Getenv("SHIPPING_SERVICE_PORT"),
 		InventoryHost: os.Getenv("INVENTORY_SERVICE_HOST"),
 		InventoryPort: os.Getenv("INVENTORY_SERVICE_PORT"),
+		UserHost: 		os.Getenv("USER_SERVICE_HOST"),
+		UserPort: 		os.Getenv("USER_SERVICE_PORT"),
 	}
 }

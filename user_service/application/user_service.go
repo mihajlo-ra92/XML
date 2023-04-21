@@ -16,7 +16,7 @@ func NewUserService(store domain.UserStore) *UserService {
 	}
 }
 
-func (service *UserService) Get(id primitive.ObjectID){
+func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error){
 	return service.store.Get(id)
 }
 
@@ -24,7 +24,7 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 	return service.store.GetAll()
 }
 
-func (service *UserService) Create(user *domain.User){
+func (service *UserService) Create(user *domain.User) error{
 	// user.UserType = domain.Guest
 	return service.store.Insert(user)
 }

@@ -31,6 +31,11 @@ func (store *UserMongoDBStore) Get (id primitive.ObjectID) (*domain.User, error)
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetAll() ([]*domain.User, error){
+	filter := bson.D{{}}
+	return store.filter(filter)
+}
+
 func (store *UserMongoDBStore) Insert(User *domain.User) error {
 	result, err := store.users.InsertOne(context.TODO(), User)
 	if err != nil {
@@ -64,13 +69,13 @@ func (store *UserMongoDBStore) filterOne(filter interface{}) (User *domain.User,
 
 func decode(cursor *mongo.Cursor) (users []*domain.User, err error){
 	for cursor.Next(context.TODO()){
-		var User domain.User
-		err = cursor.Decode(&User)
+		var user domain.User
+		err = cursor.Decode(&user)
 		if err != nil {
 			return
 		}
-		users = append(users, &User)
+		users = append(users, &user)
 	}
-		users = cursor.Err()
-		return
+	err = cursor.Err()
+	return
 }

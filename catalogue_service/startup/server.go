@@ -26,12 +26,14 @@ func NewServer(config *config.Config) *Server {
 }
 
 func (server *Server) Start() {
+	fmt.Println("Server starting")
 	mongoClient := server.initMongoClient()
 	productStore := server.initProductStore(mongoClient)
 
 	productService := server.initProductService(productStore)
 
 	productHandler := server.initProductHandler(productService)
+	fmt.Println("Server init finished")
 
 	server.startGrpcServer(productHandler)
 }
@@ -71,7 +73,9 @@ func (server *Server) startGrpcServer(productHandler *api.ProductHandler) {
 	}
 	grpcServer := grpc.NewServer()
 	catalogue.RegisterCatalogueServiceServer(grpcServer, productHandler)
+	fmt.Println("Serving...")
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
+	fmt.Println("Finished serving")
 }

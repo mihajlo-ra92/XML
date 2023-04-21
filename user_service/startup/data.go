@@ -8,7 +8,7 @@ import (
 var users = []*domain.User{
 	{
 		Id:				getObjectId("test1_id"),
-		UserType: 		domain.UserType,
+		UserType: 		domain.Guest,
 		Username:		"test1",
 		Password:		"123",
 		Email:			"test1@gmail.com",
@@ -21,5 +21,5 @@ func getObjectId(id string) primitive.ObjectID {
 	if objectId, err := primitive.ObjectIDFromHex(id); err == nil {
 		return objectId
 	}
-	return primitive.NewObjectID
+	return primitive.NewObjectID()
 }

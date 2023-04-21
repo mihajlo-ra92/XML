@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/catalogue_service/application"
 	pb "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
@@ -37,6 +38,7 @@ func (handler *ProductHandler) Get(ctx context.Context, request *pb.GetRequest) 
 }
 
 func (handler *ProductHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
+	fmt.Println("In getAll grpc api")
 	products, err := handler.service.GetAll()
 	if err != nil {
 		return nil, err

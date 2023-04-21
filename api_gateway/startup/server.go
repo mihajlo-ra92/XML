@@ -13,6 +13,7 @@ import (
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
 	shippingGw "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
+	userGw "github.com/mihajlo-ra92/XML/common/proto/user_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -35,6 +36,8 @@ func NewServer(config *cfg.Config) *Server {
 func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	catalogueEmdpoint := fmt.Sprintf("%s:%s", server.config.CatalogueHost, server.config.CataloguePort)
+	fmt.Print("catalogueEmdpoint: ")
+	fmt.Println(catalogueEmdpoint)
 	err := catalogueGw.RegisterCatalogueServiceHandlerFromEndpoint(context.TODO(), server.mux, catalogueEmdpoint, opts)
 	if err != nil {
 		panic(err)
@@ -49,11 +52,21 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
-	inventoryEmdpoint := fmt.Sprintf("%s:%s", server.config.InventoryHost, server.config.InventoryPort)
-	err = inventoryGw.RegisterInventoryServiceHandlerFromEndpoint(context.TODO(), server.mux, inventoryEmdpoint, opts)
+	inventoryEndpoint := fmt.Sprintf("%s:%s", server.config.InventoryHost, server.config.InventoryPort)
+	err = inventoryGw.RegisterInventoryServiceHandlerFromEndpoint(context.TODO(), server.mux, inventoryEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+	
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	fmt.Print("userEndpoint: ")
+	fmt.Println(userEndpoint)
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Handlers initalized")
+
 }
 
 func (server *Server) initCustomHandlers() {
