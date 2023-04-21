@@ -1,9 +1,8 @@
 package main
 
 import (
-	cfg "github.com/mihajlo-ra92/XML/user_service/startup/config"
-
 	"github.com/mihajlo-ra92/XML/user_service/startup"
+	cfg "github.com/mihajlo-ra92/XML/user_service/startup/config"
 )
 
 func main(){

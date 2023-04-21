@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 	"github.com/mihajlo-ra92/XML/user_service/domain"
 	"github.com/mihajlo-ra92/XML/user_service/infrastructure/persistence"
 
@@ -11,8 +12,6 @@ import (
 	"github.com/mihajlo-ra92/XML/user_service/startup/config"
 
 	"github.com/mihajlo-ra92/XML/user_service/infrastructure/api"
-
-	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 
 	"net"
 
@@ -30,9 +29,9 @@ func NewServer(config *config.Config) *Server {
 	}
 }
 
-const (
-	QueueGroup = "user_service"
-)
+// const (
+// 	QueueGroup = "user_service"
+// )
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
@@ -68,7 +67,7 @@ func (server *Server) initUserService(store domain.UserStore) *application.UserS
 	return application.NewUserService(store)
 }
 
-func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscribe
+// func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscribe
 
 func (server *Server) initUserHandler(service *application.UserService) *api.UserHandler{
 	return api.NewUserHandler(service)

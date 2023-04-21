@@ -16,9 +16,9 @@ type Config struct {
 
 func NewConfig() *Config{
 	return &Config{
-		Port:                      os.Getenv("INVENTORY_SERVICE_PORT"),
-		UserDBHost:           os.Getenv("INVENTORY_DB_HOST"),
-		UserDBPort:           os.Getenv("INVENTORY_DB_PORT"),
+		Port:                      os.Getenv("USER_SERVICE_PORT"),
+		UserDBHost:           os.Getenv("USER_DB_HOST"),
+		UserDBPort:           os.Getenv("USER_DB_PORT"),
 		// NatsHost:                  os.Getenv("NATS_HOST"),
 		// NatsPort:                  os.Getenv("NATS_PORT"),
 		// NatsUser:                  os.Getenv("NATS_USER"),
