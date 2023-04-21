@@ -1,4 +1,4 @@
-module mihajlo-ra92/microservices_demo/user_service
+module github.com/mihajlo-ra92/XML/user_service
 
 go 1.17
 

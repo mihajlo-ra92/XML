@@ -6,10 +6,10 @@ type Config struct {
 	Port		string
 	UserDBHost	string
 	UserDBPort	string
-	NatsHost	string
-	NatsPort	string
-	NatsUser	string
-	NatsPass	string
+	// NatsHost	string
+	// NatsPort	string
+	// NatsUser	string
+	// NatsPass	string
 	// CreateUserCommandSubject string
 	// CreateUserReplySubject   string
 }

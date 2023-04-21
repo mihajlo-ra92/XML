@@ -3,13 +3,16 @@ package startup
 import (
 	"fmt"
 	"log"
-	"mihajlo-ra92/microservices_demo/user_service/api"
-	"mihajlo-ra92/microservices_demo/user_service/application"
-	"mihajlo-ra92/microservices_demo/user_service/config"
-	"mihajlo-ra92/microservices_demo/user_service/domain"
-	"mihajlo-ra92/microservices_demo/user_service/persistence"
 
-	user "mihajlo-ra92/microservices_demo/common/proto/user_service"
+	"github.com/mihajlo-ra92/XML/user_service/domain"
+	"github.com/mihajlo-ra92/XML/user_service/persistence"
+
+	"github.com/mihajlo-ra92/XML/user_service/application"
+	"github.com/mihajlo-ra92/XML/user_service/config"
+
+	"github.com/mihajlo-ra92/XML/user_service/api"
+
+	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 
 	"net"
 

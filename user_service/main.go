@@ -1,8 +1,9 @@
 package main
 
 import (
-	"mihajlo-ra92/microservices_demo/user_service/startup"
-	cfg "mihajlo-ra92/microservices_demo/user_service/startup/config"
+	cfg "github.com/mihajlo-ra92/XML/user_service/startup/config"
+
+	"github.com/mihajlo-ra92/XML/user_service/startup"
 )
 
 func main(){
