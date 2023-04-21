@@ -1,4 +1,4 @@
-module mihajlo-ra92/microservices_demo/common
+module github.com/mihajlo-ra92/XML/common
 
 go 1.17
 
