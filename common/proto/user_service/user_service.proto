@@ -47,4 +47,5 @@ message User {
     string email = 5;
     string FirstName = 6;
     string LastName = 7;
+    string Address = 8;
 }

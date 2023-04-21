@@ -23,6 +23,7 @@ func mapUser(user *domain.User) *pb.User {
 		Email: 		user.Email,
 		FirstName:	user.FirstName,
 		LastName:	user.LastName,
+		Address:	user.Address,
 	}
 	return userPb
 }

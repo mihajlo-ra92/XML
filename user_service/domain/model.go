@@ -31,4 +31,5 @@ type User struct {
 	Email		string		`bson:"email"`
 	FirstName	string		`bson:"first_name"`
 	LastName	string		`bson:"last_name"`
+	Address		string		`bson:"address"`
 }
