@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/tamararankovic/microservices_demo/common/shipping";
+option go_package = "github.com/mihajlo-ra92/XML/common/shipping";
 
 package shipping;
 

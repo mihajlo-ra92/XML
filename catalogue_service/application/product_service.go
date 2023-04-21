@@ -1,7 +1,7 @@
 package application
 
 import (
-	"github.com/tamararankovic/microservices_demo/catalogue_service/domain"
+	"github.com/mihajlo-ra92/XML/catalogue_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

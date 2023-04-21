@@ -3,13 +3,14 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/tamararankovic/microservices_demo/api_gateway/domain"
-	"github.com/tamararankovic/microservices_demo/api_gateway/infrastructure/services"
-	catalogue "github.com/tamararankovic/microservices_demo/common/proto/catalogue_service"
-	ordering "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	shipping "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
 	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/mihajlo-ra92/XML/api_gateway/domain"
+	"github.com/mihajlo-ra92/XML/api_gateway/infrastructure/services"
+	catalogue "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
+	ordering "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	shipping "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
 )
 
 type OrderingHandler struct {

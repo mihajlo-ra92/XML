@@ -3,17 +3,18 @@ package startup
 import (
 	"context"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/tamararankovic/microservices_demo/api_gateway/infrastructure/api"
-	cfg "github.com/tamararankovic/microservices_demo/api_gateway/startup/config"
-	catalogueGw "github.com/tamararankovic/microservices_demo/common/proto/catalogue_service"
-	inventoryGw "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
-	orderingGw "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	shippingGw "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/mihajlo-ra92/XML/api_gateway/infrastructure/api"
+	cfg "github.com/mihajlo-ra92/XML/api_gateway/startup/config"
+	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
+	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
+	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	shippingGw "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Server struct {

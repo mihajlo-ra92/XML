@@ -1,7 +1,7 @@
 package startup
 
 import (
-	"mihajlo-ra92/microservices_demo/user_service/domain"
+	"github.com/mihajlo-ra92/XML/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

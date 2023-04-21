@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/tamararankovic/microservices_demo/shipping_service/startup"
-	cfg "github.com/tamararankovic/microservices_demo/shipping_service/startup/config"
+	"github.com/mihajlo-ra92/XML/shipping_service/startup"
+	cfg "github.com/mihajlo-ra92/XML/shipping_service/startup/config"
 )
 
 func main() {

@@ -2,18 +2,19 @@ package startup
 
 import (
 	"fmt"
-	ordering "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	saga "github.com/tamararankovic/microservices_demo/common/saga/messaging"
-	"github.com/tamararankovic/microservices_demo/common/saga/messaging/nats"
-	"github.com/tamararankovic/microservices_demo/ordering_service/application"
-	"github.com/tamararankovic/microservices_demo/ordering_service/domain"
-	"github.com/tamararankovic/microservices_demo/ordering_service/infrastructure/api"
-	"github.com/tamararankovic/microservices_demo/ordering_service/infrastructure/persistence"
-	"github.com/tamararankovic/microservices_demo/ordering_service/startup/config"
-	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	ordering "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	saga "github.com/mihajlo-ra92/XML/common/saga/messaging"
+	"github.com/mihajlo-ra92/XML/common/saga/messaging/nats"
+	"github.com/mihajlo-ra92/XML/ordering_service/application"
+	"github.com/mihajlo-ra92/XML/ordering_service/domain"
+	"github.com/mihajlo-ra92/XML/ordering_service/infrastructure/api"
+	"github.com/mihajlo-ra92/XML/ordering_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/ordering_service/startup/config"
+	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
 )
 
 type Server struct {

@@ -1,8 +1,8 @@
 package api
 
 import (
-	pb "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	"github.com/tamararankovic/microservices_demo/ordering_service/domain"
+	pb "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	"github.com/mihajlo-ra92/XML/ordering_service/domain"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

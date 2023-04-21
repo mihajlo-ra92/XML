@@ -2,18 +2,19 @@ package startup
 
 import (
 	"fmt"
-	inventory "github.com/tamararankovic/microservices_demo/common/proto/inventory_service"
-	saga "github.com/tamararankovic/microservices_demo/common/saga/messaging"
-	"github.com/tamararankovic/microservices_demo/common/saga/messaging/nats"
-	"github.com/tamararankovic/microservices_demo/inventory_service/application"
-	"github.com/tamararankovic/microservices_demo/inventory_service/domain"
-	"github.com/tamararankovic/microservices_demo/inventory_service/infrastructure/api"
-	"github.com/tamararankovic/microservices_demo/inventory_service/infrastructure/persistence"
-	"github.com/tamararankovic/microservices_demo/inventory_service/startup/config"
-	"google.golang.org/grpc"
-	"gorm.io/gorm"
 	"log"
 	"net"
+
+	inventory "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
+	saga "github.com/mihajlo-ra92/XML/common/saga/messaging"
+	"github.com/mihajlo-ra92/XML/common/saga/messaging/nats"
+	"github.com/mihajlo-ra92/XML/inventory_service/application"
+	"github.com/mihajlo-ra92/XML/inventory_service/domain"
+	"github.com/mihajlo-ra92/XML/inventory_service/infrastructure/api"
+	"github.com/mihajlo-ra92/XML/inventory_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/inventory_service/startup/config"
+	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type Server struct {

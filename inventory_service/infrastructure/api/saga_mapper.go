@@ -1,8 +1,8 @@
 package api
 
 import (
-	events "github.com/tamararankovic/microservices_demo/common/saga/create_order"
-	"github.com/tamararankovic/microservices_demo/inventory_service/domain"
+	events "github.com/mihajlo-ra92/XML/common/saga/create_order"
+	"github.com/mihajlo-ra92/XML/inventory_service/domain"
 )
 
 func mapUpdateProducts(command *events.CreateOrderCommand) map[*domain.Product]int64 {

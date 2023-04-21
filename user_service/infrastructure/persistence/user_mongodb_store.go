@@ -2,7 +2,8 @@ package persistence
 
 import (
 	"context"
-	"mihajlo-ra92/microservices_demo/shipping_service/domain"
+
+	"github.com/mihajlo-ra92/XML/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

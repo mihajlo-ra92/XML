@@ -2,18 +2,19 @@ package startup
 
 import (
 	"fmt"
-	shipping "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
-	saga "github.com/tamararankovic/microservices_demo/common/saga/messaging"
-	"github.com/tamararankovic/microservices_demo/common/saga/messaging/nats"
-	"github.com/tamararankovic/microservices_demo/shipping_service/application"
-	"github.com/tamararankovic/microservices_demo/shipping_service/domain"
-	"github.com/tamararankovic/microservices_demo/shipping_service/infrastructure/api"
-	"github.com/tamararankovic/microservices_demo/shipping_service/infrastructure/persistence"
-	"github.com/tamararankovic/microservices_demo/shipping_service/startup/config"
-	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	shipping "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
+	saga "github.com/mihajlo-ra92/XML/common/saga/messaging"
+	"github.com/mihajlo-ra92/XML/common/saga/messaging/nats"
+	"github.com/mihajlo-ra92/XML/shipping_service/application"
+	"github.com/mihajlo-ra92/XML/shipping_service/domain"
+	"github.com/mihajlo-ra92/XML/shipping_service/infrastructure/api"
+	"github.com/mihajlo-ra92/XML/shipping_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/shipping_service/startup/config"
+	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
 )
 
 type Server struct {

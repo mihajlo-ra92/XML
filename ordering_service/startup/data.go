@@ -1,9 +1,10 @@
 package startup
 
 import (
-	"github.com/tamararankovic/microservices_demo/ordering_service/domain"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"github.com/mihajlo-ra92/XML/ordering_service/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var orders = []*domain.Order{

@@ -2,9 +2,10 @@ package api
 
 import (
 	"context"
-	"mihajlo-ra92/microservices_demo/user_service/application"
 
-	pb "mihajlo-ra92/microservices_demo/common/proto/user_service"
+	"github.com/mihajlo-ra92/XML/user_service/application"
+
+	pb "github.com/mihajlo-ra92/XML/common/proto/user_service"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

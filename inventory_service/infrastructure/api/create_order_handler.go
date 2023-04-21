@@ -1,9 +1,9 @@
 package api
 
 import (
-	events "github.com/tamararankovic/microservices_demo/common/saga/create_order"
-	saga "github.com/tamararankovic/microservices_demo/common/saga/messaging"
-	"github.com/tamararankovic/microservices_demo/inventory_service/application"
+	events "github.com/mihajlo-ra92/XML/common/saga/create_order"
+	saga "github.com/mihajlo-ra92/XML/common/saga/messaging"
+	"github.com/mihajlo-ra92/XML/inventory_service/application"
 )
 
 type CreateOrderCommandHandler struct {

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/tamararankovic/microservices_demo/catalogue_service/startup"
-	cfg "github.com/tamararankovic/microservices_demo/catalogue_service/startup/config"
+	"github.com/mihajlo-ra92/XML/catalogue_service/startup"
+	cfg "github.com/mihajlo-ra92/XML/catalogue_service/startup/config"
 )
 
 func main() {

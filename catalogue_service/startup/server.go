@@ -2,16 +2,17 @@ package startup
 
 import (
 	"fmt"
-	"github.com/tamararankovic/microservices_demo/catalogue_service/application"
-	"github.com/tamararankovic/microservices_demo/catalogue_service/domain"
-	"github.com/tamararankovic/microservices_demo/catalogue_service/infrastructure/api"
-	"github.com/tamararankovic/microservices_demo/catalogue_service/infrastructure/persistence"
-	"github.com/tamararankovic/microservices_demo/catalogue_service/startup/config"
-	catalogue "github.com/tamararankovic/microservices_demo/common/proto/catalogue_service"
-	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"github.com/mihajlo-ra92/XML/catalogue_service/application"
+	"github.com/mihajlo-ra92/XML/catalogue_service/domain"
+	"github.com/mihajlo-ra92/XML/catalogue_service/infrastructure/api"
+	"github.com/mihajlo-ra92/XML/catalogue_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/catalogue_service/startup/config"
+	catalogue "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
+	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
 )
 
 type Server struct {

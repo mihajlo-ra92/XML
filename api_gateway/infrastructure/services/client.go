@@ -1,12 +1,13 @@
 package services
 
 import (
-	catalogue "github.com/tamararankovic/microservices_demo/common/proto/catalogue_service"
-	ordering "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	shipping "github.com/tamararankovic/microservices_demo/common/proto/shipping_service"
+	"log"
+
+	catalogue "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
+	ordering "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	shipping "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
 )
 
 func NewCatalogueClient(address string) catalogue.CatalogueServiceClient {

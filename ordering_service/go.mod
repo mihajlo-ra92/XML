@@ -1,8 +1,8 @@
-module github.com/tamararankovic/microservices_demo/ordering_service
+module github.com/mihajlo-ra92/XML/ordering_service
 
 go 1.17
 
-replace github.com/tamararankovic/microservices_demo/common => ../common
+replace github.com/mihajlo-ra92/XML/common => ../common
 
 require (
 	go.mongodb.org/mongo-driver v1.8.4
@@ -29,7 +29,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.14.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/tamararankovic/microservices_demo/common v1.0.0
+	github.com/mihajlo-ra92/XML/common v1.0.0
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.0.2 // indirect
 	github.com/xdg-go/stringprep v1.0.2 // indirect

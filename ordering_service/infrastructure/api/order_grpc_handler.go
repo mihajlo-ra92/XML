@@ -2,8 +2,9 @@ package api
 
 import (
 	"context"
-	pb "github.com/tamararankovic/microservices_demo/common/proto/ordering_service"
-	"github.com/tamararankovic/microservices_demo/ordering_service/application"
+
+	pb "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	"github.com/mihajlo-ra92/XML/ordering_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/tamararankovic/microservices_demo/common/catalogue";
+option go_package = "github.com/mihajlo-ra92/XML/common/catalogue";
 
 package catalogue;
 
