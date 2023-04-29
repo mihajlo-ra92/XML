@@ -1,1 +1,6 @@
 protoc -I . --go_out . --go_opt paths=source_relative --go-grpc_out . --go-grpc_opt paths=source_relative --grpc-gateway_out . --grpc-gateway_opt paths=source_relative ./shipping_service.proto
+
+Adding a new service:
+    1. Add host and port for service and db in .env file
+    2. Add new env-var into docker-compose.yml -> api_gateway -> environment
+    3. Add env-vars to config and server

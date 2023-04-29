@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/mihajlo-ra92/XML/api_gateway/infrastructure/api"
 	cfg "github.com/mihajlo-ra92/XML/api_gateway/startup/config"
+	accommodationGw "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
 	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
@@ -58,10 +59,19 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 	
+	//NOTE: My endpoints
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	fmt.Print("userEndpoint: ")
 	fmt.Println(userEndpoint)
 	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	accommodationEndpoint := fmt.Sprintf("%s:%s", server.config.AccommodationHost, server.config.AccommodationPort)
+	fmt.Print("accommodationEndpoint: ")
+	fmt.Println(accommodationEndpoint)
+	err = accommodationGw.RegisterAccommodationServiceHandlerFromEndpoint(context.TODO(), server.mux, accommodationEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
