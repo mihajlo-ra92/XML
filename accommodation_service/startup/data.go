@@ -1,20 +1,21 @@
 package startup
 
 import (
-	"github.com/mihajlo-ra92/XML/user_service/domain"
+	"github.com/mihajlo-ra92/XML/accommodation_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-var users = []*domain.User{
+
+var accommodations = []*domain.Accommodation{
 	{
 		Id:				getObjectId("test1_id"),
-		UserType: 		domain.Guest,
-		Username:		"test1",
-		Password:		"123",
-		Email:			"test1@gmail.com",
-		FirstName:		"Test1F",
-		LastName:		"Test1L",
-		Address: 		"Addr 1",	
+
+	Name:      "Name1",
+	Location: 	"Location1",
+	Benefits:  []string{"Wifi", "Parking"},
+	Pictures:  []string{"Wifi", "Parking"},
+	MinGuests: 1,
+	MaxGuests: 10,
 	},
 }
 

@@ -1,4 +1,4 @@
-module github.com/mihajlo-ra92/XML/user_service
+module github.com/mihajlo-ra92/XML/accommodation_service
 
 go 1.17
 
@@ -30,6 +30,6 @@ require (
 )
 
 require (
-	github.com/mihajlo-ra92/XML/common v0.0.0-20230421174729-a829ab5cf90a
+	github.com/mihajlo-ra92/XML/common v0.0.0-20230421182312-369f1151105e
 	github.com/stretchr/testify v1.8.2 // indirect
 )
