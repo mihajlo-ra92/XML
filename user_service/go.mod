@@ -13,6 +13,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
+	github.com/mihajlo-ra92/XML/common v0.0.0-20230430111701-9081e5780592
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
@@ -29,7 +30,4 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 )
 
-require (
-	github.com/mihajlo-ra92/XML/common v0.0.0-20230421174729-a829ab5cf90a
-	github.com/stretchr/testify v1.8.2 // indirect
-)
+require github.com/stretchr/testify v1.8.2 // indirect

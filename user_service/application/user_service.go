@@ -26,5 +26,9 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 
 func (service *UserService) Create(user *domain.User) error{
 	// user.UserType = domain.Guest
-	return service.store.Insert(user)
+	err := service.store.Insert(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }
