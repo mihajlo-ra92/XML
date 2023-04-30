@@ -17,6 +17,19 @@ service UserService{
                 get: "/user"
         };
     }
+    rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/user"
+            body: "user"
+        };
+    }
+}
+message CreateUserRequest {
+    NewUser user = 1;
+}
+
+message CreateUserResponse {
+    User user = 1;
 }
 
 message GetRequest {
@@ -36,6 +49,21 @@ message GetAllResponse{
 
 message User {
     string id = 1;
+    enum UserType {
+        Guest = 0;
+        Host = 1;
+        Admin = 2;
+    }
+    UserType userType = 2;
+    string username = 3;
+    string password = 4;
+    string email = 5;
+    string FirstName = 6;
+    string LastName = 7;
+    string Address = 8;
+}
+
+message NewUser {
     enum UserType {
         Guest = 0;
         Host = 1;
