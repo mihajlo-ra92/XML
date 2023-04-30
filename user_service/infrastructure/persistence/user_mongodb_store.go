@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/user_service/domain"
 
@@ -28,6 +29,21 @@ func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {
 
 func (store *UserMongoDBStore) Get (id primitive.ObjectID) (*domain.User, error){
 	filter := bson.M{"_id":id}
+	return store.filterOne(filter)
+}
+func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, error){
+	fmt.Println("in GetByUsername")
+	filter := bson.M{"username":username}
+	fmt.Print("filter: ")
+	fmt.Println(filter)
+	return store.filterOne(filter)
+}
+
+func (store *UserMongoDBStore) GetByEmail(email string) (*domain.User, error){
+	fmt.Println("in GetByEmail")
+	filter := bson.M{"email":email}
+	fmt.Print("filter: ")
+	fmt.Println(filter)
 	return store.filterOne(filter)
 }
 

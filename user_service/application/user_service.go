@@ -1,6 +1,8 @@
 package application
 
 import (
+	"fmt"
+
 	"github.com/mihajlo-ra92/XML/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,7 +28,27 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 
 func (service *UserService) Create(user *domain.User) error{
 	// user.UserType = domain.Guest
-	err := service.store.Insert(user)
+	checkUser, err := service.store.GetByUsername(user.Username)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+	    return err
+	}
+	fmt.Print("Get user by username: ")
+	fmt.Println(checkUser)
+	if checkUser != nil {
+		return fmt.Errorf("user with username %s already exists", user.Username)
+	}
+	
+	checkUser, err = service.store.GetByEmail(user.Email)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+	    return err
+	}
+	if checkUser != nil {
+		return fmt.Errorf("user with email %s already exists", user.Email)
+	}
+	fmt.Print("Get user by email: ")
+	fmt.Println(checkUser)
+	//TODO: Optional 
+	err = service.store.Insert(user)
 	if err != nil {
 		return err
 	}
