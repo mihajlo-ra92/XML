@@ -17,6 +17,17 @@ services:
     networks:
       - network
 
+  auth_service:
+    image: auth_service
+    container_name: auth_service
+    build:
+      context: .
+      dockerfile: ./auth_service/Dockerfile
+    restart: on-failure
+    environment:
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+    networks:
+      - network
   user_service:
     image: user_service
     container_name: user_service
