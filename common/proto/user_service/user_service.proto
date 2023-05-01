@@ -25,7 +25,8 @@ service UserService{
     }
     rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){
         option (google.api.http) = {
-                get: "/login"
+                post: "/login"
+                body: "login"
         };
     }
 }
@@ -34,8 +35,7 @@ message CreateUserRequest {
 }
 
 message GetByLoginDataRequest {
-    string username = 1;
-    string password = 2;
+    Login login = 1;
 }
 
 message CreateUserResponse {
@@ -90,4 +90,9 @@ message NewUser {
     string FirstName = 6;
     string LastName = 7;
     string Address = 8;
+}
+
+message Login {
+    string username = 1;
+    string password = 2;
 }

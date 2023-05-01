@@ -7,8 +7,9 @@ Adding a new service:
 
 Updating service import:
     1. Navigate terminal to the file where the service is imported
-    2. go get -u github.com/mihajlo-ra92/XML/common/proto/user_service
-
+    2. Delete the go.sum file, delete the package from go.mod
+    3. Run: go get -u github.com/mihajlo-ra92/XML/common/proto/user_service
+    4. Run: go mod tidy 
 
 Known problems:
 Mongodb GetBy_ doesn't retrive any value:
