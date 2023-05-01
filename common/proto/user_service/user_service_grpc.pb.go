@@ -25,6 +25,7 @@ type UserServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	GetByLoginData(ctx context.Context, in *GetByLoginDataRequest, opts ...grpc.CallOption) (*GetByLoginDataResponse, error)
 }
 
 type userServiceClient struct {
@@ -62,6 +63,15 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 	return out, nil
 }
 
+func (c *userServiceClient) GetByLoginData(ctx context.Context, in *GetByLoginDataRequest, opts ...grpc.CallOption) (*GetByLoginDataResponse, error) {
+	out := new(GetByLoginDataResponse)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetByLoginData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type UserServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	GetByLoginData(context.Context, *GetByLoginDataRequest) (*GetByLoginDataResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedUserServiceServer) GetAll(context.Context, *GetAllRequest) (*
 }
 func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetByLoginData(context.Context, *GetByLoginDataRequest) (*GetByLoginDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByLoginData not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -152,6 +166,24 @@ func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetByLoginData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByLoginDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetByLoginData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/GetByLoginData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetByLoginData(ctx, req.(*GetByLoginDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _UserService_CreateUser_Handler,
+		},
+		{
+			MethodName: "GetByLoginData",
+			Handler:    _UserService_GetByLoginData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

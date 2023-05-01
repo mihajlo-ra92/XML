@@ -23,9 +23,19 @@ service UserService{
             body: "user"
         };
     }
+    rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){
+        option (google.api.http) = {
+                get: "/login"
+        };
+    }
 }
 message CreateUserRequest {
     NewUser user = 1;
+}
+
+message GetByLoginDataRequest {
+    string username = 1;
+    string password = 2;
 }
 
 message CreateUserResponse {
@@ -45,6 +55,10 @@ message GetAllRequest{
 
 message GetAllResponse{
     repeated User users = 1;
+}
+
+message GetByLoginDataResponse{
+    User user = 1;
 }
 
 message User {

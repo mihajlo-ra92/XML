@@ -10,7 +10,8 @@ Updating service import:
     2. go get -u github.com/mihajlo-ra92/XML/common/proto/user_service
 
 
-Ovaj error daje ako nije nasao u mongodb to sto trazimo:
+Known problems:
+Mongodb GetBy_ doesn't retrive any value:
 {
     "code": 2,
     "message": "mongo: no documents in result",
