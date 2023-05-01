@@ -47,6 +47,14 @@ func (store *UserMongoDBStore) GetByEmail(email string) (*domain.User, error){
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByLoginData(username string, password string) (*domain.User, error){
+	fmt.Println("in GetByLoginData")
+	filter := bson.M{"username":username}
+	fmt.Print("filter: ")
+	fmt.Println(filter)
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error){
 	filter := bson.D{{}}
 	return store.filter(filter)

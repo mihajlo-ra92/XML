@@ -5,28 +5,25 @@ import (
 	"github.com/mihajlo-ra92/XML/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-func mapNewUser(userPb *pb.NewUser) *domain.User {
-	// user := &domain.User{
 
-	// }
-	// for _, itemPb := range userPb.Ite
+func mapNewUser(userPb *pb.NewUser) *domain.User {
 	user := &domain.User{
 
-	Id: primitive.NewObjectID(),
-	UserType: domain.UserType(userPb.UserType),	
-	Username: userPb.Username,
-	Password: userPb.Password,
-	Email:	userPb.Email,
-	FirstName: userPb.FirstName,	
-	LastName: userPb.LastName,	
-	Address: userPb.Address,	
+		Id:        primitive.NewObjectID(),
+		UserType:  domain.UserType(userPb.UserType),
+		Username:  userPb.Username,
+		Password:  userPb.Password,
+		Email:     userPb.Email,
+		FirstName: userPb.FirstName,
+		LastName:  userPb.LastName,
+		Address:   userPb.Address,
 	}
 	return user
 }
 
 func mapUser(user *domain.User) *pb.User {
 	var userType pb.User_UserType
-	switch user.UserType{
+	switch user.UserType {
 	case domain.Admin:
 		userType = pb.User_Admin
 	case domain.Guest:
@@ -35,14 +32,14 @@ func mapUser(user *domain.User) *pb.User {
 		userType = pb.User_Host
 	}
 	userPb := &pb.User{
-		Id:		user.Id.Hex(),
-		UserType: 	userType,
-		Username:	user.Username,
-		Password:	user.Password,
-		Email: 		user.Email,
-		FirstName:	user.FirstName,
-		LastName:	user.LastName,
-		Address:	user.Address,
+		Id:        user.Id.Hex(),
+		UserType:  userType,
+		Username:  user.Username,
+		Password:  user.Password,
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Address:   user.Address,
 	}
 	return userPb
 }

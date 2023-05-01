@@ -11,5 +11,6 @@ type UserStore interface {
 	DeleteAll()
 	GetByUsername(username string) (*User, error)
 	GetByEmail(email string) (*User, error)
+	GetByLoginData(username string, password string) (*User, error)
 	// Update()
 }

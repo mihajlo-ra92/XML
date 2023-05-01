@@ -26,6 +26,17 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 	return service.store.GetAll()
 }
 
+func (service *UserService) GetByLoginData(username string, password string) (*domain.User, error) {
+	user, err := service.store.GetByLoginData(username, password)
+	if err != nil {
+		return nil, err
+	}
+	if user.Password != password {
+		return nil, fmt.Errorf("incorrect password")
+	}
+	return user, nil
+}
+
 func (service *UserService) Create(user *domain.User) error{
 	// user.UserType = domain.Guest
 	checkUser, err := service.store.GetByUsername(user.Username)

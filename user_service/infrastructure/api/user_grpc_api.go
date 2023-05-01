@@ -16,7 +16,7 @@ type UserHandler struct {
 	service *application.UserService
 }
 
-func NewUserHandler(service *application.UserService) *UserHandler{
+func NewUserHandler(service *application.UserService) *UserHandler {
 	return &UserHandler{
 		service: service,
 	}
@@ -39,6 +39,24 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	return response, nil
 }
 
+func (handler *UserHandler) GetByLoginData(ctx context.Context, request *pb.GetByLoginDataRequest) (*pb.GetByLoginDataResponse, error) {
+	fmt.Println("In GetByLoginData grpc api")
+	fmt.Println(request.Login)
+	fmt.Print("request.Username: ")
+	fmt.Println(request.Login.Username)
+	fmt.Print("request.Password: ")
+	fmt.Println(request.Login.Password)
+	user, err := handler.service.GetByLoginData(request.Login.Username, request.Login.Password)
+	if err != nil {
+		return nil, err
+	}
+	userPb := mapUser(user)
+	response := &pb.GetByLoginDataResponse{
+		User: userPb,
+	}
+	return response, nil
+}
+
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	fmt.Println("In GetAll grpc api")
 	users, err := handler.service.GetAll()
@@ -54,7 +72,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	}
 	return response, nil
 }
-func (handler *UserHandler) CreateUser (ctx context.Context, request *pb.CreateUserRequest) (*pb.CreateUserResponse, error){
+func (handler *UserHandler) CreateUser(ctx context.Context, request *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	fmt.Println("In CreateUser grpc api")
 	fmt.Print("Request.User: ")
 	fmt.Println(request.User)
