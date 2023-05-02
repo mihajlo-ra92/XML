@@ -23,20 +23,23 @@ func NewServer(config *config.Config) *Server{
 }
 
 func (server *Server) Start(){
-	//mongoClient
-	//authStore
-	authService := server.initAuthService()
+	userEndpoint :=	fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort) 
+	authService := server.initAuthService(userEndpoint)
 	authHandler := server.initAuthHandler(authService)
-	server.startGrpcServer()
+	server.startGrpcServer(authHandler)
 }
 
-func (server *Server) initAuthService() *application.AuthService {
-	return application.NewAuthService()
+func (server *Server) initAuthService(userClientAddress string) *application.AuthService {
+	return application.NewAuthService(userClientAddress)
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler{
 	return api.NewAuthHandler(service)
 }
+
+// func (server *Server) initUserConn() error {
+// 	conn, err := grpc.Dial()
+// }
 
 func (server *Server) startGrpcServer(authHandler *api.AuthHandler){
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))

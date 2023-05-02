@@ -24,10 +24,10 @@ service UserService{
         };
     }
     rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){
-        option (google.api.http) = {
-                post: "/login"
-                body: "login"
-        };
+        // option (google.api.http) = {
+        //         post: "/login"
+        //         body: "login"
+        // };
     }
 }
 message CreateUserRequest {

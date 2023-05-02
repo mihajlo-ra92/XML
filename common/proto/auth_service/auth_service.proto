@@ -16,10 +16,10 @@ service AuthService{
 }
 
 message LoginRequest {
-    Login login = 1;
+    AuthLogin login = 1;
 }
 
-message Login {
+message AuthLogin {
     string username = 1;
     string password = 2;
 }
