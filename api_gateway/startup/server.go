@@ -10,6 +10,7 @@ import (
 	"github.com/mihajlo-ra92/XML/api_gateway/infrastructure/api"
 	cfg "github.com/mihajlo-ra92/XML/api_gateway/startup/config"
 	accommodationGw "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
+	authGw "github.com/mihajlo-ra92/XML/common/proto/auth_service"
 	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
@@ -72,6 +73,14 @@ func (server *Server) initHandlers() {
 	fmt.Print("accommodationEndpoint: ")
 	fmt.Println(accommodationEndpoint)
 	err = accommodationGw.RegisterAccommodationServiceHandlerFromEndpoint(context.TODO(), server.mux, accommodationEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	fmt.Print("authEndpoint: ")
+	fmt.Println(authEndpoint)
+	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

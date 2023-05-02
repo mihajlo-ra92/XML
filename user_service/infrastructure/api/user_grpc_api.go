@@ -50,10 +50,14 @@ func (handler *UserHandler) GetByLoginData(ctx context.Context, request *pb.GetB
 	if err != nil {
 		return nil, err
 	}
+	fmt.Print("Found user: ")
+	fmt.Println(user)
 	userPb := mapUser(user)
 	response := &pb.GetByLoginDataResponse{
 		User: userPb,
 	}
+	fmt.Print("Response: ")
+	fmt.Println(response)
 	return response, nil
 }
 

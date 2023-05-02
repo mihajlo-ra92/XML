@@ -23,12 +23,7 @@ service UserService{
             body: "user"
         };
     }
-    rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){
-        // option (google.api.http) = {
-        //         post: "/login"
-        //         body: "login"
-        // };
-    }
+    rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){}
 }
 message CreateUserRequest {
     NewUser user = 1;

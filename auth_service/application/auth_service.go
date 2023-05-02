@@ -20,17 +20,16 @@ func NewAuthService(userClientAddress string) *AuthService{
 
 func (service *AuthService) Login(username string, password string) (*string, error){
 	fmt.Println("In auth_service, login")
-	fmt.Print("userClientAddress: ")
-	fmt.Println(service.userClientAddress)
 	userClient := services.NewUserClient(service.userClientAddress)
-	fmt.Print("userClient: ")
-	fmt.Println(userClient)
-	userResp, err :=userClient.GetByLoginData(context.TODO(), &user.GetByLoginDataRequest{Login: &user.Login{Username: username, Password: password}})
+	dataToSend := user.Login{Username: username, Password: password}
+	fmt.Print("dataToSend: ")
+	fmt.Println(dataToSend)
+	userResp, err :=userClient.GetByLoginData(context.TODO(), &user.GetByLoginDataRequest{Login: &dataToSend})
 	if err != nil {
 		return nil, err
 	}
 	fmt.Print("Read user: ")
 	fmt.Print(userResp.User)
 	
-	return nil, nil
+	return &userResp.User.Username, nil
 }

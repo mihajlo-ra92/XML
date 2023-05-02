@@ -3,7 +3,7 @@ module github.com/mihajlo-ra92/XML/user_service
 go 1.17
 
 require (
-	github.com/mihajlo-ra92/XML/common v0.0.0-20230501213833-01f8a4641fa9
+	github.com/mihajlo-ra92/XML/common v0.0.0-20230501225349-fc650d6022e6
 	go.mongodb.org/mongo-driver v1.11.4
 	google.golang.org/grpc v1.54.0
 )
