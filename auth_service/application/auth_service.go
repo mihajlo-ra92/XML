@@ -12,28 +12,30 @@ import (
 )
 
 type AuthService struct {
-	userClientAddress string
+	userClientAddress          string
+	accommodationClientAddress string
 }
 
-func NewAuthService(userClientAddress string) *AuthService{
+func NewAuthService(userClientAddress string, accommodationClientAddress string) *AuthService {
 	return &AuthService{
-		userClientAddress: userClientAddress,
+		userClientAddress:          userClientAddress,
+		accommodationClientAddress: accommodationClientAddress,
 	}
 }
 
-func (service *AuthService) Login(username string, password string) (*string, error){
+func (service *AuthService) Login(username string, password string) (*string, error) {
 	fmt.Println("In auth_service, login")
 	userClient := services.NewUserClient(service.userClientAddress)
 	dataToSend := user.Login{Username: username, Password: password}
 	fmt.Print("dataToSend: ")
 	fmt.Println(dataToSend)
-	userResp, err :=userClient.GetByLoginData(context.TODO(), &user.GetByLoginDataRequest{Login: &dataToSend})
+	userResp, err := userClient.GetByLoginData(context.TODO(), &user.GetByLoginDataRequest{Login: &dataToSend})
 	if err != nil {
 		return nil, err
 	}
 	fmt.Print("Read user: ")
 	fmt.Print(userResp.User)
-	
+
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -50,3 +52,7 @@ func (service *AuthService) Login(username string, password string) (*string, er
 	}
 	return &tokenString, nil
 }
+
+// func (service *AuthService) ReadJwt(jwt string) (*domain.User, error){
+// 	return nil, nil
+// }

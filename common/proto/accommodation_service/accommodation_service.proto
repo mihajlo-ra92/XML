@@ -44,11 +44,6 @@ message AccommodationUser{
     }
     UserType userType = 2;
     string username = 3;
-    string password = 4;
-    string email = 5;
-    string FirstName = 6;
-    string LastName = 7;
-    string Address = 8;
 }
 
 message GetRequest {
