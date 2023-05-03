@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AccommodationServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	CreateAccommodation(ctx context.Context, in *CreateAccommodationRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error)
 }
 
 type accommodationServiceClient struct {
@@ -52,12 +53,22 @@ func (c *accommodationServiceClient) GetAll(ctx context.Context, in *GetAllReque
 	return out, nil
 }
 
+func (c *accommodationServiceClient) CreateAccommodation(ctx context.Context, in *CreateAccommodationRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error) {
+	out := new(CreateAccommodationResponse)
+	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/CreateAccommodation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccommodationServiceServer is the server API for AccommodationService service.
 // All implementations must embed UnimplementedAccommodationServiceServer
 // for forward compatibility
 type AccommodationServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error)
 	mustEmbedUnimplementedAccommodationServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedAccommodationServiceServer) Get(context.Context, *GetRequest)
 }
 func (UnimplementedAccommodationServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedAccommodationServiceServer) CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAccommodation not implemented")
 }
 func (UnimplementedAccommodationServiceServer) mustEmbedUnimplementedAccommodationServiceServer() {}
 
@@ -120,6 +134,24 @@ func _AccommodationService_GetAll_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccommodationService_CreateAccommodation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAccommodationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccommodationServiceServer).CreateAccommodation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/accommodation.AccommodationService/CreateAccommodation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccommodationServiceServer).CreateAccommodation(ctx, req.(*CreateAccommodationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccommodationService_ServiceDesc is the grpc.ServiceDesc for AccommodationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var AccommodationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _AccommodationService_GetAll_Handler,
+		},
+		{
+			MethodName: "CreateAccommodation",
+			Handler:    _AccommodationService_CreateAccommodation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
