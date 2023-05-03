@@ -25,6 +25,7 @@ services:
       dockerfile: ./auth_service/Dockerfile
     restart: on-failure
     environment:
+      SECRET_KEY: ${SECRET_KEY}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}

@@ -3,7 +3,10 @@ package application
 import (
 	"context"
 	"fmt"
+	"os"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/mihajlo-ra92/XML/auth_service/infrastructure/services"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
@@ -31,5 +34,19 @@ func (service *AuthService) Login(username string, password string) (*string, er
 	fmt.Print("Read user: ")
 	fmt.Print(userResp.User)
 	
-	return &userResp.User.Username, nil
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": userResp.User.Username,
+		"userType": userResp.User.UserType,
+		"userId":   userResp.User.Id,
+		"exp":      time.Now().Add(24 * time.Hour).Unix(),
+	})
+	secretKey := os.Getenv("SECRET_KEY")
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(secretKey))
+	if err != nil {
+		return nil, err
+	}
+	return &tokenString, nil
 }
