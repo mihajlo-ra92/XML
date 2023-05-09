@@ -19,6 +19,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
 type Server struct {
 	config *config.Config
 }
@@ -37,7 +38,6 @@ func (server *Server) Start() {
 	server.startGrpcServer(accommodationHandler)
 
 }
-
 
 func (server *Server) initMongoClient() *mongo.Client {
 	client, err := persistence.GetClient(server.config.AccommodationDBHost, server.config.AccommodationDBPort)
@@ -65,11 +65,11 @@ func (server *Server) initAccommodationService(store domain.AccommodationStore) 
 
 // func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscribe
 
-func (server *Server) initAccommodationHandler(service *application.AccommodationService) *api.AccommodationHandler{
+func (server *Server) initAccommodationHandler(service *application.AccommodationService) *api.AccommodationHandler {
 	return api.NewAccommodationHandler(service)
 }
 
-func (server *Server) startGrpcServer(accommodationHandler *api.AccommodationHandler){
+func (server *Server) startGrpcServer(accommodationHandler *api.AccommodationHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

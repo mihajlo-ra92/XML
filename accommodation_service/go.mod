@@ -30,6 +30,6 @@ require (
 )
 
 require (
-	github.com/mihajlo-ra92/XML/common v0.0.0-20230421182312-369f1151105e
+	github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d
 	github.com/stretchr/testify v1.8.2 // indirect
 )

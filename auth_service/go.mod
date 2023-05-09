@@ -2,12 +2,9 @@ module github.com/mihajlo-ra92/XML/auth_service
 
 go 1.20
 
-require (
-	go.mongodb.org/mongo-driver v1.11.5
-	google.golang.org/grpc v1.54.0
-)
+require google.golang.org/grpc v1.54.0
 
-require github.com/mihajlo-ra92/XML/common v0.0.0-20230503194951-810a26b79fcf
+require github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d
 
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
