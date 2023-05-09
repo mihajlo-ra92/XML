@@ -51,6 +51,9 @@ func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request
 	return nil, nil
 }
 
+func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
+}
+
 func checkJwt(tokenString string) (*domain.JwtData, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
