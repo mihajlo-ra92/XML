@@ -19,8 +19,9 @@ func (userType UserType) String() string {
 	}
 	return "Unknown"
 }
+
 type JwtData struct {
-	UserId			string `bson:"_id"`
-	UserType	float64 `bson:"user_type"`
-	Username	string		`bson:"username"`
+	UserId   string  `bson:"_id"`
+	UserType float64 `bson:"user_type"`
+	Username string  `bson:"username"`
 }

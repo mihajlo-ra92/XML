@@ -7,7 +7,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/mihajlo-ra92/XML/auth_service/domain"
 	"github.com/mihajlo-ra92/XML/auth_service/infrastructure/services"
+	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
+	pb "github.com/mihajlo-ra92/XML/common/proto/auth_service"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
 
@@ -53,6 +56,20 @@ func (service *AuthService) Login(username string, password string) (*string, er
 	return &tokenString, nil
 }
 
-// func (service *AuthService) ReadJwt(jwt string) (*domain.User, error){
-// 	return nil, nil
-// }
+func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request *pb.AuthCreateAccommodationRequest) (*pb.AuthCreateAccommodationResponse, error) {
+	accommodationClient := services.NewAccommodationClient(service.accommodationClientAddress)
+	accommodationUser := accommodation.AccommodationUser{Id: jwtData.UserId, UserType: accommodation.AccommodationUser_UserType(jwtData.UserType), Username: jwtData.Username}
+	accommodationRequest := accommodation.CreateAccommodationRequest{User: &accommodationUser, Name: request.Name, Location: request.Location, Benefits: request.Benefits, Pictures: request.Pictures, MinGuests: request.MinGuests, MaxGuests: request.MaxGuests}
+	fmt.Print("accommodationRequest: ")
+	fmt.Println(accommodationRequest)
+	accommodationResponse, err := accommodationClient.CreateAccommodation(context.TODO(), &accommodationRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("accommodationResponse: ")
+	fmt.Println(accommodationResponse)
+	authCreateAccommodationResponse := pb.AuthCreateAccommodationResponse{Accomodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests}}
+	fmt.Print("authCreateAccommodationResponse: ")
+	fmt.Println(authCreateAccommodationResponse)
+	return &authCreateAccommodationResponse, nil
+}

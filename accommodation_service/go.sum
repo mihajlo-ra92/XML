@@ -807,6 +807,8 @@ github.com/mihajlo-ra92/XML/common v0.0.0-20230421174729-a829ab5cf90a h1:9qOhapY
 github.com/mihajlo-ra92/XML/common v0.0.0-20230421174729-a829ab5cf90a/go.mod h1:ORgI73lqNwCmXbGyLT812rZg5JUdPFTaqQobhJFTGS4=
 github.com/mihajlo-ra92/XML/common v0.0.0-20230421182312-369f1151105e h1:qqqTPAovXG9OrPnxiZ6xsaLBfPYPSDHc0BqlTXfgK1k=
 github.com/mihajlo-ra92/XML/common v0.0.0-20230421182312-369f1151105e/go.mod h1:ORgI73lqNwCmXbGyLT812rZg5JUdPFTaqQobhJFTGS4=
+github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d h1:1T4PFsX8wWv+h2Mej9IwctFayGlHo3QW0XZcDi/M4zA=
+github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d/go.mod h1:ORgI73lqNwCmXbGyLT812rZg5JUdPFTaqQobhJFTGS4=
 github.com/mihajlo-ra92/XML/user_service v0.0.0-20230421182312-369f1151105e h1:L9Nn0Vol3SsEPNIX3Jlxtvx6exglkdBbqiIlRZIPGdc=
 github.com/mihajlo-ra92/XML/user_service v0.0.0-20230421182312-369f1151105e/go.mod h1:TR34Iil53tgZkpZsG1+TfBxKadGcNdD3UV7xEcGs04o=
 github.com/minio/asm2plan9s v0.0.0-20200509001527-cdd76441f9d8/go.mod h1:mC1jAcsrzbxHt8iiaC+zU4b1ylILSosueou12R++wfY=

@@ -37,7 +37,7 @@ func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest)
 }
 
 func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request *pb.AuthCreateAccommodationRequest) (*pb.AuthCreateAccommodationResponse, error) {
-	fmt.Println("In CreateAccommodation")
+	fmt.Println("In AuthCreateAccommodation")
 	fmt.Print("request: ")
 	fmt.Println(request)
 
@@ -47,8 +47,14 @@ func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request
 	}
 	fmt.Print("jwtData: ")
 	fmt.Println(jwtData)
-
-	return nil, nil
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	accommodationResponse, err := handler.service.CreateAccommodation(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return accommodationResponse, nil
 }
 
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {

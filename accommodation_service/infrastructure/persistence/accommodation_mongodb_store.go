@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	DATABASE = "accommodation"
+	DATABASE   = "accommodation"
 	COLLECTION = "accommodation"
 )
 
 type AccommodationMongoDBStore struct {
-	accommodations * mongo.Collection
+	accommodations *mongo.Collection
 }
 
 func NewAccommodationMongoDBStore(client *mongo.Client) domain.AccommodationStore {
@@ -26,12 +26,12 @@ func NewAccommodationMongoDBStore(client *mongo.Client) domain.AccommodationStor
 	}
 }
 
-func (store *AccommodationMongoDBStore) Get (id primitive.ObjectID) (*domain.Accommodation, error){
-	filter := bson.M{"_id":id}
+func (store *AccommodationMongoDBStore) Get(id primitive.ObjectID) (*domain.Accommodation, error) {
+	filter := bson.M{"_id": id}
 	return store.filterOne(filter)
 }
 
-func (store *AccommodationMongoDBStore) GetAll() ([]*domain.Accommodation, error){
+func (store *AccommodationMongoDBStore) GetAll() ([]*domain.Accommodation, error) {
 	filter := bson.D{{}}
 	return store.filter(filter)
 }
@@ -52,7 +52,7 @@ func (store *AccommodationMongoDBStore) DeleteAll() {
 // func (store *UserMongoDBStore) Update
 
 func (store *AccommodationMongoDBStore) filter(filter interface{}) ([]*domain.Accommodation, error) {
-	cursor, err :=  store.accommodations.Find(context.TODO(), filter)
+	cursor, err := store.accommodations.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())
 
 	if err != nil {
@@ -61,14 +61,14 @@ func (store *AccommodationMongoDBStore) filter(filter interface{}) ([]*domain.Ac
 	return decode(cursor)
 }
 
-func (store *AccommodationMongoDBStore) filterOne(filter interface{}) (Accommodation *domain.Accommodation, err error){
+func (store *AccommodationMongoDBStore) filterOne(filter interface{}) (Accommodation *domain.Accommodation, err error) {
 	result := store.accommodations.FindOne(context.TODO(), filter)
 	err = result.Decode(&Accommodation)
 	return
 }
 
-func decode(cursor *mongo.Cursor) (accommodations []*domain.Accommodation, err error){
-	for cursor.Next(context.TODO()){
+func decode(cursor *mongo.Cursor) (accommodations []*domain.Accommodation, err error) {
+	for cursor.Next(context.TODO()) {
 		var accommodation domain.Accommodation
 		err = cursor.Decode(&accommodation)
 		if err != nil {

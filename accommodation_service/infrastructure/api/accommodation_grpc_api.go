@@ -16,7 +16,7 @@ type AccommodationHandler struct {
 	service *application.AccommodationService
 }
 
-func NewAccommodationHandler(service *application.AccommodationService) *AccommodationHandler{
+func NewAccommodationHandler(service *application.AccommodationService) *AccommodationHandler {
 	return &AccommodationHandler{
 		service: service,
 	}
@@ -53,4 +53,21 @@ func (handler *AccommodationHandler) GetAll(ctx context.Context, request *pb.Get
 		response.Accommodations = append(response.Accommodations, current)
 	}
 	return response, nil
+}
+
+func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, request *pb.CreateAccommodationRequest) (*pb.CreateAccommodationResponse, error) {
+	fmt.Println("In CreateAccommodation grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	accommodation := mapNewAccommodation(request)
+	fmt.Print("accommodation after mapping: ")
+	fmt.Println(accommodation)
+	err := handler.service.Create(accommodation)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.CreateAccommodationResponse{Accommodation: mapAccommodation(accommodation)}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
 }
