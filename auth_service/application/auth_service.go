@@ -96,9 +96,9 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	}
 	fmt.Print("userUpdateResponse: ")
 	fmt.Println(userUpdateResponse)
-	userB := pb.User{
+	userB := pb.AuthUser{
 			Id:        userUpdateResponse.User.Id,
-			UserType:  pb.User_UserType(userUpdateResponse.User.UserType),
+			UserType:  pb.AuthUser_UserType(userUpdateResponse.User.UserType),
 			Username:  userUpdateResponse.User.Username,
 			Password:  userUpdateResponse.User.Password,
 			Email:     userUpdateResponse.User.Email,

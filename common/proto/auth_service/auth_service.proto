@@ -67,14 +67,14 @@ message LoginResponse {
 
 message AuthUpdateUserRequest{
     string jwt =1;
-    User user = 2;
+    AuthUser user = 2;
 }
 
 message AuthUpdateUserResponse{
-    User user = 1;
+    AuthUser user = 1;
 }
 
-message User {
+message AuthUser {
     string id = 1;
     enum UserType {
         Guest = 0;
