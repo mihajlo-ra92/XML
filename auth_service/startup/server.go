@@ -33,7 +33,7 @@ func (server *Server) Start() {
 }
 
 func (server *Server) initAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string) *application.AuthService {
-	return application.NewAuthService(userClientAddress, accommodationClientAddress)
+	return application.NewAuthService(userClientAddress, accommodationClientAddress, bookingClientAddress)
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {

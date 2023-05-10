@@ -21,10 +21,11 @@ type AuthService struct {
 	bookingClientAddress       string
 }
 
-func NewAuthService(userClientAddress string, accommodationClientAddress string) *AuthService {
+func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string) *AuthService {
 	return &AuthService{
 		userClientAddress:          userClientAddress,
 		accommodationClientAddress: accommodationClientAddress,
+		bookingClientAddress:       bookingClientAddress,
 	}
 }
 
@@ -77,6 +78,7 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 }
 
 func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
+	fmt.Println("In reserve accommodation")
 	bookingClient := services.NewBookingClient(service.bookingClientAddress)
 	bookingStruct := booking.Booking{AccommodationId: request.AccommodationId, GuestId: jwtData.UserId, Price: request.Price, PriceType: booking.Booking_PriceType(request.PriceType), NumberOfGuests: request.NumberOfGuests, BookingType: booking.Booking_BookingType(request.BookingType), StartDate: request.StartDate, EndDate: request.EndDate}
 	bookingRequest := booking.GuestReserveAccommodationRequest{Booking: &bookingStruct}
