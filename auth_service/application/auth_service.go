@@ -73,3 +73,31 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 	fmt.Println(authCreateAccommodationResponse)
 	return &authCreateAccommodationResponse, nil
 }
+
+func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
+	userClient := services.NewUserClient(service.userClientAddress)
+	user := pb.User{
+			Id:        request.User.Id,
+			UserType:  pb.User_UserType(request.User.UserType),
+			Username:  request.User.Username,
+			Password:  request.User.Password,
+			Email:     request.User.Email,
+			FirstName: request.User.FirstName,
+			LastName:  request.User.LastName,
+			Address:   request.User.Address,
+	}
+	
+	userUpdateRequest := user.UpdateUserRequest{User: &user}
+	fmt.Print("userUpdateRequest: ")
+	fmt.Println(userUpdateRequest)
+	userUpdateResponse, err := userClient.UpdateUser(context.TODO(), &userUpdateRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("userUpdateResponse: ")
+	fmt.Println(userUpdateResponse)
+	authUpdateUserResponse := pb.AuthUpdateUserResponse{User: &userUpdateResponse}
+	fmt.Print("authUpdateUserResponse: ")
+	fmt.Println(authUpdateUserResponse)
+	return &authUpdateUserResponse, nil
+}
