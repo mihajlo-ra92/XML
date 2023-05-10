@@ -79,3 +79,8 @@ func decode(cursor *mongo.Cursor) (accommodations []*domain.Accommodation, err e
 	err = cursor.Err()
 	return
 }
+
+func (store *AccommodationMongoDBStore) Search(location string, numberGuests uint32) ([]*domain.Accommodation, error) {
+	filter := bson.D{{}}
+	return store.filter(filter)
+}

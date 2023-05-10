@@ -44,7 +44,7 @@ message SearchRequest{
 }
 
 message SearchResponse{
-    repeated AccommodationWithPrice accomodations = 1;
+    repeated AccommodationWithPrice accommodations = 1;
 }
 
 message CreateAccommodationResponse{

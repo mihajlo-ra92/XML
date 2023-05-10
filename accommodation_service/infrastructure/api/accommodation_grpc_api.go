@@ -71,3 +71,24 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
+	fmt.Println("InSearch grpc api")
+	accommodations, err := handler.service.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.SearchResponse{
+		Accommodations: []*pb.AccommodationWithPrice{},
+	}
+	var accommodationWithPrice pb.AccommodationWithPrice
+
+	for _, accommodation := range accommodations {
+		current := mapAccommodation(accommodation)
+		accommodationWithPrice.Accommodation = current
+		accommodationWithPrice.Price = current.Price * request.Guest
+		response.Accommodations = append(response.Accommodations, &accommodationWithPrice)
+	}
+	return response, nil
+}
