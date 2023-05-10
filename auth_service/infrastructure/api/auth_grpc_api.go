@@ -69,6 +69,9 @@ func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, r
 	fmt.Print("jwtData: ")
 	fmt.Println(jwtData)
 
+	if jwtData.UserType != 0 {
+		return nil, fmt.Errorf("user must be of guest type")
+	}
 	bookingResponse, err := handler.service.GuestReserveAccommodation(jwtData, request)
 	if err != nil {
 		return nil, err

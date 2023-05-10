@@ -26,3 +26,8 @@ func (service *BookingService) GetAll() ([]*domain.Booking, error) {
 func (service *BookingService) Create(booking *domain.Booking) error {
 	return service.store.Insert(booking)
 }
+
+func (service *BookingService) Reserve(booking *domain.Booking) error {
+
+	return service.store.Insert(booking)
+}

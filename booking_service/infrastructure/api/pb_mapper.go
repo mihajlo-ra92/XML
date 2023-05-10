@@ -48,3 +48,19 @@ func mapNewBooking(request *pb.CreateBookingRequest) *domain.Booking {
 	}
 	return booking
 }
+
+func mapNewReservation(request *pb.GuestReserveAccommodationRequest) *domain.Booking {
+	booking := &domain.Booking{
+
+		Id:              primitive.NewObjectID(),
+		AccommodationId: request.Booking.AccommodationId,
+		GuestId:         request.Booking.GuestId,
+		Price:           request.Booking.Price,
+		PriceType:       domain.PriceType(request.Booking.PriceType),
+		NumberOfGuests:  request.Booking.NumberOfGuests,
+		BookingType:     1,
+		StartDate:       request.Booking.StartDate.AsTime(),
+		EndDate:         request.Booking.EndDate.AsTime(),
+	}
+	return booking
+}

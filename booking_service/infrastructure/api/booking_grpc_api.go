@@ -72,3 +72,22 @@ func (handler *BookingHandler) CreateBooking(ctx context.Context, request *pb.Cr
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *BookingHandler) GuestReserveAccommodation(ctx context.Context, request *pb.GuestReserveAccommodationRequest) (*pb.GuestReserveAccommodationResponse, error) {
+	fmt.Println("In GuestReserveAccommodation grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	reservation := mapNewReservation(request)
+	fmt.Print("booking after mapping: ")
+	fmt.Println(reservation)
+	err := handler.service.Reserve(reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	response := pb.GuestReserveAccommodationResponse{Booking: mapBooking(reservation)}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
