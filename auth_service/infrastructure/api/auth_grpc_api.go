@@ -78,6 +78,30 @@ func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.Auth
 	return userResponse, nil
 }
 
+func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
+	fmt.Println("In AuthGuestReserveAccommodation")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 0 {
+		return nil, fmt.Errorf("user must be of guest type")
+	}
+	bookingResponse, err := handler.service.GuestReserveAccommodation(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookingResponse, nil
+
+}
+
 func checkJwt(tokenString string) (*domain.JwtData, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:

@@ -11,6 +11,7 @@ import (
 	cfg "github.com/mihajlo-ra92/XML/api_gateway/startup/config"
 	accommodationGw "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
 	authGw "github.com/mihajlo-ra92/XML/common/proto/auth_service"
+	bookingGw "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
@@ -59,7 +60,7 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	//NOTE: My endpoints
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	fmt.Print("userEndpoint: ")
@@ -84,6 +85,15 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
+	bookingEndpoint := fmt.Sprintf("%s:%s", server.config.BookingHost, server.config.BookingPort)
+	fmt.Print("bookingEndpoint: ")
+	fmt.Println(bookingEndpoint)
+	err = bookingGw.RegisterBookingServiceHandlerFromEndpoint(context.TODO(), server.mux, bookingEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Handlers initalized")
 
 }

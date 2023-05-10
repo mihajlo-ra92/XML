@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+option go_package = "github.com/mihajlo-ra92/XML/common/booking";
+
+package booking;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service BookingService{
+    rpc Get(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+                get: "/booking/{id}"
+        };
+    }
+    rpc GetAll(GetAllRequest) returns(GetAllResponse){
+        option (google.api.http) = {
+                get: "/booking"
+        };
+    }
+    rpc CreateBooking(CreateBookingRequest) returns(CreateBookingResponse){
+    }
+    rpc GuestReserveAccommodation(GuestReserveAccommodationRequest) returns(GuestReserveAccommodationResponse){
+    }
+}
+
+message GetRequest{
+    string id = 1;
+}
+
+message GetResponse{
+    Booking booking = 1;
+}
+
+message GetAllRequest{
+}
+message GetAllResponse{
+    repeated Booking bookings = 1;
+}
+message CreateBookingRequest{
+    Booking booking = 1;
+}
+
+message CreateBookingResponse{
+    Booking booking = 1;
+}
+
+message GuestReserveAccommodationRequest{
+    Booking booking = 1;
+}
+
+message GuestReserveAccommodationResponse{
+    Booking booking = 1;
+}
+
+message Booking{
+    string id = 1;
+    string accommodationId = 2;
+    string guestId = 3;
+    uint32 price = 4;
+    enum PriceType {
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 6;
+    uint32 numberOfGuests = 7;
+    enum BookingType{
+        CustomPrice = 0;
+        Reserved = 1;
+        Booked = 2;
+    }
+    BookingType bookingType = 9;
+    google.protobuf.Timestamp start_date = 10;
+    google.protobuf.Timestamp end_date = 11;
+}

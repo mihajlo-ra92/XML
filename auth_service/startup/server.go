@@ -26,13 +26,14 @@ func NewServer(config *config.Config) *Server {
 func (server *Server) Start() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	accommodationEndpoint := fmt.Sprintf("%s:%s", server.config.AccommodationHost, server.config.AccommodationPort)
-	authService := server.initAuthService(userEndpoint, accommodationEndpoint)
+	bookingEndpoint := fmt.Sprintf("%s:%s", server.config.BookingHost, server.config.BookingPort)
+	authService := server.initAuthService(userEndpoint, accommodationEndpoint, bookingEndpoint)
 	authHandler := server.initAuthHandler(authService)
 	server.startGrpcServer(authHandler)
 }
 
-func (server *Server) initAuthService(userClientAddress string, accommodationClientAddress string) *application.AuthService {
-	return application.NewAuthService(userClientAddress, accommodationClientAddress)
+func (server *Server) initAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string) *application.AuthService {
+	return application.NewAuthService(userClientAddress, accommodationClientAddress, bookingClientAddress)
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {

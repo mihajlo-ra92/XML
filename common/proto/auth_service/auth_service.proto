@@ -5,6 +5,7 @@ option go_package = "github.com/mihajlo-ra92/XML/common/user";
 package user;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 service AuthService{
     rpc Login(LoginRequest) returns(LoginResponse){
@@ -22,6 +23,12 @@ service AuthService{
     rpc AuthUpdateUser(AuthUpdateUserRequest) returns (AuthUpdateUserResponse){
         option (google.api.http) = {
             post: "/update-user"
+              body: "*"
+        };
+    }
+    rpc AuthGuestReserveAccommodation(AuthGuestReserveAccommodationRequest) returns(AuthGuestReserveAccommodationResponse){
+        option (google.api.http) = {
+            post: "/accomodation-reserve"
             body: "*"
         };
     }
@@ -39,6 +46,51 @@ message AuthCreateAccommodationRequest{
 
 message AuthCreateAccommodationResponse{
     Accommodation accomodation = 1;
+}
+
+message AuthGuestReserveAccommodationRequest{
+    string jwt = 1;
+    string accommodationId = 2;
+    uint32 price = 3;
+    enum PriceType {
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 5;
+    uint32 numberOfGuests = 6;
+    enum BookingType{
+        CustomPrice = 0;
+        Reserved = 1;
+        Booked = 2;
+    }
+    BookingType bookingType = 8;
+    google.protobuf.Timestamp start_date = 9;
+    google.protobuf.Timestamp end_date = 10;
+}
+
+message Booking{
+    string id = 1;
+    string accommodationId = 2;
+    string guestId = 3;
+    uint32 price = 4;
+    enum PriceType {
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 6;
+    uint32 numberOfGuests = 7;
+    enum BookingType{
+        CustomPrice = 0;
+        Reserved = 1;
+        Booked = 2;
+    }
+    BookingType bookingType = 9;
+    google.protobuf.Timestamp start_date = 10;
+    google.protobuf.Timestamp end_date = 11;
+}
+
+message AuthGuestReserveAccommodationResponse{
+    Booking booking = 1;
 }
 
 message Accommodation {
