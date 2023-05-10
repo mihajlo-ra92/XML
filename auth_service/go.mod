@@ -4,10 +4,7 @@ go 1.20
 
 replace github.com/mihajlo-ra92/XML/common => ../common
 
-require (
-	go.mongodb.org/mongo-driver v1.11.5
-	google.golang.org/grpc v1.54.0
-)
+require google.golang.org/grpc v1.54.0
 
 require github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d
 

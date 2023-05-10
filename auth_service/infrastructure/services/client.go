@@ -4,6 +4,7 @@ import (
 	"log"
 
 	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
+	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -23,6 +24,14 @@ func NewAccommodationClient(address string) accommodation.AccommodationServiceCl
 		log.Fatalf("Failed to start gRPC connection to Accommodation service: %v", err)
 	}
 	return accommodation.NewAccommodationServiceClient(conn)
+}
+
+func NewBookingClient(address string) booking.BookingServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Booking service: %v", err)
+	}
+	return booking.NewBookingServiceClient(conn)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {

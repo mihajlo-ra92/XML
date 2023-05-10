@@ -8,10 +8,6 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 h1:gDLXvp5S9izjldquuoAhDzccbskOL6tDC5jMSyx3zxE=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2/go.mod h1:7pdNwVWBBHGiCxa9lAszqCJMbfTISJ7oMftp8+UGV08=
-github.com/mihajlo-ra92/XML/common v0.0.0-20230503212632-6d1c7c94fedb h1:6EGtwlLgJqIiSSUFGq/U7IvkwZDARwyPZKUGrI+0ASI=
-github.com/mihajlo-ra92/XML/common v0.0.0-20230503212632-6d1c7c94fedb/go.mod h1:ORgI73lqNwCmXbGyLT812rZg5JUdPFTaqQobhJFTGS4=
-github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d h1:1T4PFsX8wWv+h2Mej9IwctFayGlHo3QW0XZcDi/M4zA=
-github.com/mihajlo-ra92/XML/common v0.0.0-20230503231415-6b0d7acff76d/go.mod h1:ORgI73lqNwCmXbGyLT812rZg5JUdPFTaqQobhJFTGS4=
 golang.org/x/net v0.9.0 h1:aWJ/m6xSmxWBx+V0XRHTlrYrPG56jKsLdTFmsSsCzOM=
 golang.org/x/net v0.9.0/go.mod h1:d48xBJpPfHeWQsugry2m+kC02ZBRGRgulfHnEXEuWns=
 golang.org/x/sys v0.7.0 h1:3jlCCIQZPdOYu1h8BkNvLz8Kgwtae2cagcG/VamtZRU=

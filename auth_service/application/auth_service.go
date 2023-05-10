@@ -11,18 +11,21 @@ import (
 	"github.com/mihajlo-ra92/XML/auth_service/infrastructure/services"
 	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
 	pb "github.com/mihajlo-ra92/XML/common/proto/auth_service"
+	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
 
 type AuthService struct {
 	userClientAddress          string
 	accommodationClientAddress string
+	bookingClientAddress       string
 }
 
-func NewAuthService(userClientAddress string, accommodationClientAddress string) *AuthService {
+func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string) *AuthService {
 	return &AuthService{
 		userClientAddress:          userClientAddress,
 		accommodationClientAddress: accommodationClientAddress,
+		bookingClientAddress:       bookingClientAddress,
 	}
 }
 
@@ -72,4 +75,23 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 	fmt.Print("authCreateAccommodationResponse: ")
 	fmt.Println(authCreateAccommodationResponse)
 	return &authCreateAccommodationResponse, nil
+}
+
+func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
+	fmt.Println("In reserve accommodation")
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+	bookingStruct := booking.Booking{AccommodationId: request.AccommodationId, GuestId: jwtData.UserId, Price: request.Price, PriceType: booking.Booking_PriceType(request.PriceType), NumberOfGuests: request.NumberOfGuests, BookingType: booking.Booking_BookingType(request.BookingType), StartDate: request.StartDate, EndDate: request.EndDate}
+	bookingRequest := booking.GuestReserveAccommodationRequest{Booking: &bookingStruct}
+	fmt.Print("bookingRequest: ")
+	fmt.Println(bookingRequest)
+	bookingResponse, err := bookingClient.GuestReserveAccommodation(context.TODO(), &bookingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	authReserveAccommodationResponse := pb.AuthGuestReserveAccommodationResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
+	fmt.Print("authCreateBookingResponse: ")
+	fmt.Println(authReserveAccommodationResponse)
+	return &authReserveAccommodationResponse, nil
 }

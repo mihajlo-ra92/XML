@@ -58,6 +58,24 @@ func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request
 }
 
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
+	fmt.Println("In AuthGuestReserveAccommodation")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	bookingResponse, err := handler.service.GuestReserveAccommodation(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookingResponse, nil
+
 }
 
 func checkJwt(tokenString string) (*domain.JwtData, error) {
