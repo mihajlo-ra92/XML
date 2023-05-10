@@ -75,7 +75,7 @@ func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.Auth
 	if err != nil {
 		return nil, err
 	}
-	return userResponse
+	return userResponse, nil
 }
 
 func checkJwt(tokenString string) (*domain.JwtData, error) {

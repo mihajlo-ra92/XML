@@ -76,9 +76,9 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 
 func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
 	userClient := services.NewUserClient(service.userClientAddress)
-	user := pb.User{
+	userA := user.User{
 			Id:        request.User.Id,
-			UserType:  pb.User_UserType(request.User.UserType),
+			UserType:  user.User_UserType(request.User.UserType),
 			Username:  request.User.Username,
 			Password:  request.User.Password,
 			Email:     request.User.Email,
@@ -87,7 +87,7 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 			Address:   request.User.Address,
 	}
 	
-	userUpdateRequest := user.UpdateUserRequest{User: &user}
+	userUpdateRequest := user.UpdateUserRequest{User: &userA}
 	fmt.Print("userUpdateRequest: ")
 	fmt.Println(userUpdateRequest)
 	userUpdateResponse, err := userClient.UpdateUser(context.TODO(), &userUpdateRequest)
@@ -96,7 +96,17 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	}
 	fmt.Print("userUpdateResponse: ")
 	fmt.Println(userUpdateResponse)
-	authUpdateUserResponse := pb.AuthUpdateUserResponse{User: &userUpdateResponse}
+	userB := pb.User{
+			Id:        userUpdateResponse.User.Id,
+			UserType:  pb.User_UserType(userUpdateResponse.User.UserType),
+			Username:  userUpdateResponse.User.Username,
+			Password:  userUpdateResponse.User.Password,
+			Email:     userUpdateResponse.User.Email,
+			FirstName: userUpdateResponse.User.FirstName,
+			LastName:  userUpdateResponse.User.LastName,
+			Address:   userUpdateResponse.User.Address,
+	}
+	authUpdateUserResponse := pb.AuthUpdateUserResponse{User: &userB}
 	fmt.Print("authUpdateUserResponse: ")
 	fmt.Println(authUpdateUserResponse)
 	return &authUpdateUserResponse, nil
