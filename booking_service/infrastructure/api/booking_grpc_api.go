@@ -110,3 +110,22 @@ func (handler *BookingHandler) BookingAccept(ctx context.Context, request *pb.Bo
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *BookingHandler) BookingDeny(ctx context.Context, request *pb.BookingDenyRequest) (*pb.BookingDenyResponse, error) {
+	fmt.Println("In BookingDeny grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	reservation := mapDeniedBooking(request)
+	fmt.Print("booking after mapping: ")
+	fmt.Println(reservation)
+	err := handler.service.Deny(reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	response := pb.BookingDenyResponse{}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
