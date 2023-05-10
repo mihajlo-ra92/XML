@@ -4,6 +4,7 @@ import (
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
 	pb "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func mapBooking(booking *domain.Booking) *pb.Booking {
@@ -31,6 +32,9 @@ func mapBooking(booking *domain.Booking) *pb.Booking {
 		Price:           booking.Price,
 		PriceType:       priceType,
 		BookingType:     bookingType,
+		NumberOfGuests:  booking.NumberOfGuests,
+		StartDate:       timestamppb.New(booking.StartDate),
+		EndDate:         timestamppb.New(booking.EndDate),
 	}
 	return bookingPb
 }
