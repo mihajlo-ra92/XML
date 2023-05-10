@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -26,4 +28,6 @@ type Booking struct {
 	PriceType       PriceType          `bson:"price_type"`
 	NumberOfGuests  uint32             `bson:"number_of_guests"`
 	BookingType     BookingType        `bson:"booking_type"`
+	StartDate       time.Time          `bson:"start_date"`
+	EndDate         time.Time          `bson:"end_date"`
 }
