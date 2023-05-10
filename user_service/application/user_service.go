@@ -86,7 +86,11 @@ func (service *UserService) Update(user *domain.User) error{
 	}
 	fmt.Print("Get user by email: ")
 	fmt.Println(checkUser)
-	err = service.store.Update(user)
+	err = service.store.Delete(user)
+	if err != nil {
+		return err
+	}
+	err = service.store.Insert(user)
 	if err != nil {
 		return err
 	}
