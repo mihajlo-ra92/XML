@@ -32,6 +32,12 @@ service AuthService{
             body: "*"
         };
     }
+        rpc AuthBookingAccept(AuthBookingAcceptRequest) returns(AuthBookingAcceptResponse){
+        option (google.api.http) = {
+            post: "/booking-accept"
+            body: "*"
+        };
+    }
 }
 
 message AuthCreateAccommodationRequest{
@@ -46,6 +52,15 @@ message AuthCreateAccommodationRequest{
 
 message AuthCreateAccommodationResponse{
     Accommodation accomodation = 1;
+}
+
+message AuthBookingAcceptRequest{
+    string jwt = 1;
+    string bookingId = 2;
+}
+
+message AuthBookingAcceptResponse{
+    Booking booking = 1;
 }
 
 message AuthGuestReserveAccommodationRequest{
