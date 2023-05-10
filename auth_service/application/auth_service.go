@@ -95,3 +95,26 @@ func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, r
 	fmt.Println(authReserveAccommodationResponse)
 	return &authReserveAccommodationResponse, nil
 }
+
+func (service *AuthService) BookingAccept(jwtData *domain.JwtData, request *pb.AuthBookingAcceptRequest) (*pb.AuthBookingAcceptResponse, error) {
+	fmt.Println("In booking accept")
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+	bookginGetRequest := booking.GetRequest{Id: request.BookingId}
+	reservedBooking, err := bookingClient.Get(context.TODO(), &bookginGetRequest)
+	if err != nil {
+		return nil, err
+	}
+	bookingRequest := booking.BookingAcceptRequest{Booking: reservedBooking.Booking}
+	fmt.Print("bookingRequest: ")
+	fmt.Println(bookingRequest)
+	bookingResponse, err := bookingClient.BookingAccept(context.TODO(), &bookingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	authBookingAcceptResponse := pb.AuthBookingAcceptResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
+	fmt.Print("authBookingAcceptResponse: ")
+	fmt.Println(authBookingAcceptResponse)
+	return &authBookingAcceptResponse, nil
+}

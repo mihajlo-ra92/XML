@@ -58,3 +58,11 @@ func (service *BookingService) Reserve(booking *domain.Booking) error {
 
 	return service.store.Insert(booking)
 }
+
+func (service *BookingService) Book(booking *domain.Booking) error {
+	err := service.store.Delete(booking)
+	if err != nil {
+		return err
+	}
+	return service.store.Insert(booking)
+}
