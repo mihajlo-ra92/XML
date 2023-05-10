@@ -69,7 +69,9 @@ func (store *UserMongoDBStore) Insert(User *domain.User) error {
 	return nil
 }
 func (store *UserMongoDBStore) Update(User *domain.User) error {
-	_ , err := store.users.UpdateByID(context.TODO(), User.Id, User)
+	filter := bson.M{"_id": User.Id}
+    update := bson.M{"$set": User}
+	_ , err := store.users.UpdateByID(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}

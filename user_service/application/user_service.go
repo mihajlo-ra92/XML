@@ -73,7 +73,7 @@ func (service *UserService) Update(user *domain.User) error{
 	}
 	fmt.Print("Get user by username: ")
 	fmt.Println(checkUser)
-	if checkUser != nil {
+	if checkUser != nil && checkUser.Id != user.Id {
 		return fmt.Errorf("user with username %s already exists", user.Username)
 	}
 	
@@ -81,7 +81,7 @@ func (service *UserService) Update(user *domain.User) error{
 	if err != nil && err.Error() != "mongo: no documents in result" {
 	    return err
 	}
-	if checkUser != nil {
+	if checkUser != nil && checkUser.Id != user.Id  {
 		return fmt.Errorf("user with email %s already exists", user.Email)
 	}
 	fmt.Print("Get user by email: ")
