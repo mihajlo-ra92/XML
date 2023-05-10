@@ -26,3 +26,7 @@ func (service *AccommodationService) GetAll() ([]*domain.Accommodation, error) {
 func (service *AccommodationService) Create(accommodation *domain.Accommodation) error {
 	return service.store.Insert(accommodation)
 }
+
+func (service *AccommodationService) Search(location string, numberGuests uint32) ([]*domain.Accommodation, error) {
+	return service.store.Search(location, numberGuests)
+}
