@@ -68,6 +68,13 @@ func (store *UserMongoDBStore) Insert(User *domain.User) error {
 	User.Id = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
+func (store *UserMongoDBStore) Update(User *domain.User) error {
+	_ , err := store.users.UpdateByID(context.TODO(), User.Id, User)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (store *UserMongoDBStore) DeleteAll() {
 	store.users.DeleteMany(context.TODO(), bson.D{{}})

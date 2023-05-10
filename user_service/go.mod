@@ -2,6 +2,8 @@ module github.com/mihajlo-ra92/XML/user_service
 
 go 1.17
 
+replace github.com/mihajlo-ra92/XML/common => ../common
+
 require (
 	github.com/mihajlo-ra92/XML/common v0.0.0-20230501225349-fc650d6022e6
 	go.mongodb.org/mongo-driver v1.11.4
