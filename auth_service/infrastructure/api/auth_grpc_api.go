@@ -57,6 +57,27 @@ func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request
 	return accommodationResponse, nil
 }
 
+func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
+	fmt.Println("In AuthUpdateUser")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+	if jwtData.UserId != request.User.Id {
+		return nil, fmt.Errorf("try to edit other user")
+	}
+	userResponse, err := handler.service.UpdateUser(request)
+	if err != nil {
+		return nil, err
+	}
+	return userResponse, nil
+}
+
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
 	fmt.Println("In AuthGuestReserveAccommodation")
 	fmt.Print("request: ")

@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	AuthCreateAccommodation(ctx context.Context, in *AuthCreateAccommodationRequest, opts ...grpc.CallOption) (*AuthCreateAccommodationResponse, error)
+	AuthUpdateUser(ctx context.Context, in *AuthUpdateUserRequest, opts ...grpc.CallOption) (*AuthUpdateUserResponse, error)
 	AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error)
 }
 
@@ -53,6 +54,15 @@ func (c *authServiceClient) AuthCreateAccommodation(ctx context.Context, in *Aut
 	return out, nil
 }
 
+func (c *authServiceClient) AuthUpdateUser(ctx context.Context, in *AuthUpdateUserRequest, opts ...grpc.CallOption) (*AuthUpdateUserResponse, error) {
+	out := new(AuthUpdateUserResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthUpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error) {
 	out := new(AuthGuestReserveAccommodationResponse)
 	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGuestReserveAccommodation", in, out, opts...)
@@ -68,6 +78,7 @@ func (c *authServiceClient) AuthGuestReserveAccommodation(ctx context.Context, i
 type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	AuthCreateAccommodation(context.Context, *AuthCreateAccommodationRequest) (*AuthCreateAccommodationResponse, error)
+	AuthUpdateUser(context.Context, *AuthUpdateUserRequest) (*AuthUpdateUserResponse, error)
 	AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
@@ -81,6 +92,9 @@ func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*Lo
 }
 func (UnimplementedAuthServiceServer) AuthCreateAccommodation(context.Context, *AuthCreateAccommodationRequest) (*AuthCreateAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthCreateAccommodation not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthUpdateUser(context.Context, *AuthUpdateUserRequest) (*AuthUpdateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthUpdateUser not implemented")
 }
 func (UnimplementedAuthServiceServer) AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthGuestReserveAccommodation not implemented")
@@ -134,6 +148,24 @@ func _AuthService_AuthCreateAccommodation_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AuthUpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthUpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthUpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthUpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthUpdateUser(ctx, req.(*AuthUpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_AuthGuestReserveAccommodation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthGuestReserveAccommodationRequest)
 	if err := dec(in); err != nil {
@@ -166,6 +198,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthCreateAccommodation",
 			Handler:    _AuthService_AuthCreateAccommodation_Handler,
+		},
+		{
+			MethodName: "AuthUpdateUser",
+			Handler:    _AuthService_AuthUpdateUser_Handler,
 		},
 		{
 			MethodName: "AuthGuestReserveAccommodation",

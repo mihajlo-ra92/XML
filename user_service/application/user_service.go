@@ -65,3 +65,34 @@ func (service *UserService) Create(user *domain.User) error{
 	}
 	return nil
 }
+
+func (service *UserService) Update(user *domain.User) error{
+	checkUser, err := service.store.GetByUsername(user.Username)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+	    return err
+	}
+	fmt.Print("Get user by username: ")
+	fmt.Println(checkUser)
+	if checkUser != nil && checkUser.Id != user.Id {
+		return fmt.Errorf("user with username %s already exists", user.Username)
+	}
+	
+	checkUser, err = service.store.GetByEmail(user.Email)
+	if err != nil && err.Error() != "mongo: no documents in result" {
+	    return err
+	}
+	if checkUser != nil && checkUser.Id != user.Id  {
+		return fmt.Errorf("user with email %s already exists", user.Email)
+	}
+	fmt.Print("Get user by email: ")
+	fmt.Println(checkUser)
+	err = service.store.Delete(user)
+	if err != nil {
+		return err
+	}
+	err = service.store.Insert(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}

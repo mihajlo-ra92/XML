@@ -68,6 +68,40 @@ func (store *UserMongoDBStore) Insert(User *domain.User) error {
 	User.Id = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
+func (store *UserMongoDBStore) Update(user *domain.User) error {
+	fmt.Print("user in mongodb_store: ")
+	fmt.Println(user)
+	filter := bson.M{"_id": user.Id}
+	update := bson.M{"$set": bson.M{
+		"user_type":     user.UserType,
+		"username":    user.Username,
+		"password": user.Password,
+		"email": user.Email,
+		"first_name": user.FirstName,
+		"last_name": user.LastName,
+		"address": user.Address,
+	}}
+	updateResult, err := store.users.UpdateByID(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+	fmt.Print("updateResult: ")
+	fmt.Print(updateResult)
+	return nil
+}
+
+func (store *UserMongoDBStore) Delete(user *domain.User) error{
+	filter := bson.M{"_id": user.Id}
+	result, err := store.users.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("no document found with ID %s", user.Id)
+	}
+	return nil
+}
+
 
 func (store *UserMongoDBStore) DeleteAll() {
 	store.users.DeleteMany(context.TODO(), bson.D{{}})

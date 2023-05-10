@@ -20,6 +20,12 @@ service AuthService{
             body: "*"
         };
     }
+    rpc AuthUpdateUser(AuthUpdateUserRequest) returns (AuthUpdateUserResponse){
+        option (google.api.http) = {
+            post: "/update-user"
+              body: "*"
+        };
+    }
     rpc AuthGuestReserveAccommodation(AuthGuestReserveAccommodationRequest) returns(AuthGuestReserveAccommodationResponse){
         option (google.api.http) = {
             post: "/accomodation-reserve"
@@ -109,4 +115,29 @@ message AuthLogin {
 
 message LoginResponse {
    string jwt = 1;
+}
+
+message AuthUpdateUserRequest{
+    string jwt =1;
+    AuthUser user = 2;
+}
+
+message AuthUpdateUserResponse{
+    AuthUser user = 1;
+}
+
+message AuthUser {
+    string id = 1;
+    enum UserType {
+        Guest = 0;
+        Host = 1;
+        Admin = 2;
+    }
+    UserType userType = 2;
+    string username = 3;
+    string password = 4;
+    string email = 5;
+    string FirstName = 6;
+    string LastName = 7;
+    string Address = 8;
 }

@@ -21,6 +21,21 @@ func mapNewUser(userPb *pb.NewUser) *domain.User {
 	return user
 }
 
+func mapUpdatedUser(userPb *pb.User) *domain.User {
+	UserId, _ := primitive.ObjectIDFromHex(userPb.Id)
+	user := &domain.User{
+		Id:        UserId,
+		UserType:  domain.UserType(userPb.UserType),
+		Username:  userPb.Username,
+		Password:  userPb.Password,
+		Email:     userPb.Email,
+		FirstName: userPb.FirstName,
+		LastName:  userPb.LastName,
+		Address:   userPb.Address,
+	}
+	return user
+}
+
 func mapUser(user *domain.User) *pb.User {
 	var userType pb.User_UserType
 	switch user.UserType {

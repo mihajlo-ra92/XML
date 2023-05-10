@@ -23,7 +23,14 @@ service UserService{
             body: "user"
         };
     }
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse){}
     rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){}
+}
+message UpdateUserRequest {
+    User user = 1;
+}
+message UpdateUserResponse{
+    User user = 1;
 }
 message CreateUserRequest {
     NewUser user = 1;
