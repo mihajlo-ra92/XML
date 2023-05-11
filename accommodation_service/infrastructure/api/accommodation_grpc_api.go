@@ -74,7 +74,7 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 
 func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
 	fmt.Println("InSearch grpc api")
-	accommodations, err := handler.service.GetAll()
+	accommodations, err := handler.service.Search(request.Location, request.Guest)
 	if err != nil {
 		return nil, err
 	}
