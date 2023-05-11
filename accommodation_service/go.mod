@@ -5,7 +5,7 @@ go 1.17
 replace github.com/mihajlo-ra92/XML/common => ../common
 
 require (
-	go.mongodb.org/mongo-driver v1.11.4
+	go.mongodb.org/mongo-driver v1.11.6
 	google.golang.org/grpc v1.54.0
 )
 

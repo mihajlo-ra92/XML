@@ -2,8 +2,11 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
+
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,6 +35,7 @@ func (store *BookingMongoDBStore) Get(id primitive.ObjectID) (*domain.Booking, e
 }
 
 func (store *BookingMongoDBStore) GetAll() ([]*domain.Booking, error) {
+	fmt.Println("Usao je u repo")
 	filter := bson.D{{}}
 	return store.filter(filter)
 }
@@ -42,6 +46,18 @@ func (store *BookingMongoDBStore) Insert(Booking *domain.Booking) error {
 		return err
 	}
 	Booking.Id = result.InsertedID.(primitive.ObjectID)
+	return nil
+}
+
+func (store *BookingMongoDBStore) Delete(Booking *domain.Booking) error {
+	filter := bson.M{"_id": Booking.Id}
+	result, err := store.bookings.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("no document found with ID %s", Booking.Id)
+	}
 	return nil
 }
 

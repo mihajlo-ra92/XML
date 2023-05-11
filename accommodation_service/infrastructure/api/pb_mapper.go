@@ -16,6 +16,7 @@ func mapAccommodation(accommodation *domain.Accommodation) *pb.Accommodation {
 		Pictures:  accommodation.Pictures,
 		MinGuests: accommodation.MinGuests,
 		MaxGuests: accommodation.MaxGuests,
+		Price:     accommodation.Price,
 	}
 	return accommodationPb
 }

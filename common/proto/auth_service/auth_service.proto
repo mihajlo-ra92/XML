@@ -38,6 +38,18 @@ service AuthService{
             body: "*"
         };
     }
+    rpc AuthBookingAccept(AuthBookingAcceptRequest) returns(AuthBookingAcceptResponse){
+        option (google.api.http) = {
+            post: "/booking-accept"
+            body: "*"
+        };
+    }
+    rpc AuthBookingDeny(AuthBookingDenyRequest) returns(AuthBookingDenyResponse){
+        option (google.api.http) = {
+            post: "/booking-deny"
+            body: "*"
+        };
+    }
 }
 
 message AuthDeleteUserRequest{
@@ -60,6 +72,24 @@ message AuthCreateAccommodationRequest{
 
 message AuthCreateAccommodationResponse{
     Accommodation accomodation = 1;
+}
+
+message AuthBookingAcceptRequest{
+    string jwt = 1;
+    string bookingId = 2;
+}
+
+message AuthBookingAcceptResponse{
+    Booking booking = 1;
+}
+
+message AuthBookingDenyRequest{
+    string jwt = 1;
+    string bookingId = 2;
+}
+
+message AuthBookingDenyResponse{
+    string message = 1;
 }
 
 message AuthGuestReserveAccommodationRequest{

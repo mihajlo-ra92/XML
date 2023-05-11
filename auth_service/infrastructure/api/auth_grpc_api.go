@@ -57,7 +57,7 @@ func (handler *AuthHandler) AuthCreateAccommodation(ctx context.Context, request
 	return accommodationResponse, nil
 }
 
-func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
+func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error) {
 	fmt.Println("In AuthUpdateUser")
 	fmt.Print("request: ")
 	fmt.Println(request)
@@ -115,6 +115,54 @@ func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, r
 		return nil, fmt.Errorf("user must be of guest type")
 	}
 	bookingResponse, err := handler.service.GuestReserveAccommodation(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookingResponse, nil
+
+}
+
+func (handler *AuthHandler) AuthBookingAccept(ctx context.Context, request *pb.AuthBookingAcceptRequest) (*pb.AuthBookingAcceptResponse, error) {
+	fmt.Println("In AuthBookingAccept")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	bookingResponse, err := handler.service.BookingAccept(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookingResponse, nil
+
+}
+
+func (handler *AuthHandler) AuthBookingDeny(ctx context.Context, request *pb.AuthBookingDenyRequest) (*pb.AuthBookingDenyResponse, error) {
+	fmt.Println("In AuthBookingAccept")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	bookingResponse, err := handler.service.BookingDeny(jwtData, request)
 	if err != nil {
 		return nil, err
 	}

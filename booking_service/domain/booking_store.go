@@ -9,5 +9,6 @@ type BookingStore interface {
 	GetAll() ([]*Booking, error)
 	Insert(booking *Booking) error
 	DeleteAll()
+	Delete(booking *Booking) error
 	// Update()
 }

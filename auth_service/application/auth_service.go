@@ -32,6 +32,7 @@ func NewAuthService(userClientAddress string, accommodationClientAddress string,
 func (service *AuthService) Login(username string, password string) (*string, error) {
 	fmt.Println("In auth_service, login")
 	userClient := services.NewUserClient(service.userClientAddress)
+	fmt.Println(userClient)
 	dataToSend := user.Login{Username: username, Password: password}
 	fmt.Print("dataToSend: ")
 	fmt.Println(dataToSend)
@@ -77,19 +78,19 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 	return &authCreateAccommodationResponse, nil
 }
 
-func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
+func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error) {
 	userClient := services.NewUserClient(service.userClientAddress)
 	userA := user.User{
-			Id:        request.User.Id,
-			UserType:  user.User_UserType(request.User.UserType),
-			Username:  request.User.Username,
-			Password:  request.User.Password,
-			Email:     request.User.Email,
-			FirstName: request.User.FirstName,
-			LastName:  request.User.LastName,
-			Address:   request.User.Address,
+		Id:        request.User.Id,
+		UserType:  user.User_UserType(request.User.UserType),
+		Username:  request.User.Username,
+		Password:  request.User.Password,
+		Email:     request.User.Email,
+		FirstName: request.User.FirstName,
+		LastName:  request.User.LastName,
+		Address:   request.User.Address,
 	}
-	
+
 	userUpdateRequest := user.UpdateUserRequest{User: &userA}
 	fmt.Print("userUpdateRequest: ")
 	fmt.Println(userUpdateRequest)
@@ -100,14 +101,14 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	fmt.Print("userUpdateResponse: ")
 	fmt.Println(userUpdateResponse)
 	userB := pb.AuthUser{
-			Id:        userUpdateResponse.User.Id,
-			UserType:  pb.AuthUser_UserType(userUpdateResponse.User.UserType),
-			Username:  userUpdateResponse.User.Username,
-			Password:  userUpdateResponse.User.Password,
-			Email:     userUpdateResponse.User.Email,
-			FirstName: userUpdateResponse.User.FirstName,
-			LastName:  userUpdateResponse.User.LastName,
-			Address:   userUpdateResponse.User.Address,
+		Id:        userUpdateResponse.User.Id,
+		UserType:  pb.AuthUser_UserType(userUpdateResponse.User.UserType),
+		Username:  userUpdateResponse.User.Username,
+		Password:  userUpdateResponse.User.Password,
+		Email:     userUpdateResponse.User.Email,
+		FirstName: userUpdateResponse.User.FirstName,
+		LastName:  userUpdateResponse.User.LastName,
+		Address:   userUpdateResponse.User.Address,
 	}
 	authUpdateUserResponse := pb.AuthUpdateUserResponse{User: &userB}
 	fmt.Print("authUpdateUserResponse: ")
@@ -160,4 +161,50 @@ func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, r
 	fmt.Print("authCreateBookingResponse: ")
 	fmt.Println(authReserveAccommodationResponse)
 	return &authReserveAccommodationResponse, nil
+}
+
+func (service *AuthService) BookingAccept(jwtData *domain.JwtData, request *pb.AuthBookingAcceptRequest) (*pb.AuthBookingAcceptResponse, error) {
+	fmt.Println("In booking accept")
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+	bookginGetRequest := booking.GetRequest{Id: request.BookingId}
+	reservedBooking, err := bookingClient.Get(context.TODO(), &bookginGetRequest)
+	if err != nil {
+		return nil, err
+	}
+	bookingRequest := booking.BookingAcceptRequest{Booking: reservedBooking.Booking}
+	fmt.Print("bookingRequest: ")
+	fmt.Println(bookingRequest)
+	bookingResponse, err := bookingClient.BookingAccept(context.TODO(), &bookingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	authBookingAcceptResponse := pb.AuthBookingAcceptResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
+	fmt.Print("authBookingAcceptResponse: ")
+	fmt.Println(authBookingAcceptResponse)
+	return &authBookingAcceptResponse, nil
+}
+
+func (service *AuthService) BookingDeny(jwtData *domain.JwtData, request *pb.AuthBookingDenyRequest) (*pb.AuthBookingDenyResponse, error) {
+	fmt.Println("In booking deny")
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+	bookginGetRequest := booking.GetRequest{Id: request.BookingId}
+	reservedBooking, err := bookingClient.Get(context.TODO(), &bookginGetRequest)
+	if err != nil {
+		return nil, err
+	}
+	bookingRequest := booking.BookingDenyRequest{Booking: reservedBooking.Booking}
+	fmt.Print("bookingRequest: ")
+	fmt.Println(bookingRequest)
+	bookingResponse, err := bookingClient.BookingDeny(context.TODO(), &bookingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	authBookingDenyResponse := pb.AuthBookingDenyResponse{}
+	fmt.Print("authBookingDenyResponse: ")
+	fmt.Println(authBookingDenyResponse)
+	return &authBookingDenyResponse, nil
 }

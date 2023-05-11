@@ -68,3 +68,39 @@ func mapNewReservation(request *pb.GuestReserveAccommodationRequest) *domain.Boo
 	}
 	return booking
 }
+
+func mapAcceptedBooking(request *pb.BookingAcceptRequest) *domain.Booking {
+	BookingId, _ := primitive.ObjectIDFromHex(request.Booking.Id)
+
+	booking := &domain.Booking{
+
+		Id:              BookingId,
+		AccommodationId: request.Booking.AccommodationId,
+		GuestId:         request.Booking.GuestId,
+		Price:           request.Booking.Price,
+		PriceType:       domain.PriceType(request.Booking.PriceType),
+		NumberOfGuests:  request.Booking.NumberOfGuests,
+		BookingType:     2,
+		StartDate:       request.Booking.StartDate.AsTime(),
+		EndDate:         request.Booking.EndDate.AsTime(),
+	}
+	return booking
+}
+
+func mapDeniedBooking(request *pb.BookingDenyRequest) *domain.Booking {
+	BookingId, _ := primitive.ObjectIDFromHex(request.Booking.Id)
+
+	booking := &domain.Booking{
+
+		Id:              BookingId,
+		AccommodationId: request.Booking.AccommodationId,
+		GuestId:         request.Booking.GuestId,
+		Price:           request.Booking.Price,
+		PriceType:       domain.PriceType(request.Booking.PriceType),
+		NumberOfGuests:  request.Booking.NumberOfGuests,
+		BookingType:     2,
+		StartDate:       request.Booking.StartDate.AsTime(),
+		EndDate:         request.Booking.EndDate.AsTime(),
+	}
+	return booking
+}

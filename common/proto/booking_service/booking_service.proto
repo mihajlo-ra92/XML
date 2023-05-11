@@ -22,6 +22,10 @@ service BookingService{
     }
     rpc GuestReserveAccommodation(GuestReserveAccommodationRequest) returns(GuestReserveAccommodationResponse){
     }
+    rpc BookingAccept(BookingAcceptRequest) returns(BookingAcceptResponse){
+    }
+    rpc BookingDeny(BookingDenyRequest) returns(BookingDenyResponse){
+    }
 }
 
 message GetRequest{
@@ -51,6 +55,22 @@ message GuestReserveAccommodationRequest{
 
 message GuestReserveAccommodationResponse{
     Booking booking = 1;
+}
+
+message BookingAcceptRequest{
+    Booking booking = 1;
+}
+
+message BookingAcceptResponse{
+    Booking booking = 1;
+}
+
+message BookingDenyRequest{
+    Booking booking = 1;
+}
+
+message BookingDenyResponse{
+    string message = 1;
 }
 
 message Booking{
