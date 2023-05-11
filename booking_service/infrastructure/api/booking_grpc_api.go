@@ -97,6 +97,10 @@ func (handler *BookingHandler) BookingAccept(ctx context.Context, request *pb.Bo
 	fmt.Print("Request: ")
 	fmt.Println(request)
 
+	if request.Booking.BookingType != 1 {
+		return nil, fmt.Errorf("this accommodation isn't reserved")
+	}
+
 	reservation := mapAcceptedBooking(request)
 	fmt.Print("booking after mapping: ")
 	fmt.Println(reservation)
@@ -115,6 +119,10 @@ func (handler *BookingHandler) BookingDeny(ctx context.Context, request *pb.Book
 	fmt.Println("In BookingDeny grpc api")
 	fmt.Print("Request: ")
 	fmt.Println(request)
+
+	if request.Booking.BookingType != 1 {
+		return nil, fmt.Errorf("this accommodation isn't reserved")
+	}
 
 	reservation := mapDeniedBooking(request)
 	fmt.Print("booking after mapping: ")

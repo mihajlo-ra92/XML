@@ -41,9 +41,6 @@ func (service *BookingService) Reserve(booking *domain.Booking) error {
 }
 
 func (service *BookingService) Deny(booking *domain.Booking) error {
-	// if booking.BookingType != 1 {
-	// 	return fmt.Errorf("this accommodation isn't reserved")
-	// }
 	return service.store.Delete(booking)
 }
 
@@ -62,7 +59,7 @@ func (service *BookingService) Book(booking *domain.Booking) error {
 	for _, oneBooking := range bookings {
 
 		if oneBooking.AccommodationId == booking.AccommodationId {
-			if TimeSpansOverlap(oneBooking.StartDate, oneBooking.EndDate, booking.StartDate, booking.EndDate) /*&& booking.BookingType == 2 */ {
+			if TimeSpansOverlap(oneBooking.StartDate, oneBooking.EndDate, booking.StartDate, booking.EndDate) && oneBooking.BookingType == 2 {
 				return fmt.Errorf("this date is already booked")
 			}
 		}
