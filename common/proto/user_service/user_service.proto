@@ -23,8 +23,15 @@ service UserService{
             body: "user"
         };
     }
+    rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){}
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse){}
     rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){}
+}
+message DeleteUserRequest{
+    string id = 1;
+}
+message DeleteUserResponse{
+    User user = 1; 
 }
 message UpdateUserRequest {
     User user = 1;

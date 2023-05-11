@@ -25,6 +25,7 @@ type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	AuthCreateAccommodation(ctx context.Context, in *AuthCreateAccommodationRequest, opts ...grpc.CallOption) (*AuthCreateAccommodationResponse, error)
 	AuthUpdateUser(ctx context.Context, in *AuthUpdateUserRequest, opts ...grpc.CallOption) (*AuthUpdateUserResponse, error)
+	AuthDeleteUser(ctx context.Context, in *AuthDeleteUserRequest, opts ...grpc.CallOption) (*AuthDeleteUserResponse, error)
 	AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(ctx context.Context, in *AuthBookingAcceptRequest, opts ...grpc.CallOption) (*AuthBookingAcceptResponse, error)
 	AuthBookingDeny(ctx context.Context, in *AuthBookingDenyRequest, opts ...grpc.CallOption) (*AuthBookingDenyResponse, error)
@@ -65,6 +66,15 @@ func (c *authServiceClient) AuthUpdateUser(ctx context.Context, in *AuthUpdateUs
 	return out, nil
 }
 
+func (c *authServiceClient) AuthDeleteUser(ctx context.Context, in *AuthDeleteUserRequest, opts ...grpc.CallOption) (*AuthDeleteUserResponse, error) {
+	out := new(AuthDeleteUserResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthDeleteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error) {
 	out := new(AuthGuestReserveAccommodationResponse)
 	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGuestReserveAccommodation", in, out, opts...)
@@ -99,6 +109,7 @@ type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	AuthCreateAccommodation(context.Context, *AuthCreateAccommodationRequest) (*AuthCreateAccommodationResponse, error)
 	AuthUpdateUser(context.Context, *AuthUpdateUserRequest) (*AuthUpdateUserResponse, error)
+	AuthDeleteUser(context.Context, *AuthDeleteUserRequest) (*AuthDeleteUserResponse, error)
 	AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(context.Context, *AuthBookingAcceptRequest) (*AuthBookingAcceptResponse, error)
 	AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error)
@@ -117,6 +128,9 @@ func (UnimplementedAuthServiceServer) AuthCreateAccommodation(context.Context, *
 }
 func (UnimplementedAuthServiceServer) AuthUpdateUser(context.Context, *AuthUpdateUserRequest) (*AuthUpdateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthUpdateUser not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthDeleteUser(context.Context, *AuthDeleteUserRequest) (*AuthDeleteUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthDeleteUser not implemented")
 }
 func (UnimplementedAuthServiceServer) AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthGuestReserveAccommodation not implemented")
@@ -194,6 +208,24 @@ func _AuthService_AuthUpdateUser_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AuthDeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthDeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthDeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthDeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthDeleteUser(ctx, req.(*AuthDeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_AuthGuestReserveAccommodation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthGuestReserveAccommodationRequest)
 	if err := dec(in); err != nil {
@@ -266,6 +298,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthUpdateUser",
 			Handler:    _AuthService_AuthUpdateUser_Handler,
+		},
+		{
+			MethodName: "AuthDeleteUser",
+			Handler:    _AuthService_AuthDeleteUser_Handler,
 		},
 		{
 			MethodName: "AuthGuestReserveAccommodation",

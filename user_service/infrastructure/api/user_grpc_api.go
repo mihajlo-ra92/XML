@@ -106,3 +106,27 @@ func (handler *UserHandler) UpdateUser(ctx context.Context, request *pb.UpdateUs
 		User: mapUser(user),
 	}, nil
 }
+
+func (handler *UserHandler) DeleteUser(ctx context.Context, request *pb.DeleteUserRequest)(*pb.DeleteUserResponse, error){
+	fmt.Println("In DeleteUser grpc api")
+	fmt.Print("Request.Id: ")
+	fmt.Println(request.Id)
+	
+	formatedId, err := primitive.ObjectIDFromHex(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	deletedUser,err := handler.service.Get(formatedId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("deletedUser after mapping: ")
+	fmt.Println(deletedUser)
+	err =  handler.service.Delete(deletedUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteUserResponse{
+		User: mapUser(deletedUser)}, nil
+}

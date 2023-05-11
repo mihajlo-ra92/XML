@@ -78,6 +78,27 @@ func (handler *AuthHandler) AuthUpdateUser(ctx context.Context, request *pb.Auth
 	return userResponse, nil
 }
 
+func (handler *AuthHandler) AuthDeleteUser(ctx context.Context, request *pb.AuthDeleteUserRequest)(*pb.AuthDeleteUserResponse, error){
+	fmt.Println("In AuthDeleteUser")
+	fmt.Print("request : ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData in AuthDeleteUser: ")
+	fmt.Println(jwtData)
+	if jwtData.UserId != request.Id {
+		return nil, fmt.Errorf("try to delete other user")
+	}
+	userResponse, err := handler.service.DeleteUser(request)
+	if err != nil {
+		return nil, err
+	}
+	return userResponse, nil
+}
+
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
 	fmt.Println("In AuthGuestReserveAccommodation")
 	fmt.Print("request: ")
