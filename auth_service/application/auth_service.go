@@ -32,6 +32,7 @@ func NewAuthService(userClientAddress string, accommodationClientAddress string,
 func (service *AuthService) Login(username string, password string) (*string, error) {
 	fmt.Println("In auth_service, login")
 	userClient := services.NewUserClient(service.userClientAddress)
+	fmt.Println(userClient)
 	dataToSend := user.Login{Username: username, Password: password}
 	fmt.Print("dataToSend: ")
 	fmt.Println(dataToSend)

@@ -9,5 +9,6 @@ type AccommodationStore interface {
 	GetAll() ([]*Accommodation, error)
 	Insert(accommotaion *Accommodation) error
 	DeleteAll()
+	Search(location string, numberGuests uint32) ([]*Accommodation, error)
 	// Update()
 }

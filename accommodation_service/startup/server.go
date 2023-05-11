@@ -32,8 +32,9 @@ func NewServer(config *config.Config) *Server {
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
+	bookingEndpoint := fmt.Sprintf("%s:%s", server.config.BookingHost, server.config.BookingPort)
 	accommodationStore := server.initAccommodationStore(mongoClient)
-	accommodationService := server.initAccommodationService(accommodationStore)
+	accommodationService := server.initAccommodationService(accommodationStore, bookingEndpoint)
 	accommodationHandler := server.initAccommodationHandler(accommodationService)
 	server.startGrpcServer(accommodationHandler)
 
@@ -59,8 +60,8 @@ func (server *Server) initAccommodationStore(client *mongo.Client) domain.Accomm
 	return store
 }
 
-func (server *Server) initAccommodationService(store domain.AccommodationStore) *application.AccommodationService {
-	return application.NewAccommodationService(store)
+func (server *Server) initAccommodationService(store domain.AccommodationStore, bookingClientAddress string) *application.AccommodationService {
+	return application.NewAccommodationService(store, bookingClientAddress)
 }
 
 // func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscribe
