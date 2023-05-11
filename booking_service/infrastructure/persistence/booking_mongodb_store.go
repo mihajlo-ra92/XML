@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
 
@@ -32,6 +33,7 @@ func (store *BookingMongoDBStore) Get(id primitive.ObjectID) (*domain.Booking, e
 }
 
 func (store *BookingMongoDBStore) GetAll() ([]*domain.Booking, error) {
+	fmt.Println("Usao je u repo")
 	filter := bson.D{{}}
 	return store.filter(filter)
 }

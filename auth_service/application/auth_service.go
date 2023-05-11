@@ -32,6 +32,7 @@ func NewAuthService(userClientAddress string, accommodationClientAddress string,
 func (service *AuthService) Login(username string, password string) (*string, error) {
 	fmt.Println("In auth_service, login")
 	userClient := services.NewUserClient(service.userClientAddress)
+	fmt.Println(userClient)
 	dataToSend := user.Login{Username: username, Password: password}
 	fmt.Print("dataToSend: ")
 	fmt.Println(dataToSend)
@@ -77,19 +78,19 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 	return &authCreateAccommodationResponse, nil
 }
 
-func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error){
+func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.AuthUpdateUserResponse, error) {
 	userClient := services.NewUserClient(service.userClientAddress)
 	userA := user.User{
-			Id:        request.User.Id,
-			UserType:  user.User_UserType(request.User.UserType),
-			Username:  request.User.Username,
-			Password:  request.User.Password,
-			Email:     request.User.Email,
-			FirstName: request.User.FirstName,
-			LastName:  request.User.LastName,
-			Address:   request.User.Address,
+		Id:        request.User.Id,
+		UserType:  user.User_UserType(request.User.UserType),
+		Username:  request.User.Username,
+		Password:  request.User.Password,
+		Email:     request.User.Email,
+		FirstName: request.User.FirstName,
+		LastName:  request.User.LastName,
+		Address:   request.User.Address,
 	}
-	
+
 	userUpdateRequest := user.UpdateUserRequest{User: &userA}
 	fmt.Print("userUpdateRequest: ")
 	fmt.Println(userUpdateRequest)
@@ -100,14 +101,14 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	fmt.Print("userUpdateResponse: ")
 	fmt.Println(userUpdateResponse)
 	userB := pb.AuthUser{
-			Id:        userUpdateResponse.User.Id,
-			UserType:  pb.AuthUser_UserType(userUpdateResponse.User.UserType),
-			Username:  userUpdateResponse.User.Username,
-			Password:  userUpdateResponse.User.Password,
-			Email:     userUpdateResponse.User.Email,
-			FirstName: userUpdateResponse.User.FirstName,
-			LastName:  userUpdateResponse.User.LastName,
-			Address:   userUpdateResponse.User.Address,
+		Id:        userUpdateResponse.User.Id,
+		UserType:  pb.AuthUser_UserType(userUpdateResponse.User.UserType),
+		Username:  userUpdateResponse.User.Username,
+		Password:  userUpdateResponse.User.Password,
+		Email:     userUpdateResponse.User.Email,
+		FirstName: userUpdateResponse.User.FirstName,
+		LastName:  userUpdateResponse.User.LastName,
+		Address:   userUpdateResponse.User.Address,
 	}
 	authUpdateUserResponse := pb.AuthUpdateUserResponse{User: &userB}
 	fmt.Print("authUpdateUserResponse: ")
