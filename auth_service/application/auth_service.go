@@ -114,6 +114,35 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	fmt.Println(authUpdateUserResponse)
 	return &authUpdateUserResponse, nil
 }
+
+func (service *AuthService) DeleteUser(request *pb.AuthDeleteUserRequest)(*pb.AuthDeleteUserResponse, error){
+	userClient := services.NewUserClient(service.userClientAddress)
+	userDeleteRequest := user.DeleteUserRequest{Id: request.Id}
+	fmt.Print("userDeleteRequest: ")
+	fmt.Println(userDeleteRequest)
+	userDeleteResponse, err := userClient.DeleteUser(context.TODO(), &userDeleteRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("userDeleteResponse: ")
+	fmt.Println(userDeleteResponse)
+	userB := pb.AuthUser{
+		Id:        userDeleteResponse.User.Id,
+		UserType:  pb.AuthUser_UserType(userDeleteResponse.User.UserType),
+		Username:  userDeleteResponse.User.Username,
+		Password:  userDeleteResponse.User.Password,
+		Email:     userDeleteResponse.User.Email,
+		FirstName: userDeleteResponse.User.FirstName,
+		LastName:  userDeleteResponse.User.LastName,
+		Address:   userDeleteResponse.User.Address,
+	}
+	
+	authDeleteUserResposne := pb.AuthDeleteUserResponse{User: &userB}
+	fmt.Print("authDeleteUserResposne: ")
+	fmt.Println(authDeleteUserResposne)
+	return &authDeleteUserResposne, nil
+}
+
 func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
 	fmt.Println("In reserve accommodation")
 	bookingClient := services.NewBookingClient(service.bookingClientAddress)

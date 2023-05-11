@@ -26,12 +26,26 @@ service AuthService{
               body: "*"
         };
     }
+    rpc AuthDeleteUser(AuthDeleteUserRequest) returns(AuthDeleteUserResponse){
+        option (google.api.http) = {
+                post: "/delete-user"
+                body: "*"
+        };
+    }
     rpc AuthGuestReserveAccommodation(AuthGuestReserveAccommodationRequest) returns(AuthGuestReserveAccommodationResponse){
         option (google.api.http) = {
             post: "/accomodation-reserve"
             body: "*"
         };
     }
+}
+
+message AuthDeleteUserRequest{
+    string jwt = 1; 
+    string id = 2; 
+}
+message AuthDeleteUserResponse{
+    AuthUser user = 1;
 }
 
 message AuthCreateAccommodationRequest{

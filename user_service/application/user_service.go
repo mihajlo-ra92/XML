@@ -96,3 +96,10 @@ func (service *UserService) Update(user *domain.User) error{
 	}
 	return nil
 }
+func (service *UserService) Delete(user *domain.User) error{
+	err := service.store.Delete(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
