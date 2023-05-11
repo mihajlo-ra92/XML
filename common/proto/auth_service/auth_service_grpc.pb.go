@@ -27,6 +27,7 @@ type AuthServiceClient interface {
 	AuthUpdateUser(ctx context.Context, in *AuthUpdateUserRequest, opts ...grpc.CallOption) (*AuthUpdateUserResponse, error)
 	AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(ctx context.Context, in *AuthBookingAcceptRequest, opts ...grpc.CallOption) (*AuthBookingAcceptResponse, error)
+	AuthBookingDeny(ctx context.Context, in *AuthBookingDenyRequest, opts ...grpc.CallOption) (*AuthBookingDenyResponse, error)
 }
 
 type authServiceClient struct {
@@ -82,6 +83,15 @@ func (c *authServiceClient) AuthBookingAccept(ctx context.Context, in *AuthBooki
 	return out, nil
 }
 
+func (c *authServiceClient) AuthBookingDeny(ctx context.Context, in *AuthBookingDenyRequest, opts ...grpc.CallOption) (*AuthBookingDenyResponse, error) {
+	out := new(AuthBookingDenyResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthBookingDeny", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type AuthServiceServer interface {
 	AuthUpdateUser(context.Context, *AuthUpdateUserRequest) (*AuthUpdateUserResponse, error)
 	AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(context.Context, *AuthBookingAcceptRequest) (*AuthBookingAcceptResponse, error)
+	AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedAuthServiceServer) AuthGuestReserveAccommodation(context.Cont
 }
 func (UnimplementedAuthServiceServer) AuthBookingAccept(context.Context, *AuthBookingAcceptRequest) (*AuthBookingAcceptResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthBookingAccept not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthBookingDeny not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -216,6 +230,24 @@ func _AuthService_AuthBookingAccept_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AuthBookingDeny_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthBookingDenyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthBookingDeny(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthBookingDeny",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthBookingDeny(ctx, req.(*AuthBookingDenyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthBookingAccept",
 			Handler:    _AuthService_AuthBookingAccept_Handler,
+		},
+		{
+			MethodName: "AuthBookingDeny",
+			Handler:    _AuthService_AuthBookingDeny_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

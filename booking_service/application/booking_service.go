@@ -36,6 +36,15 @@ func TimeSpansOverlap(start1, end1, start2, end2 time.Time) bool {
 }
 
 func (service *BookingService) Reserve(booking *domain.Booking) error {
+
+	return service.store.Insert(booking)
+}
+
+func (service *BookingService) Deny(booking *domain.Booking) error {
+	return service.store.Delete(booking)
+}
+
+func (service *BookingService) Book(booking *domain.Booking) error {
 	if booking.StartDate.Before(time.Now()) {
 		return fmt.Errorf("this date is before today's date")
 	}
@@ -50,17 +59,13 @@ func (service *BookingService) Reserve(booking *domain.Booking) error {
 	for _, oneBooking := range bookings {
 
 		if oneBooking.AccommodationId == booking.AccommodationId {
-			if TimeSpansOverlap(oneBooking.StartDate, oneBooking.EndDate, booking.StartDate, booking.EndDate) {
+			if TimeSpansOverlap(oneBooking.StartDate, oneBooking.EndDate, booking.StartDate, booking.EndDate) && oneBooking.BookingType == 2 {
 				return fmt.Errorf("this date is already booked")
 			}
 		}
 	}
 
-	return service.store.Insert(booking)
-}
-
-func (service *BookingService) Book(booking *domain.Booking) error {
-	err := service.store.Delete(booking)
+	err = service.store.Delete(booking)
 	if err != nil {
 		return err
 	}
