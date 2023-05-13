@@ -30,6 +30,27 @@ service BookingService{
     }
     rpc ReservationCanceling(ReservationCancelingRequest) returns(ReservationCancelingResponse){
     }
+    rpc GetAllByUserAndType(GetAllByUserRequest) returns(GetAllByUserResponse){
+        option (google.api.http) = {
+            post: "/booking/byUser"
+            body: "*"
+        };
+    }
+}
+
+message GetAllByUserRequest{
+    string id = 1;
+    enum BookingType{
+        CustomPrice = 0;
+        Reserved = 1;
+        Booked = 2;
+        Canceled = 3;
+    }
+    BookingType bookingType = 3;
+}
+
+message GetAllByUserResponse{
+    repeated Booking bookings = 1;
 }
 
 message ReservationCancelingRequest{

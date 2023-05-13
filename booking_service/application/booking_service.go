@@ -1,9 +1,8 @@
 package application
 
 import (
-	"time"
-
 	"fmt"
+	"time"
 
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -74,4 +73,18 @@ func (service *BookingService) Book(booking *domain.Booking) error {
 
 func (service *BookingService) GetByAccomodationIdandDataRange(accommodationId string, startDate time.Time, endDate time.Time) ([]*domain.Booking, error) {
 	return service.store.GetByAccomodationIdandDataRange(accommodationId, startDate, endDate)
+}
+
+func (service *BookingService) ReservationCanceling(booking *domain.Booking) (*domain.Booking, error) {
+	if time.Now().Before(booking.StartDate) {
+		booking.BookingType = domain.Canceled
+		fmt.Println("Radil ovo ", booking.BookingType)
+	} else {
+		return nil, fmt.Errorf("Reservation is started.")
+	}
+	return service.store.Update(booking)
+}
+
+func (service *BookingService) GetAllByUser(guestId string, bookingType domain.BookingType) ([]*domain.Booking, error) {
+	return service.store.GetAllByUser(guestId, bookingType)
 }

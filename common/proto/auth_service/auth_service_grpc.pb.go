@@ -26,7 +26,7 @@ const (
 	AuthService_AuthGuestReserveAccommodation_FullMethodName = "/user.AuthService/AuthGuestReserveAccommodation"
 	AuthService_AuthBookingAccept_FullMethodName             = "/user.AuthService/AuthBookingAccept"
 	AuthService_AuthBookingDeny_FullMethodName               = "/user.AuthService/AuthBookingDeny"
-	AuthService_ReservationCanceling_FullMethodName          = "/user.AuthService/ReservationCanceling"
+	AuthService_AuthReservationCanceling_FullMethodName      = "/user.AuthService/AuthReservationCanceling"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -40,7 +40,7 @@ type AuthServiceClient interface {
 	AuthGuestReserveAccommodation(ctx context.Context, in *AuthGuestReserveAccommodationRequest, opts ...grpc.CallOption) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(ctx context.Context, in *AuthBookingAcceptRequest, opts ...grpc.CallOption) (*AuthBookingAcceptResponse, error)
 	AuthBookingDeny(ctx context.Context, in *AuthBookingDenyRequest, opts ...grpc.CallOption) (*AuthBookingDenyResponse, error)
-	ReservationCanceling(ctx context.Context, in *ReservationCancelingRequest, opts ...grpc.CallOption) (*ReservationCancelingResponse, error)
+	AuthReservationCanceling(ctx context.Context, in *AuthReservationCancelingRequest, opts ...grpc.CallOption) (*AuthReservationCancelingResponse, error)
 }
 
 type authServiceClient struct {
@@ -114,9 +114,9 @@ func (c *authServiceClient) AuthBookingDeny(ctx context.Context, in *AuthBooking
 	return out, nil
 }
 
-func (c *authServiceClient) ReservationCanceling(ctx context.Context, in *ReservationCancelingRequest, opts ...grpc.CallOption) (*ReservationCancelingResponse, error) {
-	out := new(ReservationCancelingResponse)
-	err := c.cc.Invoke(ctx, AuthService_ReservationCanceling_FullMethodName, in, out, opts...)
+func (c *authServiceClient) AuthReservationCanceling(ctx context.Context, in *AuthReservationCancelingRequest, opts ...grpc.CallOption) (*AuthReservationCancelingResponse, error) {
+	out := new(AuthReservationCancelingResponse)
+	err := c.cc.Invoke(ctx, AuthService_AuthReservationCanceling_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ type AuthServiceServer interface {
 	AuthGuestReserveAccommodation(context.Context, *AuthGuestReserveAccommodationRequest) (*AuthGuestReserveAccommodationResponse, error)
 	AuthBookingAccept(context.Context, *AuthBookingAcceptRequest) (*AuthBookingAcceptResponse, error)
 	AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error)
-	ReservationCanceling(context.Context, *ReservationCancelingRequest) (*ReservationCancelingResponse, error)
+	AuthReservationCanceling(context.Context, *AuthReservationCancelingRequest) (*AuthReservationCancelingResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -163,8 +163,8 @@ func (UnimplementedAuthServiceServer) AuthBookingAccept(context.Context, *AuthBo
 func (UnimplementedAuthServiceServer) AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthBookingDeny not implemented")
 }
-func (UnimplementedAuthServiceServer) ReservationCanceling(context.Context, *ReservationCancelingRequest) (*ReservationCancelingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReservationCanceling not implemented")
+func (UnimplementedAuthServiceServer) AuthReservationCanceling(context.Context, *AuthReservationCancelingRequest) (*AuthReservationCancelingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthReservationCanceling not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -305,20 +305,20 @@ func _AuthService_AuthBookingDeny_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_ReservationCanceling_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReservationCancelingRequest)
+func _AuthService_AuthReservationCanceling_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthReservationCancelingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).ReservationCanceling(ctx, in)
+		return srv.(AuthServiceServer).AuthReservationCanceling(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AuthService_ReservationCanceling_FullMethodName,
+		FullMethod: AuthService_AuthReservationCanceling_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ReservationCanceling(ctx, req.(*ReservationCancelingRequest))
+		return srv.(AuthServiceServer).AuthReservationCanceling(ctx, req.(*AuthReservationCancelingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -359,8 +359,8 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_AuthBookingDeny_Handler,
 		},
 		{
-			MethodName: "ReservationCanceling",
-			Handler:    _AuthService_ReservationCanceling_Handler,
+			MethodName: "AuthReservationCanceling",
+			Handler:    _AuthService_AuthReservationCanceling_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

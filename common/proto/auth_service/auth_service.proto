@@ -50,18 +50,21 @@ service AuthService{
             body: "*"
         };
     }
-     rpc ReservationCanceling(ReservationCancelingRequest) returns(ReservationCancelingResponse){
+     rpc AuthReservationCanceling(AuthReservationCancelingRequest) returns(AuthReservationCancelingResponse){
         option (google.api.http) = {
-            get: "/reservation-canceling/{id}"
+            post: "/reservation-canceling"
+            body: "*"
+
         };
     }
 }
 
-message ReservationCancelingRequest{
-    string id = 1;
+message AuthReservationCancelingRequest{
+    string jwt = 1; 
+    string id = 2;
 }
 
-message ReservationCancelingResponse{
+message AuthReservationCancelingResponse{
     Booking booking = 1;
 }
 
@@ -119,6 +122,7 @@ message AuthGuestReserveAccommodationRequest{
         CustomPrice = 0;
         Reserved = 1;
         Booked = 2;
+        Canceled = 3;
     }
     BookingType bookingType = 8;
     google.protobuf.Timestamp start_date = 9;

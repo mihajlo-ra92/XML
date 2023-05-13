@@ -116,7 +116,7 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	return &authUpdateUserResponse, nil
 }
 
-func (service *AuthService) DeleteUser(request *pb.AuthDeleteUserRequest)(*pb.AuthDeleteUserResponse, error){
+func (service *AuthService) DeleteUser(request *pb.AuthDeleteUserRequest) (*pb.AuthDeleteUserResponse, error) {
 	userClient := services.NewUserClient(service.userClientAddress)
 	userDeleteRequest := user.DeleteUserRequest{Id: request.Id}
 	fmt.Print("userDeleteRequest: ")
@@ -137,7 +137,7 @@ func (service *AuthService) DeleteUser(request *pb.AuthDeleteUserRequest)(*pb.Au
 		LastName:  userDeleteResponse.User.LastName,
 		Address:   userDeleteResponse.User.Address,
 	}
-	
+
 	authDeleteUserResposne := pb.AuthDeleteUserResponse{User: &userB}
 	fmt.Print("authDeleteUserResposne: ")
 	fmt.Println(authDeleteUserResposne)
@@ -207,4 +207,24 @@ func (service *AuthService) BookingDeny(jwtData *domain.JwtData, request *pb.Aut
 	fmt.Print("authBookingDenyResponse: ")
 	fmt.Println(authBookingDenyResponse)
 	return &authBookingDenyResponse, nil
+}
+
+func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, request *pb.AuthReservationCancelingRequest) (*pb.AuthReservationCancelingResponse, error) {
+	fmt.Println("In reserve accommodation")
+	bookingRequest := booking.ReservationCancelingRequest{Id: request.Id}
+	fmt.Print("cancelingRequest: ")
+	fmt.Println(bookingRequest)
+	fmt.Println("In booking deny")
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+
+	bookingResponse, err := bookingClient.ReservationCanceling(context.TODO(), &bookingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	authReserveAccommodationResponse := pb.AuthReservationCancelingResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
+	fmt.Print("authCreateBookingResponse: ")
+	fmt.Println(authReserveAccommodationResponse)
+	return &authReserveAccommodationResponse, nil
 }
