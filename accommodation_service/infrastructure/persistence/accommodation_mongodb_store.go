@@ -82,12 +82,15 @@ func decode(cursor *mongo.Cursor) (accommodations []*domain.Accommodation, err e
 
 func (store *AccommodationMongoDBStore) Search(location string, numberGuests uint32) ([]*domain.Accommodation, error) {
 	regex := primitive.Regex{Pattern: location, Options: "i"}
+
 	filter := bson.M{
 		"location":   regex,
 		"min_guests": bson.M{"$lte": numberGuests},
 		"max_guests": bson.M{"$gte": numberGuests},
 	}
 	cursor, err := store.accommodations.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
 	if err != nil {
 		return nil, err
 	}

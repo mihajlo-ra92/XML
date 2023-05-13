@@ -26,6 +26,18 @@ service BookingService{
     }
     rpc BookingDeny(BookingDenyRequest) returns(BookingDenyResponse){
     }
+    rpc GetByAccomodationIdandDataRange(GetByAccomodationIdandDataRangeRequest) returns(GetByAccomodationIdandDataRangeResponse){
+    }
+}
+
+message GetByAccomodationIdandDataRangeRequest{
+    string id = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+}
+
+message GetByAccomodationIdandDataRangeResponse{
+    repeated Booking bookings = 1;
 }
 
 message GetRequest{

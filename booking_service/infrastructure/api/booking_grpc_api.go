@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/mihajlo-ra92/XML/booking_service/application"
 
@@ -136,4 +137,24 @@ func (handler *BookingHandler) BookingDeny(ctx context.Context, request *pb.Book
 	fmt.Print("response: ")
 	fmt.Println(response)
 	return &response, nil
+}
+
+func (handler *BookingHandler) GetByAccomodationIdandDataRange(ctx context.Context, request *pb.GetByAccomodationIdandDataRangeRequest) (*pb.GetByAccomodationIdandDataRangeResponse, error) {
+	fmt.Println("In GetAll grpc api")
+	bookings, err := handler.service.GetByAccomodationIdandDataRange(request.Id, time.Unix(request.StartDate.Seconds, int64(request.StartDate.Nanos)).UTC(), time.Unix(request.EndDate.Seconds, int64(request.EndDate.Nanos)).UTC())
+
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetByAccomodationIdandDataRangeResponse{
+		Bookings: []*pb.Booking{},
+	}
+	for _, booking := range bookings {
+		current := mapBooking(booking)
+
+		fmt.Println("Ispis bookinga: ", current)
+
+		response.Bookings = append(response.Bookings, current)
+	}
+	return response, nil
 }

@@ -71,3 +71,7 @@ func (service *BookingService) Book(booking *domain.Booking) error {
 	}
 	return service.store.Insert(booking)
 }
+
+func (service *BookingService) GetByAccomodationIdandDataRange(accommodationId string, startDate time.Time, endDate time.Time) ([]*domain.Booking, error) {
+	return service.store.GetByAccomodationIdandDataRange(accommodationId, startDate, endDate)
+}
