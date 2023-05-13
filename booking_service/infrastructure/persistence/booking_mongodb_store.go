@@ -3,10 +3,9 @@ package persistence
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
-
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -35,7 +34,6 @@ func (store *BookingMongoDBStore) Get(id primitive.ObjectID) (*domain.Booking, e
 }
 
 func (store *BookingMongoDBStore) GetAll() ([]*domain.Booking, error) {
-	fmt.Println("Usao je u repo")
 	filter := bson.D{{}}
 	return store.filter(filter)
 }
@@ -94,4 +92,23 @@ func decode(cursor *mongo.Cursor) (bookings []*domain.Booking, err error) {
 	}
 	err = cursor.Err()
 	return
+}
+
+func (store *BookingMongoDBStore) GetByAccomodationIdandDataRange(accommodationId string, startDate time.Time, endDate time.Time) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"start_date": bson.M{
+			"$lt": endDate,
+		},
+		"end_date": bson.M{
+			"$gt": startDate,
+		},
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
 }

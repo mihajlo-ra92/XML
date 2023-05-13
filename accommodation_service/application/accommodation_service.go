@@ -39,15 +39,51 @@ func (service *AccommodationService) Search(request *pb.SearchRequest) ([]*domai
 	fmt.Println("In Search accommodation_service")
 	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
 	fmt.Println("booking_free_accomodation_search:")
-
-	fmt.Println("Work here : ")
-	bookingResponse, err := bookingClient.GetAll(context.TODO(), &booking.GetAllRequest{})
+	accommodations, err := service.store.Search(request.Location, request.Guest)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
+
+	if (request.StartDate == nil) && (request.EndDate == nil) {
+		return accommodations, nil
+	}
+	response := []*domain.Accommodation{}
+	for _, accommodation := range accommodations {
+		fmt.Println("accommodation id je  ", accommodation.Id.Hex())
+		bookingResponse, err := bookingClient.GetByAccomodationIdandDataRange(context.TODO(), &booking.GetByAccomodationIdandDataRangeRequest{Id: accommodation.Id.Hex(), StartDate: request.StartDate, EndDate: request.EndDate})
+		fmt.Println(bookingResponse)
+
+		fmt.Println("udje ovde da se vidi booking")
+
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+		var a uint32
+		a = 0
+		fmt.Println("da vidimo listu ; ", bookingResponse.Bookings)
+
+		for _, booking := range bookingResponse.Bookings {
+			fmt.Println("udje ovde da se vidi booking ; ", booking)
+
+			a = a + booking.NumberOfGuests
+			fmt.Println("sabiramo a")
+
+		}
+
+		fmt.Println("vrednost a : ", a)
+		fmt.Println(accommodation.MaxGuests - request.Guest)
+
+		if (accommodation.MaxGuests - request.Guest) >= a {
+			response = append(response, accommodation)
+		}
+
+	}
+
+	fmt.Println("Work here : ")
 	fmt.Println("booking search for free accomodation Response: ")
-	fmt.Println(bookingResponse)
 	fmt.Println("create search accommodation response: ")
-	return service.store.Search(request.Location, request.Guest)
+	return response, nil
+
 }
