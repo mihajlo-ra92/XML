@@ -50,6 +50,19 @@ service AuthService{
             body: "*"
         };
     }
+     rpc ReservationCanceling(ReservationCancelingRequest) returns(ReservationCancelingResponse){
+        option (google.api.http) = {
+            get: "/reservation-canceling/{id}"
+        };
+    }
+}
+
+message ReservationCancelingRequest{
+    string id = 1;
+}
+
+message ReservationCancelingResponse{
+    Booking booking = 1;
 }
 
 message AuthDeleteUserRequest{
@@ -127,6 +140,7 @@ message Booking{
         CustomPrice = 0;
         Reserved = 1;
         Booked = 2;
+        Canceled = 3;
     }
     BookingType bookingType = 9;
     google.protobuf.Timestamp start_date = 10;

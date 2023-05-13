@@ -26,6 +26,7 @@ const (
 	BookingService_BookingAccept_FullMethodName                   = "/booking.BookingService/BookingAccept"
 	BookingService_BookingDeny_FullMethodName                     = "/booking.BookingService/BookingDeny"
 	BookingService_GetByAccomodationIdandDataRange_FullMethodName = "/booking.BookingService/GetByAccomodationIdandDataRange"
+	BookingService_ReservationCanceling_FullMethodName            = "/booking.BookingService/ReservationCanceling"
 )
 
 // BookingServiceClient is the client API for BookingService service.
@@ -39,6 +40,7 @@ type BookingServiceClient interface {
 	BookingAccept(ctx context.Context, in *BookingAcceptRequest, opts ...grpc.CallOption) (*BookingAcceptResponse, error)
 	BookingDeny(ctx context.Context, in *BookingDenyRequest, opts ...grpc.CallOption) (*BookingDenyResponse, error)
 	GetByAccomodationIdandDataRange(ctx context.Context, in *GetByAccomodationIdandDataRangeRequest, opts ...grpc.CallOption) (*GetByAccomodationIdandDataRangeResponse, error)
+	ReservationCanceling(ctx context.Context, in *ReservationCancelingRequest, opts ...grpc.CallOption) (*ReservationCancelingResponse, error)
 }
 
 type bookingServiceClient struct {
@@ -112,6 +114,15 @@ func (c *bookingServiceClient) GetByAccomodationIdandDataRange(ctx context.Conte
 	return out, nil
 }
 
+func (c *bookingServiceClient) ReservationCanceling(ctx context.Context, in *ReservationCancelingRequest, opts ...grpc.CallOption) (*ReservationCancelingResponse, error) {
+	out := new(ReservationCancelingResponse)
+	err := c.cc.Invoke(ctx, BookingService_ReservationCanceling_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookingServiceServer is the server API for BookingService service.
 // All implementations must embed UnimplementedBookingServiceServer
 // for forward compatibility
@@ -123,6 +134,7 @@ type BookingServiceServer interface {
 	BookingAccept(context.Context, *BookingAcceptRequest) (*BookingAcceptResponse, error)
 	BookingDeny(context.Context, *BookingDenyRequest) (*BookingDenyResponse, error)
 	GetByAccomodationIdandDataRange(context.Context, *GetByAccomodationIdandDataRangeRequest) (*GetByAccomodationIdandDataRangeResponse, error)
+	ReservationCanceling(context.Context, *ReservationCancelingRequest) (*ReservationCancelingResponse, error)
 	mustEmbedUnimplementedBookingServiceServer()
 }
 
@@ -150,6 +162,9 @@ func (UnimplementedBookingServiceServer) BookingDeny(context.Context, *BookingDe
 }
 func (UnimplementedBookingServiceServer) GetByAccomodationIdandDataRange(context.Context, *GetByAccomodationIdandDataRangeRequest) (*GetByAccomodationIdandDataRangeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByAccomodationIdandDataRange not implemented")
+}
+func (UnimplementedBookingServiceServer) ReservationCanceling(context.Context, *ReservationCancelingRequest) (*ReservationCancelingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReservationCanceling not implemented")
 }
 func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
 
@@ -290,6 +305,24 @@ func _BookingService_GetByAccomodationIdandDataRange_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_ReservationCanceling_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReservationCancelingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).ReservationCanceling(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_ReservationCanceling_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).ReservationCanceling(ctx, req.(*ReservationCancelingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookingService_ServiceDesc is the grpc.ServiceDesc for BookingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +357,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByAccomodationIdandDataRange",
 			Handler:    _BookingService_GetByAccomodationIdandDataRange_Handler,
+		},
+		{
+			MethodName: "ReservationCanceling",
+			Handler:    _BookingService_ReservationCanceling_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
