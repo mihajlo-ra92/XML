@@ -50,15 +50,36 @@ service AuthService{
             body: "*"
         };
     }
-     rpc AuthReservationCanceling(AuthReservationCancelingRequest) returns(AuthReservationCancelingResponse){
+    rpc AuthReservationCanceling(AuthReservationCancelingRequest) returns(AuthReservationCancelingResponse){
         option (google.api.http) = {
             post: "/reservation-canceling"
             body: "*"
-
+        };
+    }
+    rpc AuthDefineCustomPrice(AuthDefineCustomPriceRequest) returns (AuthDefineCustomPriceResponse){
+        option (google.api.http) = {
+            post: "/custom-price-define"
+            body: "*"
         };
     }
 }
 
+message AuthDefineCustomPriceRequest{
+    string jwt = 1;
+    string accommodationId = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp end_date = 4;
+    uint32 price = 5;
+    enum PriceType{
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 7;
+}
+
+message AuthDefineCustomPriceResponse{
+    Accommodation accommodation = 1;
+}
 message AuthReservationCancelingRequest{
     string jwt = 1; 
     string id = 2;

@@ -184,7 +184,7 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 	fmt.Println(jwtData)
 
 	if jwtData.UserType != 0 {
-		return nil, fmt.Errorf("user must be of host type")
+		return nil, fmt.Errorf("user must be of guest type")
 	}
 	bookingResponse, err := handler.service.CancelingReservation(jwtData, request)
 	if err != nil {
@@ -193,6 +193,28 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 
 	return bookingResponse, nil
 
+}
+
+func (handler *AuthHandler) AuthDefineCustomPrice(ctx context.Context, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error){
+	fmt.Println("In AuthDefineCustomPrice")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	bookingResponse, err := handler.service.DefineCustomPrice(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return bookingResponse, nil
 }
 
 func checkJwt(tokenString string) (*domain.JwtData, error) {

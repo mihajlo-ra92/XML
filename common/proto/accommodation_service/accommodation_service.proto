@@ -24,6 +24,26 @@ service AccommodationService{
     }
     rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse){
     }
+
+    rpc DefineCustomPrice(DefineCustomPriceRequest) returns (DefineCustomPriceResponse){
+    }
+}
+
+message DefineCustomPriceRequest{
+    AccommodationUser user = 1;
+    string accommodationId = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp end_date = 4;
+    uint32 price = 5;
+    enum PriceType{
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 7;
+}
+
+message DefineCustomPriceResponse{
+    Accommodation accommodation = 1;
 }
 
 message CreateAccommodationRequest{

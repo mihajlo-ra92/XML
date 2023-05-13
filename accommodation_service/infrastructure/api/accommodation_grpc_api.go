@@ -92,3 +92,25 @@ func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.Sea
 	}
 	return response, nil
 }
+
+func (handler *AccommodationHandler) DefineCustomPrice(ctx context.Context, request *pb.DefineCustomPriceRequest) (*pb.DefineCustomPriceResponse, error) {
+	fmt.Println("In DefineCustomPriceRequest grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	objectId, err := primitive.ObjectIDFromHex(request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	accommodation, err := handler.service.Get(objectId)
+	if err != nil {
+		return nil, err
+	}
+	if accommodation.HostId != request.User.Id {
+		return nil, fmt.Errorf("user is not host of sent accommodation")
+	}
+	_ = handler.service.DefineCustomPrice(*request)
+	response := pb.DefineCustomPriceResponse{Accommodation: mapAccommodation(accommodation)}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}

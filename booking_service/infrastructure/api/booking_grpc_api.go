@@ -57,7 +57,6 @@ func (handler *BookingHandler) GetAll(ctx context.Context, request *pb.GetAllReq
 }
 
 func (handler *BookingHandler) CreateBooking(ctx context.Context, request *pb.CreateBookingRequest) (*pb.CreateBookingResponse, error) {
-	//TODO: Implement
 	fmt.Println("In CreateBooking grpc api")
 	fmt.Print("Request: ")
 	fmt.Println(request)
