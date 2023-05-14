@@ -7,6 +7,8 @@ import {
 import { Observable, catchError, throwError } from 'rxjs';
 import { LoginUser } from '../model/loginUser';
 import { User } from '../model/user';
+import { RegisterUser } from '../model/registerUser';
+import { UserWithJwt } from '../model/userWithJwt';
 
 @Injectable({
   providedIn: 'root',
@@ -38,11 +40,19 @@ export class UserService {
     return response;
   }
 
-  register(user: User): Observable<any> {
+  register(user: RegisterUser): Observable<any> {
     console.log(user);
     const response = this.http.post(this.apiServerUrl + '/user', user, {
       headers: this.headers,
     });
     return response;
+  }
+
+  getById(id: string): Observable<any> {
+    return this.http.get(this.apiServerUrl + '/user/' + id, {headers: this.headers});
+  }
+
+  editUser(user: UserWithJwt): Observable<any> {
+    return this.http.post(this.apiServerUrl + '/update-user',user,{headers: this.headers})
   }
 }
