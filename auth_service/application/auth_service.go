@@ -228,3 +228,23 @@ func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, reques
 	fmt.Println(authCanceling)
 	return &authCanceling, nil
 }
+
+func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error) {
+	jwtUser := accommodation.AccommodationUser{Id: jwtData.UserId, UserType: accommodation.AccommodationUser_UserType(jwtData.UserType), Username: jwtData.Username}
+	customPriceRequest := accommodation.DefineCustomPriceRequest{User: &jwtUser, AccommodationId: request.AccommodationId, StartDate: request.StartDate, EndDate: request.EndDate, Price: request.Price, PriceType: accommodation.DefineCustomPriceRequest_PriceType(request.PriceType)}
+	fmt.Print("customPriceRequest: ")
+	fmt.Println(customPriceRequest)
+	fmt.Println("In booking deny")
+	accommodationClient := services.NewAccommodationClient(service.accommodationClientAddress)
+
+	accommodationResponse, err := accommodationClient.DefineCustomPrice(context.TODO(), &customPriceRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("accommodationResponse: ")
+	fmt.Println(accommodationResponse)
+	authDefineCustomPriceResponse := pb.AuthDefineCustomPriceResponse{Accommodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests }}
+	fmt.Print("authDefineCustomPriceResponse: ")
+	fmt.Println(authDefineCustomPriceResponse)
+	return &authDefineCustomPriceResponse, nil
+}

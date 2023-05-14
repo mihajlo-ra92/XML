@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Accommodation } from '../model/accommodation';
 import { AccommodationService} from '../service/accommodation.service';
+import { BookingService } from '../service/booking.service'
+import { Reservation } from '../model/reservation';
 
 @Component({
   selector: 'app-landing-page',
@@ -11,9 +13,9 @@ export class LandingPageComponent implements OnInit {
   allAccommodations: Array<Accommodation> = new Array();
   isAdmin = false;
   loggedUserRole = localStorage.getItem('loggedUserType')
-
-
-  constructor(private accommodationService: AccommodationService) {}
+  userJwt = localStorage.getItem('token')
+  reservation: Reservation = new Reservation
+  constructor(private accommodationService: AccommodationService, private bookingService: BookingService) {}
 
   ngOnInit(): void {
 
@@ -59,6 +61,19 @@ AllAccommodations() {
     // });
     console.log(this.allAccommodations);
   });
+}
+
+ReserveAccommodation(accommodation: Accommodation){
+
+  localStorage.setItem('accommodationPrice', accommodation.price.toString())
+  localStorage.setItem('accommodationId', accommodation.id.toString())
+
+  console.log(accommodation)
+  console.log(localStorage.getItem('accommodationId'))
+  console.log(localStorage.getItem('accommodationPrice'))
+  
+  window.location.href = '/accommodation-reservation'
+
 }
   // deleteFlight(flight: Flight) {
   //   console.log(flight.id);
