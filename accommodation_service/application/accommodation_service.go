@@ -35,6 +35,30 @@ func (service *AccommodationService) Create(accommodation *domain.Accommodation)
 	return service.store.Insert(accommodation)
 }
 
+func (service *AccommodationService) DefineCustomPrice(request pb.DefineCustomPriceRequest) error {
+	fmt.Println("In DefineCustomPrice accommodation_service")
+	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
+	fmt.Println("booking_free_accomodation_search:")
+	newBooking := booking.Booking{
+		Id: "", 
+		AccommodationId: request.AccommodationId, 
+		GuestId: "", 
+		Price: request.Price, 
+		PriceType: booking.Booking_PriceType(request.PriceType), 
+		NumberOfGuests: 0, 
+		BookingType: booking.Booking_CustomPrice, 
+		StartDate: request.StartDate, 
+		EndDate: request.EndDate}
+	bookingResponse, err := bookingClient.CreateBooking(context.TODO(), &booking.CreateBookingRequest{Booking: &newBooking})
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	return nil
+}
+
 func (service *AccommodationService) Search(request *pb.SearchRequest) ([]*domain.Accommodation, error) {
 	fmt.Println("In Search accommodation_service")
 	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
@@ -87,3 +111,4 @@ func (service *AccommodationService) Search(request *pb.SearchRequest) ([]*domai
 	return response, nil
 
 }
+

@@ -27,6 +27,26 @@ func (service *BookingService) GetAll() ([]*domain.Booking, error) {
 }
 
 func (service *BookingService) Create(booking *domain.Booking) error {
+	//OPTIMISATION: Implement special endpoint for defining custom price
+	if booking.BookingType == domain.CustomPrice {
+		//OPTIMISATION: implement get by accommodationId
+		bookings, err := service.store.GetAll()
+		if err != nil {
+			return err
+		}
+		for _, bookingIt := range bookings{
+			if(bookingIt.AccommodationId == booking.AccommodationId){
+				if TimeSpansOverlap(bookingIt.StartDate, bookingIt.EndDate, booking.StartDate, booking.EndDate){
+					if (bookingIt.BookingType == domain.Booked || bookingIt.BookingType == domain.Reserved){
+						return fmt.Errorf("given date range is taken")
+					}
+					if (bookingIt.BookingType == domain.CustomPrice){
+						service.store.Delete(bookingIt)
+					}
+				}
+			}
+		}
+	}
 	return service.store.Insert(booking)
 }
 
