@@ -278,3 +278,31 @@ func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *
 	fmt.Println(authDefineCustomPriceResponse)
 	return &authDefineCustomPriceResponse, nil
 }
+
+func (service *AuthService) GetBookingsByAccommodationId(jwtData *domain.JwtData, accommodationId string) (*pb.AuthGetBookingsByAccommodationIdResponse, error) {
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+
+	bookingResponse, err := bookingClient.GetByAccommodationId(context.TODO(), &booking.GetByAccommodationIdRequest{AccommodationId: accommodationId})
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	var respBookings []*pb.Booking
+	for _, bookingIt := range bookingResponse.Bookings{
+		temp := pb.Booking{
+			Id: bookingIt.Id,
+			AccommodationId: bookingIt.AccommodationId,
+			GuestId: bookingIt.GuestId,
+			Price: bookingIt.Price,
+			PriceType: pb.Booking_PriceType(bookingIt.PriceType),
+			NumberOfGuests: bookingIt.NumberOfGuests,
+			BookingType: pb.Booking_BookingType(bookingIt.BookingType),
+			StartDate: bookingIt.StartDate,
+			EndDate: bookingIt.EndDate,
+		}
+		respBookings = append(respBookings, &temp)
+	}
+	authGetBookingByAccommodationIdResponse := pb.AuthGetBookingsByAccommodationIdResponse{Bookings: respBookings}
+	return &authGetBookingByAccommodationIdResponse, nil
+}

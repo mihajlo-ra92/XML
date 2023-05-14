@@ -34,6 +34,7 @@ type BookingServiceClient interface {
 	DeleteBooking(ctx context.Context, in *DeleteBookingRequest, opts ...grpc.CallOption) (*DeleteBookingResponse, error)
 	DeleteBookingsByGuestId(ctx context.Context, in *DeleteBookingByGuestIdRequest, opts ...grpc.CallOption) (*DeleteBookingByGuestIdResponse, error)
 	DeleteBookingsByAccommodationId(ctx context.Context, in *DeleteBookingByAccommodationIdRequest, opts ...grpc.CallOption) (*DeleteBookingByAccommodationIdResponse, error)
+	GetByAccommodationId(ctx context.Context, in *GetByAccommodationIdRequest, opts ...grpc.CallOption) (*GetByAccommodationIdResponse, error)
 }
 
 type bookingServiceClient struct {
@@ -152,6 +153,15 @@ func (c *bookingServiceClient) DeleteBookingsByAccommodationId(ctx context.Conte
 	return out, nil
 }
 
+func (c *bookingServiceClient) GetByAccommodationId(ctx context.Context, in *GetByAccommodationIdRequest, opts ...grpc.CallOption) (*GetByAccommodationIdResponse, error) {
+	out := new(GetByAccommodationIdResponse)
+	err := c.cc.Invoke(ctx, "/booking.BookingService/GetByAccommodationId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookingServiceServer is the server API for BookingService service.
 // All implementations must embed UnimplementedBookingServiceServer
 // for forward compatibility
@@ -168,6 +178,7 @@ type BookingServiceServer interface {
 	DeleteBooking(context.Context, *DeleteBookingRequest) (*DeleteBookingResponse, error)
 	DeleteBookingsByGuestId(context.Context, *DeleteBookingByGuestIdRequest) (*DeleteBookingByGuestIdResponse, error)
 	DeleteBookingsByAccommodationId(context.Context, *DeleteBookingByAccommodationIdRequest) (*DeleteBookingByAccommodationIdResponse, error)
+	GetByAccommodationId(context.Context, *GetByAccommodationIdRequest) (*GetByAccommodationIdResponse, error)
 	mustEmbedUnimplementedBookingServiceServer()
 }
 
@@ -210,6 +221,9 @@ func (UnimplementedBookingServiceServer) DeleteBookingsByGuestId(context.Context
 }
 func (UnimplementedBookingServiceServer) DeleteBookingsByAccommodationId(context.Context, *DeleteBookingByAccommodationIdRequest) (*DeleteBookingByAccommodationIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteBookingsByAccommodationId not implemented")
+}
+func (UnimplementedBookingServiceServer) GetByAccommodationId(context.Context, *GetByAccommodationIdRequest) (*GetByAccommodationIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByAccommodationId not implemented")
 }
 func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
 
@@ -440,6 +454,24 @@ func _BookingService_DeleteBookingsByAccommodationId_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_GetByAccommodationId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByAccommodationIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).GetByAccommodationId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/booking.BookingService/GetByAccommodationId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).GetByAccommodationId(ctx, req.(*GetByAccommodationIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookingService_ServiceDesc is the grpc.ServiceDesc for BookingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +526,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteBookingsByAccommodationId",
 			Handler:    _BookingService_DeleteBookingsByAccommodationId_Handler,
+		},
+		{
+			MethodName: "GetByAccommodationId",
+			Handler:    _BookingService_GetByAccommodationId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
