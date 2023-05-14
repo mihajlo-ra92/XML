@@ -9,6 +9,7 @@ import { LoginUser } from '../model/loginUser';
 import { User } from '../model/user';
 import { RegisterUser } from '../model/registerUser';
 import { UserWithJwt } from '../model/userWithJwt';
+import { UserForDelete } from '../model/userForDelete';
 
 @Injectable({
   providedIn: 'root',
@@ -54,5 +55,9 @@ export class UserService {
 
   editUser(user: UserWithJwt): Observable<any> {
     return this.http.post(this.apiServerUrl + '/update-user',user,{headers: this.headers})
+  }
+
+  deleteUser(user : UserForDelete): Observable<any> {
+    return this.http.post(this.apiServerUrl + '/delete-user',user,{headers: this.headers})
   }
 }
