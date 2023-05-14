@@ -43,11 +43,11 @@ export class CreateAccommodationComponent implements OnInit {
     //this.accommodation.pictures = this.nameOfPictures;
     this.accommodationService.createAccommodation(this.accommodation).subscribe((res) =>{
       console.log(res);
+      this.accommodation = new CreateAccommodation();
+      this.nameOfPictures = [];
+      this.picturesAsFile = [];
+      this.selectedFile = new File([],"");
     })
-    this.accommodation = new CreateAccommodation();
-    this.nameOfPictures = [];
-    this.picturesAsFile = [];
-    this.selectedFile = new File([],"");
   }
 
   addBenefit(){
