@@ -12,6 +12,7 @@ import { RegisterComponent } from './modules/register/register.component';
 import { EditUserComponent } from './modules/edit-user/edit-user.component';
 import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
 import { CreateAccommodationComponent } from './modules/create-accommodation/create-accommodation.component';
+import { MyAccommodationsComponent } from './modules/my-accommodations/my-accommodations.component';
 
 
 
@@ -24,7 +25,8 @@ import { CreateAccommodationComponent } from './modules/create-accommodation/cre
     RegisterComponent,
     EditUserComponent,
     AccommodationReserationComponent,
-    CreateAccommodationComponent
+    CreateAccommodationComponent,
+    MyAccommodationsComponent
   ],
   imports: [
     BrowserModule,

@@ -4,8 +4,8 @@ export class Accommodation{
     hostId : string = "";
     name: String = "";
     location: String = "";
-    benefits: String = "";
-    pictures: String = "";
+    benefits: String[] = [];
+    pictures: String[] = [];
     minGuests: number = 0;
     maxGuests: number = 0;
     price: number = 0;
