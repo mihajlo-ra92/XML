@@ -3,6 +3,7 @@ import { Booking } from '../model/booking';
 import { CancelingReservationService } from '../service/canceling-reservation.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetAllByUserRequest } from '../model/getAllByUserRequest';
+import { AuthReservationCancelingRequest } from "../model/getAllByUserRequest"
 
 @Component({
   selector: 'app-canceling-reservation',
@@ -12,25 +13,38 @@ import { GetAllByUserRequest } from '../model/getAllByUserRequest';
 export class CancelingReservationComponent implements OnInit {
   public request: GetAllByUserRequest= new GetAllByUserRequest()
   public bookings : Booking[] =[];
-  public displayedColumns = ['number', 'floor'];
+  public canceling: AuthReservationCancelingRequest = new AuthReservationCancelingRequest
 
   
   constructor(private cancelingService: CancelingReservationService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    let pom = new Booking()
-    pom.guestId="1"
-    pom.numberOfGuests=5
-    pom.price = 50
-    this.bookings.push(pom)
-    this.request.bookingType = "Booked"
-      this.request.id ="guest1Id"
-      this.cancelingService.getAllReservationByUserId(this.request).subscribe(res => {
-
-        console.log(this.bookings)
+  
+      this.cancelingService.getAllReservationByUserId({
+        "id" : localStorage.getItem("loggedUserId"),
+        "bookingType": "Reserved"
+    }).subscribe((res) => {
+      this.bookings = res.bookings;
+      console.log(this.bookings)
       });
   }
   onButtonClick(item: any) {
-    this.bookings = this.bookings.filter(booking => booking !== item);
+    if(localStorage.getItem("loggedUserType") == "0"){
+      this.cancelingService.AuthReservationCanceling({"jwt":localStorage.getItem("token"),"id" : item.id}).subscribe((res) => {
+      alert("Successfull");
+      //this.router.navigate(['/landing-page'])
+      
+      this.cancelingService.getAllReservationByUserId({
+        "id" : localStorage.getItem("loggedUserId"),
+        "bookingType": "Reserved"
+    }).subscribe((res) => {
+      this.bookings = res.bookings;
+      console.log(this.bookings)
+      });
+    },(error) =>{
+      alert("Reservation is start")
+    });  
+
+  }
   }
 }

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Booking } from '../model/booking';
 import { Observable } from 'rxjs';
-import { GetAllByUserRequest } from '../model/getAllByUserRequest';
+import { AuthReservationCancelingResponse, GetAllByUserResponse } from '../model/getAllByUserRequest';
 
 
 @Injectable({
@@ -16,8 +16,12 @@ export class CancelingReservationService {
   });
   constructor(private http: HttpClient) {}
 
-  public getAllReservationByUserId(request :GetAllByUserRequest): Observable<any[]> {
-    return this.http.post<any[]>(this.apiServerUrl + '/booking/byUser',request,{ headers: this.headers });
+  public getAllReservationByUserId(request :any): Observable<GetAllByUserResponse> {
+    return this.http.post<GetAllByUserResponse>(this.apiServerUrl + '/booking/byUser',request,{ headers: this.headers });
+  }
+
+  public AuthReservationCanceling(request :any): Observable<AuthReservationCancelingResponse> {
+    return this.http.post<AuthReservationCancelingResponse>(this.apiServerUrl + '/reservation-canceling',request,{ headers: this.headers });
   }
 
 }
