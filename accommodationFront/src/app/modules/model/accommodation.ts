@@ -1,5 +1,6 @@
 export class Accommodation{
     id: String = "";
+    jwt : String = "";
     hostId : string = "";
     name: String = "";
     location: String = "";
@@ -20,6 +21,7 @@ export class Accommodation{
             this.pictures = obj.pictures;
             this.minGuests = obj.minGuests;
             this.maxGuests = obj.maxGuests;
+            this.jwt = obj.jwt;
         }
     }
 }
