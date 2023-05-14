@@ -26,7 +26,41 @@ func (service *BookingService) GetAll() ([]*domain.Booking, error) {
 	return service.store.GetAll()
 }
 
+func (service *BookingService) Delete(bookingId string) error {
+	id, _ := primitive.ObjectIDFromHex(bookingId)
+	booking := domain.Booking{Id: id}
+	return service.store.Delete(&booking)
+}
+
+func (service *BookingService) DeleteByGuestId(guestId string) error {
+	return service.store.DeleteByGuestId(guestId)
+}
+
+func (service *BookingService) DeleteByAccommodationId(accommodationId string) error {
+	return service.store.DeleteByAccommodationId(accommodationId)
+}
+
 func (service *BookingService) Create(booking *domain.Booking) error {
+	//OPTIMISATION: Implement special endpoint for defining custom price
+	if booking.BookingType == domain.CustomPrice {
+		//OPTIMISATION: implement get by accommodationId
+		bookings, err := service.store.GetAll()
+		if err != nil {
+			return err
+		}
+		for _, bookingIt := range bookings{
+			if(bookingIt.AccommodationId == booking.AccommodationId){
+				if TimeSpansOverlap(bookingIt.StartDate, bookingIt.EndDate, booking.StartDate, booking.EndDate){
+					if (bookingIt.BookingType == domain.Booked || bookingIt.BookingType == domain.Reserved){
+						return fmt.Errorf("given date range is taken")
+					}
+					if (bookingIt.BookingType == domain.CustomPrice){
+						service.store.Delete(bookingIt)
+					}
+				}
+			}
+		}
+	}
 	return service.store.Insert(booking)
 }
 
@@ -80,11 +114,15 @@ func (service *BookingService) ReservationCanceling(booking *domain.Booking) (*d
 		booking.BookingType = domain.Canceled
 		fmt.Println("Radil ovo ", booking.BookingType)
 	} else {
-		return nil, fmt.Errorf("Reservation is started.")
+		return nil, fmt.Errorf("reservation is started")
 	}
 	return service.store.Update(booking)
 }
 
 func (service *BookingService) GetAllByUser(guestId string, bookingType domain.BookingType) ([]*domain.Booking, error) {
 	return service.store.GetAllByUser(guestId, bookingType)
+}
+
+func (service *BookingService) GetByAccommodationId(accommodationId string) ([]*domain.Booking, error) {
+	return service.store.GetByAccommodationId(accommodationId)
 }

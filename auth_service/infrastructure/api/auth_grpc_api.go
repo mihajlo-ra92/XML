@@ -184,7 +184,7 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 	fmt.Println(jwtData)
 
 	if jwtData.UserType != 0 {
-		return nil, fmt.Errorf("user must be of host type")
+		return nil, fmt.Errorf("user must be of guest type")
 	}
 	bookingResponse, err := handler.service.CancelingReservation(jwtData, request)
 	if err != nil {
@@ -195,6 +195,73 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 
 }
 
+func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, request *pb.AuthGetAccommodationsByHostIdRequest) (*pb.AuthGetAccommodationsByHostIdResponse, error){
+	fmt.Println("In AuthGetAccommodationByHostId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	response, err := handler.service.GetAccommodationsByHostId(jwtData)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (handler *AuthHandler) AuthGetBookingsByAccommodationId(ctx context.Context, request *pb.AuthGetBookingsByAccommodationIdRequest) (*pb.AuthGetBookingsByAccommodationIdResponse, error){
+	fmt.Println("In AuthGetBookingsByAccommodationId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	bookingResponse, err := handler.service.GetBookingsByAccommodationId(jwtData, request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	return bookingResponse, nil
+	
+}
+
+func (handler *AuthHandler) AuthDefineCustomPrice(ctx context.Context, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error){
+	fmt.Println("In AuthDefineCustomPrice")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	bookingResponse, err := handler.service.DefineCustomPrice(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return bookingResponse, nil
+}
+
 func checkJwt(tokenString string) (*domain.JwtData, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
@@ -202,7 +269,6 @@ func checkJwt(tokenString string) (*domain.JwtData, error) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		secretKey := os.Getenv("SECRET_KEY")
-		fmt.Println(secretKey)
 		return []byte(secretKey), nil
 	})
 	fmt.Println("TOKEN: ")

@@ -56,8 +56,49 @@ func (handler *BookingHandler) GetAll(ctx context.Context, request *pb.GetAllReq
 	return response, nil
 }
 
+func (handler *BookingHandler) DeleteBooking(ctx context.Context, request *pb.DeleteBookingRequest) (*pb.DeleteBookingResponse, error) {
+	fmt.Println("In DeleteBooking grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.Delete(request.BookingId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingResponse{DeletedBooking: &pb.Booking{}}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *BookingHandler) DeleteBookingsByGuestId(ctx context.Context, request *pb.DeleteBookingByGuestIdRequest) (*pb.DeleteBookingByGuestIdResponse, error) {
+	fmt.Println("In DeleteBookingsByUserId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.DeleteByGuestId(request.UserId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingByGuestIdResponse{Message: "Bookings deleted"}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *BookingHandler) DeleteBookingsByAccommodationId(ctx context.Context, request *pb.DeleteBookingByAccommodationIdRequest) (*pb.DeleteBookingByAccommodationIdResponse, error) {
+	fmt.Println("In DeleteBookingsByAccommodationId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.DeleteByAccommodationId(request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingByAccommodationIdResponse{Message: "Bookings deleted"}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
 func (handler *BookingHandler) CreateBooking(ctx context.Context, request *pb.CreateBookingRequest) (*pb.CreateBookingResponse, error) {
-	//TODO: Implement
 	fmt.Println("In CreateBooking grpc api")
 	fmt.Print("Request: ")
 	fmt.Println(request)
@@ -197,6 +238,24 @@ func (handler *BookingHandler) GetAllByUserAndType(ctx context.Context, request 
 	response := &pb.GetAllByUserResponse{
 		Bookings: []*pb.Booking{},
 	}
+	for _, booking := range bookings {
+		current := mapBooking(booking)
+		response.Bookings = append(response.Bookings, current)
+	}
+	return response, nil
+}
+
+func (handler *BookingHandler) GetByAccommodationId(ctx context.Context, request *pb.GetByAccommodationIdRequest) (*pb.GetByAccommodationIdResponse, error) {
+	fmt.Println("In GetByAccommodationId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	bookings, err := handler.service.GetByAccommodationId(request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print(bookings)
+	response := &pb.GetByAccommodationIdResponse{Bookings: []*pb.Booking{}}
 	for _, booking := range bookings {
 		current := mapBooking(booking)
 		response.Bookings = append(response.Bookings, current)

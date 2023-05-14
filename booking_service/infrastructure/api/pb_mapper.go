@@ -51,6 +51,8 @@ func mapNewBooking(request *pb.CreateBookingRequest) *domain.Booking {
 		PriceType:       domain.PriceType(request.Booking.PriceType),
 		NumberOfGuests:  request.Booking.NumberOfGuests,
 		BookingType:     domain.BookingType(request.Booking.BookingType),
+		StartDate: request.Booking.StartDate.AsTime(),
+		EndDate: request.Booking.EndDate.AsTime(),
 	}
 	return booking
 }

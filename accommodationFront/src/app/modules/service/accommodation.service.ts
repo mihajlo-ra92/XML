@@ -7,6 +7,8 @@ import {
 import { Observable, catchError, throwError } from 'rxjs';
 import { Accommodation } from '../model/accommodation';
 import { Reservation } from '../model/reservation';
+import { CreateAccommodation } from '../model/createAccommodation';
+import { Jwt } from '../model/jwt';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +44,15 @@ export class AccommodationService {
       headers: this.headers3,
       responseType: 'text',
     });
+  }
+  createAccommodation(accommodation : CreateAccommodation): Observable<any>{
+    return this.http.post(this.apiServerUrl + '/accomodation',accommodation,{headers: this.headers})
+  }
+
+  getMyAccommodation(jwtString: string):Observable<any>{
+    let token = new Jwt();
+    token.jwt = jwtString;
+    return this.http.post(this.apiServerUrl +'/get-accommodations-by-host',token,{headers: this.headers} )
   }
 
 

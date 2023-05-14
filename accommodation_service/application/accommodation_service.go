@@ -27,12 +27,65 @@ func (service *AccommodationService) Get(id primitive.ObjectID) (*domain.Accommo
 	return service.store.Get(id)
 }
 
+func (service *AccommodationService) GetByHostId(hostId string) ([]*domain.Accommodation, error) {
+	return service.store.GetByHostId(hostId)
+}
+
 func (service *AccommodationService) GetAll() ([]*domain.Accommodation, error) {
 	return service.store.GetAll()
 }
 
 func (service *AccommodationService) Create(accommodation *domain.Accommodation) error {
 	return service.store.Insert(accommodation)
+}
+
+func (service *AccommodationService) DeleteAccommodationsByHostId(hostId string) error {
+	accommodations, err := service.store.GetByHostId(hostId)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Print("accommodations for host: " + hostId)
+	fmt.Println(accommodations)
+	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
+	for _, accommodationIt := range accommodations{
+		bookingResponse, err := bookingClient.DeleteBookingsByAccommodationId(context.TODO(), &booking.DeleteBookingByAccommodationIdRequest{AccommodationId: accommodationIt.HostId})
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Print("bookingResponse: ")
+		fmt.Println(bookingResponse)
+	}
+	err = service.store.DeleteByHostId(hostId)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (service *AccommodationService) DefineCustomPrice(request pb.DefineCustomPriceRequest) error {
+	fmt.Println("In DefineCustomPrice accommodation_service")
+	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
+	fmt.Println("booking_free_accomodation_search:")
+	newBooking := booking.Booking{
+		Id: "", 
+		AccommodationId: request.AccommodationId, 
+		GuestId: "", 
+		Price: request.Price, 
+		PriceType: booking.Booking_PriceType(request.PriceType), 
+		NumberOfGuests: 0, 
+		BookingType: booking.Booking_CustomPrice, 
+		StartDate: request.StartDate, 
+		EndDate: request.EndDate}
+	bookingResponse, err := bookingClient.CreateBooking(context.TODO(), &booking.CreateBookingRequest{Booking: &newBooking})
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	return nil
 }
 
 func (service *AccommodationService) Search(request *pb.SearchRequest) ([]*domain.Accommodation, error) {
@@ -87,3 +140,4 @@ func (service *AccommodationService) Search(request *pb.SearchRequest) ([]*domai
 	return response, nil
 
 }
+
