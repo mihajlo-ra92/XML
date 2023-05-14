@@ -75,7 +75,7 @@
                 </div>
                     <!-- <button class="btn btn-dark btn-lg btn-block" *ngIf="isAdmin" (click)="deleteFlight(flight)">Delete flight</button> -->
                 </div>
-                <button class="btn btn-dark btn-lg btn-block" (click)="ReserveAccommodation(accommodation)">
+                <button class="btn btn-dark btn-lg btn-block" *ngIf="loggedUserRole === '0'" (click)="ReserveAccommodation(accommodation)">
                     Reserve accommodation
                 </button>
             </div>
