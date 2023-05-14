@@ -7,6 +7,7 @@ import { LoginUserComponent } from './modules/login-user/login-user.component';
 import { LandingPageComponent } from './modules/landing-page/landing-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     LoginUserComponent,
     LandingPageComponent,
+    AccommodationReserationComponent
   ],
   imports: [
     BrowserModule,
