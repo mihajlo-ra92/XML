@@ -60,15 +60,37 @@
                             <td>Price</td>
                             <td>{{ selectedAccommodation.price }}</td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                           <td>Pictures</td>
                           <td>
                             <ul>
                               <li><img [(ngModel)]="pictures" ></li>
                             </ul>
                           </td>
-                        </tr>
+                        </tr> -->
                       </table>
+                      <table id="bookingTable" *ngIf="bookingsForAccommodation.length !== 0">
+                        <thead>
+                            <tr>
+                                <th>Price</th>
+                                <th>Price Type</th>
+                                <th>Number of Guests</th>
+                                <th>Booking Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let booking of bookingsForAccommodation" >
+                                <td >{{ booking.price }}</td>
+                                <td >{{ booking.priceType }}</td>
+                                <td >{{ booking.numberOfGuests }}</td>
+                                <td >{{ booking.bookingType }}</td>
+                                <td >{{ booking.startDate }}</td>
+                                <td >{{ booking.endDate }}</td>
+                              </tr>
+                        </tbody>
+                    </table>
                       
                   </div>
 
