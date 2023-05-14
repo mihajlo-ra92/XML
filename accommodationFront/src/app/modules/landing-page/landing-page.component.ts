@@ -3,6 +3,7 @@ import { Accommodation } from '../model/accommodation';
 import { AccommodationService} from '../service/accommodation.service';
 import { BookingService } from '../service/booking.service'
 import { Reservation } from '../model/reservation';
+import { SearchRequest } from '../model/getAllByUserRequest';
 
 @Component({
   selector: 'app-landing-page',
@@ -15,6 +16,8 @@ export class LandingPageComponent implements OnInit {
   loggedUserRole = localStorage.getItem('loggedUserType')
   userJwt = localStorage.getItem('token')
   reservation: Reservation = new Reservation
+  request: SearchRequest=new SearchRequest()
+
   constructor(private accommodationService: AccommodationService, private bookingService: BookingService) {}
 
   ngOnInit(): void {
@@ -74,6 +77,50 @@ ReserveAccommodation(accommodation: Accommodation){
   
   window.location.href = '/accommodation-reservation'
 
+}
+
+Search(){
+  console.log(this.request)
+  if(this.request.guest===0 && this.request.location ==="" && this.request.start_date === undefined && this.request.end_date === undefined ){
+    this.accommodationService.getAllAccommodations().subscribe((res) => {
+      let resJSON = JSON.parse(res);
+      this.allAccommodations = resJSON.accommodations;
+      // this.allFlights.map((x) => {
+      //   const myDate = new Date(x.date);
+      //   // myDate.setHours(myDate.getHours() + 2)
+      //   console.log(myDate);
+      //   x.date = myDate.toLocaleString('en-US', {
+      //     timeZone: 'America/New_York',
+      //   });
+      //   console.log(x.date);
+      // });
+      console.log(this.allAccommodations);
+      
+    });
+    return
+  }
+  if(this.request.start_date !== undefined && this.request.end_date !== undefined ){
+    if(this.request.end_date < this.request.start_date){return}
+    const currentDate = new Date();
+    if(currentDate < this.request.start_date){return}
+    
+  }
+
+
+
+  this.accommodationService.searchAccommodation(this.request).subscribe((res) => {
+    this.allAccommodations = res.accommodations;
+    // this.allFlights.map((x) => {
+    //   const myDate = new Date(x.date);
+    //   // myDate.setHours(myDate.getHours() + 2)
+    //   console.log(myDate);
+    //   x.date = myDate.toLocaleString('en-US', {
+    //     timeZone: 'America/New_York',
+    //   });
+    //   console.log(x.date);
+    // });
+    console.log(this.allAccommodations);
+  });
 }
   // deleteFlight(flight: Flight) {
   //   console.log(flight.id);

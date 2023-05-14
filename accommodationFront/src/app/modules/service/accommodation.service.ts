@@ -7,6 +7,7 @@ import {
 import { Observable, catchError, throwError } from 'rxjs';
 import { Accommodation } from '../model/accommodation';
 import { Reservation } from '../model/reservation';
+import { SearchRequest, SearchResponse } from '../model/getAllByUserRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,9 @@ export class AccommodationService {
     });
   }
 
+  searchAccommodation(request: SearchRequest): Observable<SearchResponse>{
+    return this.http.post<SearchResponse>(this.apiServerUrl + '/accommodation/search',request,{headers: this.headers})
+  }
 
  
   // getById(id: string): Observable<Flight[]> {

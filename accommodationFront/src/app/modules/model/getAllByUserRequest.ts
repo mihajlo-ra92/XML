@@ -1,3 +1,4 @@
+import { Accommodation } from "./accommodation";
 import { Booking } from "./booking";
 
 export class GetAllByUserRequest{
@@ -42,4 +43,28 @@ export class AuthReservationCancelingResponse{
         }
     }
 
+}
+
+export class SearchRequest{
+    location :string="";
+    guest : number= 0;
+    start_date! :Date;
+    end_date! :Date;
+    public constructor(obj?: any) {
+        if(obj){
+            this.location = obj.location;
+            this.guest = obj.guest;
+            this.start_date = obj.start_date;
+            this.end_date = obj.end_date;
+        }
+    }
+}
+
+export class SearchResponse{
+    accommodations: Accommodation[]=[];
+    public constructor(obj?: any) {
+        if(obj){
+            this.accommodations = obj.accommodations;
+        }
+    }
 }
