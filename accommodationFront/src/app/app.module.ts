@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './modules/register/register.component';
 import { EditUserComponent } from './modules/edit-user/edit-user.component';
 import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
+import { CreateAccommodationComponent } from './modules/create-accommodation/create-accommodation.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AccommodationReserationComponent } from './modules/accommodation-reserv
     LandingPageComponent,
     RegisterComponent,
     EditUserComponent,
-    AccommodationReserationComponent
+    AccommodationReserationComponent,
+    CreateAccommodationComponent
   ],
   imports: [
     BrowserModule,
