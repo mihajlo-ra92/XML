@@ -88,7 +88,7 @@ func (handler *BookingHandler) DeleteBookingsByAccommodationId(ctx context.Conte
 	fmt.Println("In DeleteBookingsByAccommodationId grpc api")
 	fmt.Print("Request: ")
 	fmt.Println(request)
-	err := handler.service.DeleteByGuestId(request.AccommodationId)
+	err := handler.service.DeleteByAccommodationId(request.AccommodationId)
 	if err != nil {
 		return nil, err
 	}

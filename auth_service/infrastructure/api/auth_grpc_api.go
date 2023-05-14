@@ -195,6 +195,28 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 
 }
 
+func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, request *pb.AuthGetAccommodationsByHostIdRequest) (*pb.AuthGetAccommodationsByHostIdResponse, error){
+	fmt.Println("In AuthGetAccommodationByHostId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+	response, err := handler.service.GetAccommodationsByHostId(jwtData)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (handler *AuthHandler) AuthDefineCustomPrice(ctx context.Context, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error){
 	fmt.Println("In AuthDefineCustomPrice")
 	fmt.Print("request: ")

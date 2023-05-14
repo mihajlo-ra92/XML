@@ -27,6 +27,10 @@ func (service *AccommodationService) Get(id primitive.ObjectID) (*domain.Accommo
 	return service.store.Get(id)
 }
 
+func (service *AccommodationService) GetByHostId(hostId string) ([]*domain.Accommodation, error) {
+	return service.store.GetByHostId(hostId)
+}
+
 func (service *AccommodationService) GetAll() ([]*domain.Accommodation, error) {
 	return service.store.GetAll()
 }

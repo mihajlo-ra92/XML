@@ -62,6 +62,20 @@ service AuthService{
             body: "*"
         };
     }
+    rpc AuthGetAccommodationByHostId(AuthGetAccommodationsByHostIdRequest) returns (AuthGetAccommodationsByHostIdResponse){
+        option (google.api.http) = {
+            post: "/get-accommodations-by-host"
+            body: "*"
+        };
+    }
+}
+
+message AuthGetAccommodationsByHostIdRequest{
+    string jwt = 1;
+}
+
+message AuthGetAccommodationsByHostIdResponse{
+    repeated Accommodation accommodations = 1;
 }
 
 message AuthDefineCustomPriceRequest{
@@ -105,6 +119,12 @@ message AuthCreateAccommodationRequest{
     repeated string pictures = 5;
     uint32 minGuests = 6;
     uint32 maxGuests = 7;
+    uint32 price = 8;
+    enum PriceType{
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 10;
 }
 
 message AuthCreateAccommodationResponse{
@@ -185,6 +205,12 @@ message Accommodation {
     repeated string pictures = 6;
     uint32 minGuests = 7;
     uint32 maxGuests = 8;
+    uint32 price = 9;
+    enum PriceType{
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 11;
 }
 
 message LoginRequest {
