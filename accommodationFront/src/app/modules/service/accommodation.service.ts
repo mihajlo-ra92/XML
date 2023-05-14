@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Accommodation } from '../model/accommodation';
+import { Reservation } from '../model/reservation';
 
 @Injectable({
   providedIn: 'root',
@@ -36,12 +37,12 @@ export class AccommodationService {
   //     responseType: 'text',
   //   });
   // }
-  // create(flight: Accommodation): Observable<any> {
-  //   return this.http.post(this.apiServerUrl + '/flight', flight, {
-  //     headers: this.headers3,
-  //     responseType: 'text',
-  //   });
-  // }
+  reserve(reservation: Reservation): Observable<any> {
+    return this.http.post(this.apiServerUrl + '/accomodation-reserve', reservation, {
+      headers: this.headers3,
+      responseType: 'text',
+    });
+  }
 
 
  

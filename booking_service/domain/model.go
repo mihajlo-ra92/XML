@@ -18,6 +18,7 @@ const (
 	CustomPrice BookingType = iota
 	Reserved
 	Booked
+	Canceled
 )
 
 type Booking struct {

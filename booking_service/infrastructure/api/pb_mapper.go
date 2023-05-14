@@ -24,6 +24,8 @@ func mapBooking(booking *domain.Booking) *pb.Booking {
 		bookingType = pb.Booking_CustomPrice
 	case domain.Reserved:
 		bookingType = pb.Booking_Reserved
+	case domain.Canceled:
+		bookingType = pb.Booking_Canceled
 	}
 	bookingPb := &pb.Booking{
 		Id:              booking.Id.Hex(),
@@ -49,6 +51,8 @@ func mapNewBooking(request *pb.CreateBookingRequest) *domain.Booking {
 		PriceType:       domain.PriceType(request.Booking.PriceType),
 		NumberOfGuests:  request.Booking.NumberOfGuests,
 		BookingType:     domain.BookingType(request.Booking.BookingType),
+		StartDate: request.Booking.StartDate.AsTime(),
+		EndDate: request.Booking.EndDate.AsTime(),
 	}
 	return booking
 }

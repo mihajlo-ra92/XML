@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './modules/register/register.component';
 import { EditUserComponent } from './modules/edit-user/edit-user.component';
+import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { EditUserComponent } from './modules/edit-user/edit-user.component';
     LandingPageComponent,
     RegisterComponent,
     EditUserComponent,
+    AccommodationReserationComponent
   ],
   imports: [
     BrowserModule,

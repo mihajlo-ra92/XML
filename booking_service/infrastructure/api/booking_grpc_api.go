@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/mihajlo-ra92/XML/booking_service/application"
-
+	"github.com/mihajlo-ra92/XML/booking_service/domain"
 	pb "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -57,7 +57,6 @@ func (handler *BookingHandler) GetAll(ctx context.Context, request *pb.GetAllReq
 }
 
 func (handler *BookingHandler) CreateBooking(ctx context.Context, request *pb.CreateBookingRequest) (*pb.CreateBookingResponse, error) {
-	//TODO: Implement
 	fmt.Println("In CreateBooking grpc api")
 	fmt.Print("Request: ")
 	fmt.Println(request)
@@ -154,6 +153,51 @@ func (handler *BookingHandler) GetByAccomodationIdandDataRange(ctx context.Conte
 
 		fmt.Println("Ispis bookinga: ", current)
 
+		response.Bookings = append(response.Bookings, current)
+	}
+	return response, nil
+}
+
+func (handler *BookingHandler) ReservationCanceling(ctx context.Context, request *pb.ReservationCancelingRequest) (*pb.ReservationCancelingResponse, error) {
+	fmt.Println("In ReservationCanceling grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	fmt.Print("booking after mapping: ")
+	objectID, err := primitive.ObjectIDFromHex(request.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	resbook, err := handler.service.Get(objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := handler.service.ReservationCanceling(resbook)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.ReservationCancelingResponse{Booking: mapBooking(res)}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *BookingHandler) GetAllByUserAndType(ctx context.Context, request *pb.GetAllByUserRequest) (*pb.GetAllByUserResponse, error) {
+	fmt.Println("In ReservationCanceling grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	bookings, err := handler.service.GetAllByUser(request.Id, domain.BookingType(request.BookingType))
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetAllByUserResponse{
+		Bookings: []*pb.Booking{},
+	}
+	for _, booking := range bookings {
+		current := mapBooking(booking)
 		response.Bookings = append(response.Bookings, current)
 	}
 	return response, nil
