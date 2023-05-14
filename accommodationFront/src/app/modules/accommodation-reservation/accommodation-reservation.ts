@@ -45,6 +45,9 @@ export class AccommodationReserationComponent implements OnInit {
 
         console.log(res);
         console.log(this.reservation);
+
+      alert("Successfully reserved from" + " " + this.start + " " + "to" + " " + this.end)
+
       });
     }
 }
