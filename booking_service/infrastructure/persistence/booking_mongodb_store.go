@@ -59,11 +59,27 @@ func (store *BookingMongoDBStore) Delete(Booking *domain.Booking) error {
 	return nil
 }
 
+func (store *BookingMongoDBStore) DeleteByGuestId(guestId string) error {
+	filter := bson.M{"guest_id": guestId}
+	_, err := store.bookings.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (store *BookingMongoDBStore) DeleteByAccommodationId(accommodationId string) error {
+	filter := bson.M{"accommodation_id": accommodationId}
+	_, err := store.bookings.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (store *BookingMongoDBStore) DeleteAll() {
 	store.bookings.DeleteMany(context.TODO(), bson.D{{}})
 }
-
-// func (store *UserMongoDBStore) Update
 
 func (store *BookingMongoDBStore) filter(filter interface{}) ([]*domain.Booking, error) {
 	cursor, err := store.bookings.Find(context.TODO(), filter)

@@ -36,8 +36,37 @@ service BookingService{
             body: "*"
         };
     }
+    rpc DeleteBooking(DeleteBookingRequest) returns(DeleteBookingResponse){
+    }
+    rpc DeleteBookingsByGuestId(DeleteBookingByGuestIdRequest) returns(DeleteBookingByGuestIdResponse){
+    }
+    rpc DeleteBookingsByAccommodationId(DeleteBookingByAccommodationIdRequest) returns(DeleteBookingByAccommodationIdResponse){
+    }
+
 }
 
+message DeleteBookingByAccommodationIdRequest{
+    string accommodationId = 1;
+}
+
+message DeleteBookingByAccommodationIdResponse{
+    string message = 1;
+}
+
+message DeleteBookingByGuestIdRequest{
+    string userId = 1;
+}
+
+message DeleteBookingByGuestIdResponse{
+    string message = 1;
+}
+
+message DeleteBookingRequest{
+    string bookingId = 1;
+}
+message DeleteBookingResponse{
+    Booking deletedBooking = 1;
+}
 message GetAllByUserRequest{
     string id = 1;
     enum BookingType{

@@ -26,6 +26,20 @@ func (service *BookingService) GetAll() ([]*domain.Booking, error) {
 	return service.store.GetAll()
 }
 
+func (service *BookingService) Delete(bookingId string) error {
+	id, _ := primitive.ObjectIDFromHex(bookingId)
+	booking := domain.Booking{Id: id}
+	return service.store.Delete(&booking)
+}
+
+func (service *BookingService) DeleteByGuestId(guestId string) error {
+	return service.store.DeleteByGuestId(guestId)
+}
+
+func (service *BookingService) DeleteByAccommodationId(accommodationId string) error {
+	return service.store.DeleteByAccommodationId(accommodationId)
+}
+
 func (service *BookingService) Create(booking *domain.Booking) error {
 	//OPTIMISATION: Implement special endpoint for defining custom price
 	if booking.BookingType == domain.CustomPrice {

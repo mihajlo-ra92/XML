@@ -56,6 +56,48 @@ func (handler *BookingHandler) GetAll(ctx context.Context, request *pb.GetAllReq
 	return response, nil
 }
 
+func (handler *BookingHandler) DeleteBooking(ctx context.Context, request *pb.DeleteBookingRequest) (*pb.DeleteBookingResponse, error) {
+	fmt.Println("In DeleteBooking grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.Delete(request.BookingId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingResponse{DeletedBooking: &pb.Booking{}}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *BookingHandler) DeleteBookingsByGuestId(ctx context.Context, request *pb.DeleteBookingByGuestIdRequest) (*pb.DeleteBookingByGuestIdResponse, error) {
+	fmt.Println("In DeleteBookingsByUserId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.DeleteByGuestId(request.UserId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingByGuestIdResponse{Message: "Bookings deleted"}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *BookingHandler) DeleteBookingsByAccommodationId(ctx context.Context, request *pb.DeleteBookingByAccommodationIdRequest) (*pb.DeleteBookingByAccommodationIdResponse, error) {
+	fmt.Println("In DeleteBookingsByAccommodationId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.DeleteByGuestId(request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteBookingByAccommodationIdResponse{Message: "Bookings deleted"}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
 func (handler *BookingHandler) CreateBooking(ctx context.Context, request *pb.CreateBookingRequest) (*pb.CreateBookingResponse, error) {
 	fmt.Println("In CreateBooking grpc api")
 	fmt.Print("Request: ")
