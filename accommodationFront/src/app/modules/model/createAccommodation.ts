@@ -1,11 +1,15 @@
+import { PriceType } from "./priceType";
+
 export class CreateAccommodation{
     jwt : String = "";
     name : String = "";
     location : String = "";
     benefits: String[] = [];
     pictures: String[] = [];
-    minGuest: number = 0;
-    maxGuest: number = 0;
+    minGuests: number = 0;
+    maxGuests: number = 0;
+    price: number = 0;
+    priceType : PriceType = PriceType.Regular;
 
     public constructor(obj?: any) {
         if (obj) {
@@ -14,8 +18,9 @@ export class CreateAccommodation{
             this.location = obj.location;
             this.benefits = obj.benefits;
             this.pictures = obj.pictures;
-            this.minGuest = obj.minGuest;
-            this.maxGuest = obj.maxGuest;
+            this.minGuests = obj.minGuest;
+            this.maxGuests = obj.maxGuest;
+            this.price = obj.price;
         }
     }
 }

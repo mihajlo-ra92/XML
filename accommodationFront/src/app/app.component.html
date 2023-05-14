@@ -6,7 +6,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarColor02">
      <ul class="navbar-nav mr-auto" >
-        <li class="nav-item active">
+        <li *ngIf="loggedUserJwt === null" class="nav-item active">
            <a class="nav-link" routerLink="/register">Sing up</a>
         </li>
         <li *ngIf="loggedUserRole === 'admin'" class="nav-item active">
@@ -21,6 +21,9 @@
        <li *ngIf="loggedUserJwt !== null" class="nav-item active">
         <a class="nav-link" routerLink="/edit-user">Edit user</a>
      </li>
+     <li *ngIf="loggedUserRole === '1' " class="nav-item active" >
+      <a class="nav-link" routerLink="/create-accommodation">Create new accommodation</a>
+   </li>
        <li *ngIf="loggedUserJwt !== null" class="nav-item active" (click)="onLogout()">
         <a class="nav-link" routerLink="/login">Logout</a>
      </li>

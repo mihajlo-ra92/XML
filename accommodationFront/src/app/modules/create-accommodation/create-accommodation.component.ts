@@ -4,6 +4,7 @@ import { Route, Router } from '@angular/router';
 import { CreateAccommodation } from '../model/createAccommodation';
 import { User } from '../model/user';
 import { AccommodationService } from '../service/accommodation.service';
+import { PriceType } from '../model/priceType';
 
 @Component({
   selector: 'app-create-accommodation',
@@ -28,6 +29,7 @@ export class CreateAccommodationComponent implements OnInit {
 
   async  Create(){
     let temp = localStorage.getItem("token")
+    this.accommodation.priceType = PriceType.Regular;
     if(temp != null){
       this.accommodation.jwt = temp;
     }
