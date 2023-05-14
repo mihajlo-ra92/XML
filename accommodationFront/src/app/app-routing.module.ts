@@ -6,6 +6,7 @@ import { CancelingReservationComponent } from './modules/canceling-reservation/c
 import { RegisterComponent } from './modules/register/register.component';
 import { EditUserComponent } from './modules/edit-user/edit-user.component';
 import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
+import { CreateAccommodationComponent } from './modules/create-accommodation/create-accommodation.component';
 
 const routes: Routes = [
   { path: 'landing-page', component: LandingPageComponent },
@@ -15,6 +16,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path: 'edit-user', component: EditUserComponent},
   { path: 'accommodation-reservation', component: AccommodationReserationComponent },
+  { path: 'create-accommodation', component: CreateAccommodationComponent},
+  
 ];
 
 @NgModule({

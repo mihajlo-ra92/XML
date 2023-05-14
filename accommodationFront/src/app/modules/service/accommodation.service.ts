@@ -7,6 +7,7 @@ import {
 import { Observable, catchError, throwError } from 'rxjs';
 import { Accommodation } from '../model/accommodation';
 import { Reservation } from '../model/reservation';
+import { CreateAccommodation } from '../model/createAccommodation';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,9 @@ export class AccommodationService {
       headers: this.headers3,
       responseType: 'text',
     });
+  }
+  createAccommodation(accommodation : CreateAccommodation): Observable<any>{
+    return this.http.post(this.apiServerUrl + '/accomodation',accommodation,{headers: this.headers})
   }
 
 
