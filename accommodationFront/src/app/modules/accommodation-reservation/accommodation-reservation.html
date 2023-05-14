@@ -1,0 +1,50 @@
+<section class="vh-100" style="background-color: #9A616D;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card" style="border-radius: 1rem;">
+            <div class="row g-0">
+              <div class="col-md-6 col-lg-5 d-none d-md-block" style="margin-top: 100px;">
+                <img src="https://thumbs.dreamstime.com/b/vector-people-travel-online-booking-hotel-tourism-illustration-payment-accommodation-hands-smartphone-summer-time-holiday-174975999.jpg"
+                  alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+              </div>
+              <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                <div class="card-body p-4 p-lg-5 text-black">
+  
+                  <form (ngSubmit)="Reserve()">
+  
+                    <div class="d-flex align-items-center mb-3 pb-1">
+                      <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                      <span class="h1 fw-bold mb-0">Airport XML</span>
+                    </div>
+  
+                    <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+                    <div class="form-outline mb-4">
+                      <input type="text" name="username" id="username" class="form-control form-control-lg" [(ngModel)] = "reservation.numberOfGuests"/>
+                      <label class="form-label" for="username">Number of guests</label>
+                    </div>
+  
+                    <div class="form-outline mb-4">
+                        <input type="date" name="password" id="password" class="form-control form-control-lg"  [(ngModel)] = "start"/>
+                        <label class="form-label" for="password">Start date</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                    <input type="date" name="password" id="password" class="form-control form-control-lg"  [(ngModel)] = "end"/>
+                    <label class="form-label" for="password">End date</label>
+                    </div>
+  
+                    <div class="pt-1 mb-4">
+                      <button class="btn btn-dark btn-lg btn-block" type="submit" >Reserve</button>
+                    </div>
+  
+                  </form>
+  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
