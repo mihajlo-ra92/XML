@@ -3,6 +3,8 @@ import { AccommodationService } from '../service/accommodation.service';
 import { Route, Router } from '@angular/router';
 import { Accommodation } from '../model/accommodation';
 import { Booking } from '../model/booking';
+import { ApproveBooking } from '../model/approveBooking';
+import { BookingService } from '../service/booking.service';
 
 @Component({
   selector: 'app-my-accommodations',
@@ -15,7 +17,9 @@ export class MyAccommodationsComponent implements OnInit {
   public selectedAccommodation: Accommodation = new Accommodation();
   public pictures: Document = new Document;
   public bookingsForAccommodation: Booking[] = new Array;
-  constructor(private accommodationService : AccommodationService, private router: Router) { }
+  public approveBooking: ApproveBooking = new ApproveBooking
+
+  constructor(private accommodationService : AccommodationService, private router: Router, private bookingService: BookingService) { }
 
   ngOnInit(): void {
     let token =localStorage.getItem("token");
@@ -69,5 +73,44 @@ export class MyAccommodationsComponent implements OnInit {
 //   }
   selectCustomPrice(){
 
+  }
+
+  Approve(bookingId: String){
+
+    this.approveBooking.bookingId = bookingId;
+    this.approveBooking.jwt = localStorage.getItem('token')!
+    
+      this.bookingService.approve(this.approveBooking).subscribe((res) => {
+
+        console.log(res);
+        console.log(this.approveBooking);
+
+      alert("Successfully approved")
+
+      window.location.href = '/my-accommodations'
+      }
+      ,(error) =>{
+        console.log(error)
+        
+        alert(JSON.parse(error.error).message)
+      });
+    
+    
+  }
+
+  Deny(bookingId: String){
+
+    this.approveBooking.bookingId = bookingId;
+    this.approveBooking.jwt = localStorage.getItem('token')!
+
+    this.bookingService.deny(this.approveBooking).subscribe((res) => {
+
+      console.log(res);
+      console.log(this.approveBooking);
+
+    alert("Successfully denied")
+
+    window.location.href = '/my-accommodations'
+    });
   }
 }

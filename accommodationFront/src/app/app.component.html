@@ -9,8 +9,8 @@
         <li *ngIf="loggedUserJwt === null" class="nav-item active">
            <a class="nav-link" routerLink="/register">Sing up</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" routerLink="/approve-booking">Approve booking</a>
+        <li *ngIf="loggedUserRole === '1' " class="nav-item active">
+          <a class="nav-link" routerLink="/my-accommodations">My accommodations</a>
        </li>
      
         <li *ngIf="loggedUserJwt === null" class="nav-item active">

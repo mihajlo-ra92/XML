@@ -11,6 +11,7 @@ export class AccommodationReserationComponent implements OnInit {
     reservation: Reservation = new Reservation()
     start: string = "";
     end: string = "";
+    loggedUserRole = localStorage.getItem('loggedUserType')
 
   constructor(private accommodationService: AccommodationService) {}
 

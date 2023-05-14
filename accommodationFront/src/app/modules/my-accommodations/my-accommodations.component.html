@@ -88,6 +88,8 @@
                                 <td >{{ booking.bookingType }}</td>
                                 <td >{{ booking.startDate }}</td>
                                 <td >{{ booking.endDate }}</td>
+                                <td><button *ngIf="booking.bookingType === 'Reserved'" (click)="Approve(booking.id)">Approve</button></td>
+                                <td><button *ngIf="booking.bookingType === 'Reserved'" (click)="Deny(booking.id)">Deny</button></td>
                               </tr>
                         </tbody>
                     </table>
