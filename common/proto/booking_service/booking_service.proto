@@ -42,7 +42,16 @@ service BookingService{
     }
     rpc DeleteBookingsByAccommodationId(DeleteBookingByAccommodationIdRequest) returns(DeleteBookingByAccommodationIdResponse){
     }
+    rpc GetByAccommodationId(GetByAccommodationIdRequest) returns(GetByAccommodationIdResponse){
+    }
+}
 
+message GetByAccommodationIdRequest{
+    string accommodationId = 1;
+}
+
+message GetByAccommodationIdResponse{
+    repeated Booking bookings = 1;
 }
 
 message DeleteBookingByAccommodationIdRequest{

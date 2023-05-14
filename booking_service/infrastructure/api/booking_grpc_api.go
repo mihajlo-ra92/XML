@@ -244,3 +244,21 @@ func (handler *BookingHandler) GetAllByUserAndType(ctx context.Context, request 
 	}
 	return response, nil
 }
+
+func (handler *BookingHandler) GetByAccommodationId(ctx context.Context, request *pb.GetByAccommodationIdRequest) (*pb.GetByAccommodationIdResponse, error) {
+	fmt.Println("In GetByAccommodationId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	bookings, err := handler.service.GetByAccommodationId(request.AccommodationId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print(bookings)
+	response := &pb.GetByAccommodationIdResponse{Bookings: []*pb.Booking{}}
+	for _, booking := range bookings {
+		current := mapBooking(booking)
+		response.Bookings = append(response.Bookings, current)
+	}
+	return response, nil
+}

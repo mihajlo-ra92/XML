@@ -143,6 +143,19 @@ func (store *BookingMongoDBStore) GetAllByUser(guestId string, bookingType domai
 	return decode(cursor)
 }
 
+func (store *BookingMongoDBStore) GetByAccommodationId(accommodationId string) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id":     accommodationId,
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
 func (store *BookingMongoDBStore) Update(booking *domain.Booking) (*domain.Booking, error) {
 	fmt.Print("booking in mongodb_store: ")
 	fmt.Println(booking)

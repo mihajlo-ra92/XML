@@ -114,11 +114,15 @@ func (service *BookingService) ReservationCanceling(booking *domain.Booking) (*d
 		booking.BookingType = domain.Canceled
 		fmt.Println("Radil ovo ", booking.BookingType)
 	} else {
-		return nil, fmt.Errorf("Reservation is started.")
+		return nil, fmt.Errorf("reservation is started")
 	}
 	return service.store.Update(booking)
 }
 
 func (service *BookingService) GetAllByUser(guestId string, bookingType domain.BookingType) ([]*domain.Booking, error) {
 	return service.store.GetAllByUser(guestId, bookingType)
+}
+
+func (service *BookingService) GetByAccommodationId(accommodationId string) ([]*domain.Booking, error) {
+	return service.store.GetByAccommodationId(accommodationId)
 }

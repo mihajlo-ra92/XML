@@ -68,8 +68,22 @@ service AuthService{
             body: "*"
         };
     }
+    rpc AuthGetBookingsByAccommodationId(AuthGetBookingsByAccommodationIdRequest) returns (AuthGetBookingsByAccommodationIdResponse){
+        option (google.api.http) = {
+            post: "/get-bookings-by-accommodation"
+            body: "*"
+        };
+    }
 }
 
+message AuthGetBookingsByAccommodationIdRequest{
+    string jwt = 1;
+    string accommodationId = 2;
+}
+
+message AuthGetBookingsByAccommodationIdResponse{
+    repeated Booking bookings = 1;
+}
 message AuthGetAccommodationsByHostIdRequest{
     string jwt = 1;
 }
