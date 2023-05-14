@@ -63,7 +63,7 @@ export class MyAccommodationsComponent implements OnInit {
     const imageFile3 = this.saveImage(
       String(this.selectedAccommodation.pictures[2])
     );
-    reader3.readAsDataURL(imageFile2);
+    reader3.readAsDataURL(imageFile3);
     reader3.onload = () => {
       this.imageUrl3 = reader3.result as string;
     };
