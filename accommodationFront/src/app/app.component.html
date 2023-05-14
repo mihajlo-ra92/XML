@@ -18,6 +18,9 @@
         <li *ngIf="loggedUserJwt === null" class="nav-item active">
           <a class="nav-link" routerLink="/login">Login</a>
        </li>
+       <li *ngIf="loggedUserJwt !== null" class="nav-item active">
+        <a class="nav-link" routerLink="/edit-user">Edit user</a>
+     </li>
        <li *ngIf="loggedUserJwt !== null" class="nav-item active" (click)="onLogout()">
         <a class="nav-link" routerLink="/login">Logout</a>
      </li>
