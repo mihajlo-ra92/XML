@@ -223,8 +223,8 @@ func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, reques
 	}
 	fmt.Print("bookingResponse: ")
 	fmt.Println(bookingResponse)
-	authReserveAccommodationResponse := pb.AuthReservationCancelingResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
+	authCanceling := pb.AuthReservationCancelingResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
 	fmt.Print("authCreateBookingResponse: ")
-	fmt.Println(authReserveAccommodationResponse)
-	return &authReserveAccommodationResponse, nil
+	fmt.Println(authCanceling)
+	return &authCanceling, nil
 }
