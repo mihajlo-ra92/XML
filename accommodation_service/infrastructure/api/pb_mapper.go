@@ -21,6 +21,33 @@ func mapAccommodation(accommodation *domain.Accommodation) *pb.Accommodation {
 	return accommodationPb
 }
 
+// func mapAccommodations(accommodations *[]domain.Accommodation) *[]pb.Accommodation {
+// 	var retVal []pb.Accommodation
+// 	for _, accommodationIt := range *accommodations{
+// 	var priceType pb.Accommodation_PriceType
+// 	switch accommodationIt.PriceType{
+// 	case domain.PerGuest:
+// 		priceType = pb.Accommodation_PerGuest
+// 	case domain.Regular:
+// 		priceType = pb.Accommodation_Regular
+// 	}
+// 		temp := pb.Accommodation{
+// 			Id: accommodationIt.Id.Hex(),
+// 			HostId: accommodationIt.HostId,
+// 			Name: accommodationIt.Name,
+// 			Location: accommodationIt.Location,
+// 			Benefits: accommodationIt.Benefits,
+// 			Pictures: accommodationIt.Pictures,
+// 			MinGuests: accommodationIt.MinGuests,
+// 			MaxGuests: accommodationIt.MaxGuests,
+// 			Price: accommodationIt.Price,
+// 			PriceType: priceType,
+// 		}
+// 		retVal = append(retVal, temp)
+// 	}
+// 	return &retVal 
+// }
+
 func mapNewAccommodation(request *pb.CreateAccommodationRequest) *domain.Accommodation {
 	accommodation := &domain.Accommodation{
 		Id:        primitive.NewObjectID(),
@@ -31,6 +58,8 @@ func mapNewAccommodation(request *pb.CreateAccommodationRequest) *domain.Accommo
 		Pictures:  request.Pictures,
 		MinGuests: request.MinGuests,
 		MaxGuests: request.MaxGuests,
+		Price:     request.Price,
+		PriceType: domain.PriceType(request.PriceType),
 	}
 	return accommodation
 }
