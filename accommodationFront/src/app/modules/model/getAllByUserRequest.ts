@@ -47,7 +47,7 @@ export class AuthReservationCancelingResponse{
 
 export class SearchRequest{
     location :string="";
-    guest : number= 0;
+    guest : number= 1;
     start_date! :Date;
     end_date! :Date;
     public constructor(obj?: any) {
@@ -60,8 +60,19 @@ export class SearchRequest{
     }
 }
 
+export class AccommodationWithPrice{
+    accommodation: Accommodation=new Accommodation();
+    price : number=0;
+    public constructor(obj?: any) {
+        if(obj){
+            this.accommodation = obj.accommodations;
+            this.price = obj.price;
+        }
+    }
+}
+
 export class SearchResponse{
-    accommodations: Accommodation[]=[];
+    accommodations: AccommodationWithPrice[]=[];
     public constructor(obj?: any) {
         if(obj){
             this.accommodations = obj.accommodations;

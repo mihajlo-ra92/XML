@@ -78,10 +78,13 @@ ReserveAccommodation(accommodation: Accommodation){
   window.location.href = '/accommodation-reservation'
 
 }
-
+Refrash(){
+  this.AllAccommodations();
+  this.request = new SearchRequest()
+}
 Search(){
-  console.log(this.request)
-  if(this.request.guest===0 && this.request.location ==="" && this.request.start_date === undefined && this.request.end_date === undefined ){
+  console.log(this.request.end_date)
+  if(this.request.guest===1 && this.request.location ==="" && this.request.start_date === undefined && this.request.end_date === undefined ){
     this.accommodationService.getAllAccommodations().subscribe((res) => {
       let resJSON = JSON.parse(res);
       this.allAccommodations = resJSON.accommodations;
@@ -106,10 +109,59 @@ Search(){
     
   }
 
+  if(this.request.start_date === undefined && this.request.end_date === undefined ){
+    this.accommodationService.searchAccommodation(this.request).subscribe((res) => {
+      this.allAccommodations = []
+      console.log(this.allAccommodations);
+  
+      var list = res.accommodations;
+      list.forEach((item) => {
+        console.log(item);
+        console.log(item.accommodation, "Ovde b");
+  
+        this.allAccommodations.push(item.accommodation)
+      });
+      
+      // this.allFlights.map((x) => {
+      //   const myDate = new Date(x.date);
+      //   // myDate.setHours(myDate.getHours() + 2)
+      //   console.log(myDate);
+      //   x.date = myDate.toLocaleString('en-US', {
+      //     timeZone: 'America/New_York',
+      //   });
+      //   console.log(x.date);
+      // });
+      console.log(this.allAccommodations);
+    });}
 
 
-  this.accommodationService.searchAccommodation(this.request).subscribe((res) => {
-    this.allAccommodations = res.accommodations;
+
+  if(this.request.start_date === undefined || this.request.end_date === undefined ){
+    return
+  }
+  var startDateString = this.request.start_date.toString();
+  var startDateFormated = startDateString + 'T00:00:00.123Z';
+
+  var endDateString = this.request.end_date.toString();
+  var endDateFormated = endDateString + 'T00:00:00.123Z';
+
+  this.accommodationService.searchAccommodation({
+    "location" : this.request.location,
+    "guest" : this.request.guest,
+    "start_date" :startDateFormated,
+    "end_date" :endDateFormated
+}).subscribe((res) => {
+    this.allAccommodations = []
+    console.log(this.allAccommodations);
+
+    var list = res.accommodations;
+    list.forEach((item) => {
+      console.log(item);
+      console.log(item.accommodation, "Ovde b");
+
+      this.allAccommodations.push(item.accommodation)
+    });
+    
     // this.allFlights.map((x) => {
     //   const myDate = new Date(x.date);
     //   // myDate.setHours(myDate.getHours() + 2)
@@ -138,7 +190,7 @@ Search(){
 //       var startDateString = this.startDate.toString();
 //       var startDateFormated = startDateString + 'T00:00:00.123Z';
 
-//       var endDateString = this.endDate.toString();
+//       var endDateString = this.endDate.toString0.();
 //       var endDateFormated = endDateString + 'T00:00:00.123Z';
 
 

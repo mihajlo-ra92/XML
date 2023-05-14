@@ -45,7 +45,7 @@ export class AccommodationService {
     });
   }
 
-  searchAccommodation(request: SearchRequest): Observable<SearchResponse>{
+  searchAccommodation(request: any): Observable<SearchResponse>{
     return this.http.post<SearchResponse>(this.apiServerUrl + '/accommodation/search',request,{headers: this.headers})
   }
 

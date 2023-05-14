@@ -6,6 +6,10 @@
 <div class="container">
     <div class="row" >
         <div class="search-fields" style="position: relative; left: 0">
+            <button style="width: 100px; height: 40px;" class="btn btn-dark btn-lg btn-block" (click)="Refrash()">
+                <i fas >Refresh</i>
+             </button>
+        
             <input class="search-inputs" type="text" placeholder="Place" [(ngModel)]="request.location" />
             
             &nbsp;&nbsp;&nbsp;
@@ -35,7 +39,6 @@
               max="2000"
               min="1"
               class="form-control form-control-lg search-inputs"
-              value="0001-01-01T08:30:00"
               placeholder="Guests number"
               [(ngModel)]="request.guest"
             />
