@@ -24,9 +24,18 @@ service AccommodationService{
     }
     rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse){
     }
-
     rpc DefineCustomPrice(DefineCustomPriceRequest) returns (DefineCustomPriceResponse){
     }
+    rpc DeleteAccommodationsByHostId(DeleteAccommodationsByHostIdRequest) returns (DeleteAccommodationsByHostIdResponse){
+    }
+}
+
+message DeleteAccommodationsByHostIdRequest{
+    string hostId = 1;
+}
+
+message DeleteAccommodationsByHostIdResponse{
+    string message = 1;
 }
 
 message DefineCustomPriceRequest{

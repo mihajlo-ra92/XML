@@ -31,6 +31,11 @@ func (store *AccommodationMongoDBStore) Get(id primitive.ObjectID) (*domain.Acco
 	return store.filterOne(filter)
 }
 
+func (store *AccommodationMongoDBStore) GetByHostId(hostId string) ([]*domain.Accommodation, error) {
+	filter := bson.M{"host_id": hostId}
+	return store.filter(filter)
+}
+
 func (store *AccommodationMongoDBStore) GetAll() ([]*domain.Accommodation, error) {
 	filter := bson.D{{}}
 	return store.filter(filter)
@@ -49,7 +54,14 @@ func (store *AccommodationMongoDBStore) DeleteAll() {
 	store.accommodations.DeleteMany(context.TODO(), bson.D{{}})
 }
 
-// func (store *UserMongoDBStore) Update
+func (store *AccommodationMongoDBStore) DeleteByHostId(hostId string) error{
+	filter := bson.M{"host_id": hostId}
+	_, err := store.accommodations.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (store *AccommodationMongoDBStore) filter(filter interface{}) ([]*domain.Accommodation, error) {
 	cursor, err := store.accommodations.Find(context.TODO(), filter)
