@@ -112,3 +112,41 @@ func (store *BookingMongoDBStore) GetByAccomodationIdandDataRange(accommodationI
 	}
 	return decode(cursor)
 }
+
+func (store *BookingMongoDBStore) GetAllByUser(guestId string, bookingType domain.BookingType) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"guest_id":     guestId,
+		"booking_type": bookingType,
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
+func (store *BookingMongoDBStore) Update(booking *domain.Booking) (*domain.Booking, error) {
+	fmt.Print("booking in mongodb_store: ")
+	fmt.Println(booking)
+	filter := bson.M{"_id": booking.Id}
+	update := bson.M{"$set": bson.M{
+		"_id":              booking.Id,
+		"accommodation_id": booking.AccommodationId,
+		"guest_id":         booking.GuestId,
+		"price":            booking.Price,
+		"price_type":       booking.PriceType,
+		"number_of_guests": booking.NumberOfGuests,
+		"booking_type":     booking.BookingType,
+		"start_date":       booking.StartDate,
+		"end_date":         booking.EndDate,
+	}}
+	updateResult, err := store.bookings.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("updateResult: ")
+	fmt.Print(updateResult)
+	return booking, nil
+}
