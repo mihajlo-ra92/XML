@@ -1,27 +1,26 @@
-export class Accommodation{
-    id: String = "";
+import { PriceType } from "./priceType";
+
+export class CreateAccommodation{
     jwt : String = "";
-    hostId : string = "";
-    name: String = "";
-    location: String = "";
+    name : String = "";
+    location : String = "";
     benefits: String[] = [];
     pictures: String[] = [];
     minGuests: number = 0;
     maxGuests: number = 0;
     price: number = 0;
-    
+    priceType : PriceType = PriceType.Regular;
+
     public constructor(obj?: any) {
         if (obj) {
-            this.id = obj.id;
-            this.hostId = obj.hostId;
+            this.jwt = obj.jwt;
             this.name = obj.name;
             this.location = obj.location;
             this.benefits = obj.benefits;
-            this.price = obj.Price;
             this.pictures = obj.pictures;
-            this.minGuests = obj.minGuests;
-            this.maxGuests = obj.maxGuests;
-            this.jwt = obj.jwt;
+            this.minGuests = obj.minGuest;
+            this.maxGuests = obj.maxGuest;
+            this.price = obj.price;
         }
     }
 }

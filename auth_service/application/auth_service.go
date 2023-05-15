@@ -63,7 +63,7 @@ func (service *AuthService) Login(username string, password string) (*string, er
 func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request *pb.AuthCreateAccommodationRequest) (*pb.AuthCreateAccommodationResponse, error) {
 	accommodationClient := services.NewAccommodationClient(service.accommodationClientAddress)
 	accommodationUser := accommodation.AccommodationUser{Id: jwtData.UserId, UserType: accommodation.AccommodationUser_UserType(jwtData.UserType), Username: jwtData.Username}
-	accommodationRequest := accommodation.CreateAccommodationRequest{User: &accommodationUser, Name: request.Name, Location: request.Location, Benefits: request.Benefits, Pictures: request.Pictures, MinGuests: request.MinGuests, MaxGuests: request.MaxGuests}
+	accommodationRequest := accommodation.CreateAccommodationRequest{User: &accommodationUser, Name: request.Name, Location: request.Location, Benefits: request.Benefits, Pictures: request.Pictures, MinGuests: request.MinGuests, MaxGuests: request.MaxGuests, Price: request.Price, PriceType: accommodation.CreateAccommodationRequest_PriceType(request.PriceType)}
 	fmt.Print("accommodationRequest: ")
 	fmt.Println(accommodationRequest)
 	accommodationResponse, err := accommodationClient.CreateAccommodation(context.TODO(), &accommodationRequest)
@@ -72,7 +72,7 @@ func (service *AuthService) CreateAccommodation(jwtData *domain.JwtData, request
 	}
 	fmt.Print("accommodationResponse: ")
 	fmt.Println(accommodationResponse)
-	authCreateAccommodationResponse := pb.AuthCreateAccommodationResponse{Accomodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests}}
+	authCreateAccommodationResponse := pb.AuthCreateAccommodationResponse{Accomodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests, Price: accommodationRequest.Price, PriceType: pb.Accommodation_PriceType(accommodationResponse.Accommodation.PriceType)}}
 	fmt.Print("authCreateAccommodationResponse: ")
 	fmt.Println(authCreateAccommodationResponse)
 	return &authCreateAccommodationResponse, nil
@@ -229,6 +229,36 @@ func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, reques
 	return &authCanceling, nil
 }
 
+func (service *AuthService) GetAccommodationsByHostId(jwtData *domain.JwtData) (*pb.AuthGetAccommodationsByHostIdResponse, error) {
+	getAccommodationsRequest := accommodation.GetByHostIdRequest{HostId: jwtData.UserId}
+	accommodationClient := services.NewAccommodationClient(service.accommodationClientAddress)
+	accommodationResponse, err := accommodationClient.GetByHostId(context.TODO(), &getAccommodationsRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("accommodationResponse: ")
+	fmt.Println(accommodationResponse)
+	var respAccommodations []*pb.Accommodation
+	for _, accommodationIt := range accommodationResponse.Acccommodations{
+		temp := pb.Accommodation{
+			Id: accommodationIt.Id,
+			HostId: accommodationIt.HostId,
+			Name: accommodationIt.Name,
+			Location: accommodationIt.Location,
+			Benefits: accommodationIt.Benefits,
+			Pictures: accommodationIt.Pictures,
+			MinGuests: accommodationIt.MinGuests,
+			MaxGuests: accommodationIt.MaxGuests,
+			Price: accommodationIt.Price,
+			PriceType: pb.Accommodation_PriceType(accommodationIt.PriceType),
+		}
+		respAccommodations = append(respAccommodations, &temp)
+	}
+	authGetAccommodationsByHostIdResponse := pb.AuthGetAccommodationsByHostIdResponse{Accommodations: respAccommodations}
+	fmt.Print("authGetAccommodationsByHostIdResponse: ")
+	fmt.Println(authGetAccommodationsByHostIdResponse)
+	return &authGetAccommodationsByHostIdResponse, nil
+}
 func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error) {
 	jwtUser := accommodation.AccommodationUser{Id: jwtData.UserId, UserType: accommodation.AccommodationUser_UserType(jwtData.UserType), Username: jwtData.Username}
 	customPriceRequest := accommodation.DefineCustomPriceRequest{User: &jwtUser, AccommodationId: request.AccommodationId, StartDate: request.StartDate, EndDate: request.EndDate, Price: request.Price, PriceType: accommodation.DefineCustomPriceRequest_PriceType(request.PriceType)}
@@ -247,4 +277,32 @@ func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *
 	fmt.Print("authDefineCustomPriceResponse: ")
 	fmt.Println(authDefineCustomPriceResponse)
 	return &authDefineCustomPriceResponse, nil
+}
+
+func (service *AuthService) GetBookingsByAccommodationId(jwtData *domain.JwtData, accommodationId string) (*pb.AuthGetBookingsByAccommodationIdResponse, error) {
+	bookingClient := services.NewBookingClient(service.bookingClientAddress)
+
+	bookingResponse, err := bookingClient.GetByAccommodationId(context.TODO(), &booking.GetByAccommodationIdRequest{AccommodationId: accommodationId})
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("bookingResponse: ")
+	fmt.Println(bookingResponse)
+	var respBookings []*pb.Booking
+	for _, bookingIt := range bookingResponse.Bookings{
+		temp := pb.Booking{
+			Id: bookingIt.Id,
+			AccommodationId: bookingIt.AccommodationId,
+			GuestId: bookingIt.GuestId,
+			Price: bookingIt.Price,
+			PriceType: pb.Booking_PriceType(bookingIt.PriceType),
+			NumberOfGuests: bookingIt.NumberOfGuests,
+			BookingType: pb.Booking_BookingType(bookingIt.BookingType),
+			StartDate: bookingIt.StartDate,
+			EndDate: bookingIt.EndDate,
+		}
+		respBookings = append(respBookings, &temp)
+	}
+	authGetBookingByAccommodationIdResponse := pb.AuthGetBookingsByAccommodationIdResponse{Bookings: respBookings}
+	return &authGetBookingByAccommodationIdResponse, nil
 }

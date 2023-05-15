@@ -11,6 +11,9 @@ service AccommodationService{
                 get: "/accommodation/{id}"
         };
     }
+    rpc GetByHostId(GetByHostIdRequest) returns(GetByHostIdResponse){
+    }
+    
     rpc GetAll(GetAllRequest) returns(GetAllResponse){
         option (google.api.http) = {
                 get: "/accommodation"
@@ -24,9 +27,26 @@ service AccommodationService{
     }
     rpc CreateAccommodation(CreateAccommodationRequest) returns(CreateAccommodationResponse){
     }
-
     rpc DefineCustomPrice(DefineCustomPriceRequest) returns (DefineCustomPriceResponse){
     }
+    rpc DeleteAccommodationsByHostId(DeleteAccommodationsByHostIdRequest) returns (DeleteAccommodationsByHostIdResponse){
+    }
+}
+
+message GetByHostIdRequest{
+    string hostId = 1;
+}
+
+message GetByHostIdResponse{
+    repeated Accommodation acccommodations = 1;
+}
+
+message DeleteAccommodationsByHostIdRequest{
+    string hostId = 1;
+}
+
+message DeleteAccommodationsByHostIdResponse{
+    string message = 1;
 }
 
 message DefineCustomPriceRequest{
@@ -54,6 +74,12 @@ message CreateAccommodationRequest{
     repeated string pictures = 5;
     uint32 minGuests = 6;
     uint32 maxGuests = 7;
+    uint32 price = 8;
+    enum PriceType{
+        Regular = 0;
+        PerGuest = 1;
+    }
+    PriceType priceType = 10;
 }
 
 message SearchRequest{

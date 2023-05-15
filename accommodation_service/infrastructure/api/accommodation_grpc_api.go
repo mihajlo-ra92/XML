@@ -72,6 +72,20 @@ func (handler *AccommodationHandler) CreateAccommodation(ctx context.Context, re
 	return &response, nil
 }
 
+func (handler *AccommodationHandler) DeleteAccommodationsByHostId(ctx context.Context, request *pb.DeleteAccommodationsByHostIdRequest) (*pb.DeleteAccommodationsByHostIdResponse, error) {
+	fmt.Println("In DeleteAccommodationsByHostId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	err := handler.service.DeleteAccommodationsByHostId(request.HostId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.DeleteAccommodationsByHostIdResponse{Message: "Accommodations deleted"}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
 func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
 	fmt.Println("InSearch grpc api")
 	accommodations, err := handler.service.Search(request)
@@ -91,6 +105,24 @@ func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.Sea
 		response.Accommodations = append(response.Accommodations, &accommodationWithPrice)
 	}
 	return response, nil
+}
+
+func (handler *AccommodationHandler) GetByHostId(ctx context.Context, request *pb.GetByHostIdRequest) (*pb.GetByHostIdResponse, error) {
+	fmt.Println("In GetByHostId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	accommodations, err := handler.service.GetByHostId(request.HostId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.GetByHostIdResponse{Acccommodations: []*pb.Accommodation{}}
+	for _, accommodation := range accommodations {
+		current := mapAccommodation(accommodation)
+		response.Acccommodations = append(response.Acccommodations, current)
+	}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
 }
 
 func (handler *AccommodationHandler) DefineCustomPrice(ctx context.Context, request *pb.DefineCustomPriceRequest) (*pb.DefineCustomPriceResponse, error) {

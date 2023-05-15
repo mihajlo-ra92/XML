@@ -11,6 +11,8 @@ import { CancelingReservationComponent } from './modules/canceling-reservation/c
 import { RegisterComponent } from './modules/register/register.component';
 import { EditUserComponent } from './modules/edit-user/edit-user.component';
 import { AccommodationReserationComponent } from './modules/accommodation-reservation/accommodation-reservation';
+import { CreateAccommodationComponent } from './modules/create-accommodation/create-accommodation.component';
+import { MyAccommodationsComponent } from './modules/my-accommodations/my-accommodations.component';
 
 
 
@@ -22,7 +24,9 @@ import { AccommodationReserationComponent } from './modules/accommodation-reserv
     CancelingReservationComponent,
     RegisterComponent,
     EditUserComponent,
-    AccommodationReserationComponent
+    AccommodationReserationComponent,
+    CreateAccommodationComponent,
+    MyAccommodationsComponent
   ],
   imports: [
     BrowserModule,

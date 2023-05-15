@@ -31,6 +31,8 @@ type AuthServiceClient interface {
 	AuthBookingDeny(ctx context.Context, in *AuthBookingDenyRequest, opts ...grpc.CallOption) (*AuthBookingDenyResponse, error)
 	AuthReservationCanceling(ctx context.Context, in *AuthReservationCancelingRequest, opts ...grpc.CallOption) (*AuthReservationCancelingResponse, error)
 	AuthDefineCustomPrice(ctx context.Context, in *AuthDefineCustomPriceRequest, opts ...grpc.CallOption) (*AuthDefineCustomPriceResponse, error)
+	AuthGetAccommodationByHostId(ctx context.Context, in *AuthGetAccommodationsByHostIdRequest, opts ...grpc.CallOption) (*AuthGetAccommodationsByHostIdResponse, error)
+	AuthGetBookingsByAccommodationId(ctx context.Context, in *AuthGetBookingsByAccommodationIdRequest, opts ...grpc.CallOption) (*AuthGetBookingsByAccommodationIdResponse, error)
 }
 
 type authServiceClient struct {
@@ -122,6 +124,24 @@ func (c *authServiceClient) AuthDefineCustomPrice(ctx context.Context, in *AuthD
 	return out, nil
 }
 
+func (c *authServiceClient) AuthGetAccommodationByHostId(ctx context.Context, in *AuthGetAccommodationsByHostIdRequest, opts ...grpc.CallOption) (*AuthGetAccommodationsByHostIdResponse, error) {
+	out := new(AuthGetAccommodationsByHostIdResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGetAccommodationByHostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) AuthGetBookingsByAccommodationId(ctx context.Context, in *AuthGetBookingsByAccommodationIdRequest, opts ...grpc.CallOption) (*AuthGetBookingsByAccommodationIdResponse, error) {
+	out := new(AuthGetBookingsByAccommodationIdResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGetBookingsByAccommodationId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -135,6 +155,8 @@ type AuthServiceServer interface {
 	AuthBookingDeny(context.Context, *AuthBookingDenyRequest) (*AuthBookingDenyResponse, error)
 	AuthReservationCanceling(context.Context, *AuthReservationCancelingRequest) (*AuthReservationCancelingResponse, error)
 	AuthDefineCustomPrice(context.Context, *AuthDefineCustomPriceRequest) (*AuthDefineCustomPriceResponse, error)
+	AuthGetAccommodationByHostId(context.Context, *AuthGetAccommodationsByHostIdRequest) (*AuthGetAccommodationsByHostIdResponse, error)
+	AuthGetBookingsByAccommodationId(context.Context, *AuthGetBookingsByAccommodationIdRequest) (*AuthGetBookingsByAccommodationIdResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -168,6 +190,12 @@ func (UnimplementedAuthServiceServer) AuthReservationCanceling(context.Context, 
 }
 func (UnimplementedAuthServiceServer) AuthDefineCustomPrice(context.Context, *AuthDefineCustomPriceRequest) (*AuthDefineCustomPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthDefineCustomPrice not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthGetAccommodationByHostId(context.Context, *AuthGetAccommodationsByHostIdRequest) (*AuthGetAccommodationsByHostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthGetAccommodationByHostId not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthGetBookingsByAccommodationId(context.Context, *AuthGetBookingsByAccommodationIdRequest) (*AuthGetBookingsByAccommodationIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthGetBookingsByAccommodationId not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -344,6 +372,42 @@ func _AuthService_AuthDefineCustomPrice_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AuthGetAccommodationByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthGetAccommodationsByHostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthGetAccommodationByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthGetAccommodationByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthGetAccommodationByHostId(ctx, req.(*AuthGetAccommodationsByHostIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_AuthGetBookingsByAccommodationId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthGetBookingsByAccommodationIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthGetBookingsByAccommodationId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthGetBookingsByAccommodationId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthGetBookingsByAccommodationId(ctx, req.(*AuthGetBookingsByAccommodationIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +450,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthDefineCustomPrice",
 			Handler:    _AuthService_AuthDefineCustomPrice_Handler,
+		},
+		{
+			MethodName: "AuthGetAccommodationByHostId",
+			Handler:    _AuthService_AuthGetAccommodationByHostId_Handler,
+		},
+		{
+			MethodName: "AuthGetBookingsByAccommodationId",
+			Handler:    _AuthService_AuthGetBookingsByAccommodationId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

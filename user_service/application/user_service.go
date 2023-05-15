@@ -1,20 +1,28 @@
 package application
 
 import (
+	"context"
 	"fmt"
 
+	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
+	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	"github.com/mihajlo-ra92/XML/user_service/domain"
+	"github.com/mihajlo-ra92/XML/user_service/infrastructure/persistence"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
 	store domain.UserStore
+	accommodationClientAddress string
+	bookingClientAddress string
 }
 
-func NewUserService(store domain.UserStore) *UserService {
+func NewUserService(store domain.UserStore, accommodationClientAddress string, bookingClientAddress string) *UserService {
 	return &UserService{
 		store: store,
+		accommodationClientAddress: accommodationClientAddress,
+		bookingClientAddress: bookingClientAddress,
 	}
 }
 
@@ -97,6 +105,23 @@ func (service *UserService) Update(user *domain.User) error{
 	return nil
 }
 func (service *UserService) Delete(user *domain.User) error{
+	accommodationClient := persistence.NewAccommodationClient(service.accommodationClientAddress)
+	bookingClient := persistence.NewBookingClient(service.bookingClientAddress)
+	if user.UserType == domain.Host  {
+		accommodationResponse, err := accommodationClient.DeleteAccommodationsByHostId(context.TODO(), &accommodation.DeleteAccommodationsByHostIdRequest{HostId: user.Id.Hex()})
+		if err != nil {
+			return err
+		}
+		fmt.Print("accommodtionResponse: ")
+		fmt.Println(accommodationResponse)
+	} else {
+		bookingResponse, err := bookingClient.DeleteBookingsByGuestId(context.TODO(), &booking.DeleteBookingByGuestIdRequest{UserId: user.Id.Hex()})
+		if err != nil {
+			return err
+		}
+		fmt.Print("bookingResponse: ")
+		fmt.Println(bookingResponse)
+	}
 	err := service.store.Delete(user)
 	if err != nil {
 		return err

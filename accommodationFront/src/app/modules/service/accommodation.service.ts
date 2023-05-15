@@ -8,6 +8,9 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { Accommodation } from '../model/accommodation';
 import { Reservation } from '../model/reservation';
 import { SearchRequest, SearchResponse } from '../model/getAllByUserRequest';
+import { CreateAccommodation } from '../model/createAccommodation';
+import { Jwt } from '../model/jwt';
+import { AccommodationIdWithJwt } from '../model/accommodationIdWithJwt';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +47,22 @@ export class AccommodationService {
       responseType: 'text',
     });
   }
+  createAccommodation(accommodation : CreateAccommodation): Observable<any>{
+    return this.http.post(this.apiServerUrl + '/accomodation',accommodation,{headers: this.headers})
+  }
+
+  getMyAccommodation(jwtString: string):Observable<any>{
+    let token = new Jwt();
+    token.jwt = jwtString;
+    return this.http.post(this.apiServerUrl +'/get-accommodations-by-host',token,{headers: this.headers} )
+  }
+  getBookibgByAccommodationId(jwtString: string,accomodationId : string):Observable<any>{
+    let request = new AccommodationIdWithJwt();
+    request.accommodationId = accomodationId;
+    request.jwt = jwtString;
+    return this.http.post(this.apiServerUrl +'/get-bookings-by-accommodation',request,{headers: this.headers})
+  }
+
 
   searchAccommodation(request: any): Observable<SearchResponse>{
     return this.http.post<SearchResponse>(this.apiServerUrl + '/accommodation/search',request,{headers: this.headers})

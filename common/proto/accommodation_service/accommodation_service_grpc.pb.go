@@ -23,10 +23,12 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccommodationServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	GetByHostId(ctx context.Context, in *GetByHostIdRequest, opts ...grpc.CallOption) (*GetByHostIdResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	CreateAccommodation(ctx context.Context, in *CreateAccommodationRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error)
 	DefineCustomPrice(ctx context.Context, in *DefineCustomPriceRequest, opts ...grpc.CallOption) (*DefineCustomPriceResponse, error)
+	DeleteAccommodationsByHostId(ctx context.Context, in *DeleteAccommodationsByHostIdRequest, opts ...grpc.CallOption) (*DeleteAccommodationsByHostIdResponse, error)
 }
 
 type accommodationServiceClient struct {
@@ -40,6 +42,15 @@ func NewAccommodationServiceClient(cc grpc.ClientConnInterface) AccommodationSer
 func (c *accommodationServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
 	out := new(GetResponse)
 	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accommodationServiceClient) GetByHostId(ctx context.Context, in *GetByHostIdRequest, opts ...grpc.CallOption) (*GetByHostIdResponse, error) {
+	out := new(GetByHostIdResponse)
+	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/GetByHostId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,15 +93,26 @@ func (c *accommodationServiceClient) DefineCustomPrice(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *accommodationServiceClient) DeleteAccommodationsByHostId(ctx context.Context, in *DeleteAccommodationsByHostIdRequest, opts ...grpc.CallOption) (*DeleteAccommodationsByHostIdResponse, error) {
+	out := new(DeleteAccommodationsByHostIdResponse)
+	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/DeleteAccommodationsByHostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccommodationServiceServer is the server API for AccommodationService service.
 // All implementations must embed UnimplementedAccommodationServiceServer
 // for forward compatibility
 type AccommodationServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	GetByHostId(context.Context, *GetByHostIdRequest) (*GetByHostIdResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error)
 	DefineCustomPrice(context.Context, *DefineCustomPriceRequest) (*DefineCustomPriceResponse, error)
+	DeleteAccommodationsByHostId(context.Context, *DeleteAccommodationsByHostIdRequest) (*DeleteAccommodationsByHostIdResponse, error)
 	mustEmbedUnimplementedAccommodationServiceServer()
 }
 
@@ -100,6 +122,9 @@ type UnimplementedAccommodationServiceServer struct {
 
 func (UnimplementedAccommodationServiceServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedAccommodationServiceServer) GetByHostId(context.Context, *GetByHostIdRequest) (*GetByHostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByHostId not implemented")
 }
 func (UnimplementedAccommodationServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
@@ -112,6 +137,9 @@ func (UnimplementedAccommodationServiceServer) CreateAccommodation(context.Conte
 }
 func (UnimplementedAccommodationServiceServer) DefineCustomPrice(context.Context, *DefineCustomPriceRequest) (*DefineCustomPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DefineCustomPrice not implemented")
+}
+func (UnimplementedAccommodationServiceServer) DeleteAccommodationsByHostId(context.Context, *DeleteAccommodationsByHostIdRequest) (*DeleteAccommodationsByHostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccommodationsByHostId not implemented")
 }
 func (UnimplementedAccommodationServiceServer) mustEmbedUnimplementedAccommodationServiceServer() {}
 
@@ -140,6 +168,24 @@ func _AccommodationService_Get_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AccommodationServiceServer).Get(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AccommodationService_GetByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByHostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccommodationServiceServer).GetByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/accommodation.AccommodationService/GetByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccommodationServiceServer).GetByHostId(ctx, req.(*GetByHostIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -216,6 +262,24 @@ func _AccommodationService_DefineCustomPrice_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccommodationService_DeleteAccommodationsByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAccommodationsByHostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccommodationServiceServer).DeleteAccommodationsByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/accommodation.AccommodationService/DeleteAccommodationsByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccommodationServiceServer).DeleteAccommodationsByHostId(ctx, req.(*DeleteAccommodationsByHostIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccommodationService_ServiceDesc is the grpc.ServiceDesc for AccommodationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -226,6 +290,10 @@ var AccommodationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _AccommodationService_Get_Handler,
+		},
+		{
+			MethodName: "GetByHostId",
+			Handler:    _AccommodationService_GetByHostId_Handler,
 		},
 		{
 			MethodName: "GetAll",
@@ -242,6 +310,10 @@ var AccommodationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DefineCustomPrice",
 			Handler:    _AccommodationService_DefineCustomPrice_Handler,
+		},
+		{
+			MethodName: "DeleteAccommodationsByHostId",
+			Handler:    _AccommodationService_DeleteAccommodationsByHostId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
