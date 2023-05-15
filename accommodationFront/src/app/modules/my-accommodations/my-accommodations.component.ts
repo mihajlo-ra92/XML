@@ -3,6 +3,7 @@ import { AccommodationService } from '../service/accommodation.service';
 import { Route, Router } from '@angular/router';
 import { Accommodation } from '../model/accommodation';
 import { Booking } from '../model/booking';
+import { CustomPrice } from '../model/CustomPrice';
 
 @Component({
   selector: 'app-my-accommodations',
@@ -12,9 +13,13 @@ import { Booking } from '../model/booking';
 export class MyAccommodationsComponent implements OnInit {
   public accommodations: Accommodation[] = [];
   public selected : boolean = false;
+  public selectedCustomPrice : boolean = false;
   public selectedAccommodation: Accommodation = new Accommodation();
   public pictures: Document = new Document;
+  public start : String = "";
+  public end : String = "";
   public bookingsForAccommodation: Booking[] = new Array;
+  public customPrice: CustomPrice = new CustomPrice();
   constructor(private accommodationService : AccommodationService, private router: Router) { }
 
   ngOnInit(): void {
@@ -32,6 +37,7 @@ export class MyAccommodationsComponent implements OnInit {
   }
 
   select(accommodation: Accommodation){
+    this.selectedCustomPrice = false;
     this.selected = true;
     this.selectedAccommodation = accommodation;
     let jwt = localStorage.getItem("token")
@@ -41,33 +47,44 @@ export class MyAccommodationsComponent implements OnInit {
         this.bookingsForAccommodation = res.bookings;
       })
     }
-    // this.pictures = this.decodePicture(this.selectedAccommodation.pictures[0].toString());
-    // console.log(this.decodePicture(this.selectedAccommodation.pictures[0].toString()));
-    
   }
   unselect(){
     this.selected = false;
     this.selectedAccommodation = new Accommodation();
     this.pictures  = new Document;
     this.bookingsForAccommodation = [];
+    this.selectedCustomPrice = false;
   }
 
-//   decodePicture(base64String: string):any{
-//     const byteArray = Uint8Array.from(atob(base64String), c => c.charCodeAt(0));
-
-// // Kreirajte Blob objekat od ByteArray
-// const blob = new Blob([byteArray], { type: "image/jpeg" });
-
-// // Kreirajte URL za prikaz slike
-// const imageUrl = URL.createObjectURL(blob);
-
-// // Kako biste prikazali sliku u HTML-u, možete koristiti <img> tag
-// const img = document.createElement("img");
-// img.src = imageUrl;
-// document.body.appendChild(img);
-// return document;
-//   }
   selectCustomPrice(){
+   this.selectedCustomPrice = true;
+  }
 
+  addCustomPrice(){
+    this.customPrice.accommodationId = this.selectedAccommodation.id;
+    let temp = localStorage.getItem("token")
+    if(temp!==null){
+      this.customPrice.jwt = temp;
+    }
+
+    const startDateString = new Date(
+      String(this.start) + 'T12:00:42.123Z'
+    ).toISOString();
+
+    const endDateString = new Date(
+      String(this.end) + 'T12:00:42.123Z'
+      ).toISOString();
+
+      this.customPrice.start_date = startDateString;
+      this.customPrice.end_date = endDateString;
+    this.customPrice.priceType = "Regular";
+    console.log(this.customPrice);
+    this.accommodationService.defineCustomPrice(this.customPrice).subscribe((res) =>{
+      console.log(res);
+    })
+    this.start = "";
+    this.end = "";
+    this.customPrice = new CustomPrice();
+    this.selectedCustomPrice = false;
   }
 }

@@ -31,7 +31,9 @@
                     <h3 class="mb-5 text-uppercase">DETAILS OF ACCOMMODATION</h3>
                     <button (click)="unselect()">UNSELECT</button>
                     <button (click)="selectCustomPrice()">CUSTOM PRICE</button>
-                    <table>                    
+                    
+                    <div class="container">
+                      <table>                    
                         <tr>
                           <td>Name</td>
                           <td>{{ selectedAccommodation.name }}</td>
@@ -60,18 +62,54 @@
                             <td>Price</td>
                             <td>{{ selectedAccommodation.price }}</td>
                         </tr>
-                        <!-- <tr>
-                          <td>Pictures</td>
-                          <td>
-                            <ul>
-                              <li><img [(ngModel)]="pictures" ></li>
-                            </ul>
-                          </td>
-                        </tr> -->
+                        
                       </table>
+
+                      <div *ngIf="selectedCustomPrice">
+                        <div class="form-outline">
+                          <input
+                            type="date"
+                            id="username"
+                            name="username"
+                            class="form-control form-control-lg"
+                            [(ngModel)]="start"
+                          />
+                          <label class="form-label" for="form3Example1m"
+                            >Start date</label
+                          >
+                        </div>
+                        <div class="form-outline">
+                          <input
+                            type="date"
+                            id="username"
+                            name="username"
+                            class="form-control form-control-lg"
+                            [(ngModel)]="end"
+                          />
+                          <label class="form-label" for="form3Example1m"
+                            >End date</label
+                          >
+                        </div>
+                        <div class="form-outline">
+                          <input
+                            type="number"
+                            id="username"
+                            name="username"
+                            class="form-control form-control-lg"
+                            [(ngModel)]="customPrice.price"
+                          />
+                          <label class="form-label" for="form3Example1m"
+                            >Price</label
+                          >
+                        </div>
+                        <button (click)="addCustomPrice()">
+                          Add custom price
+                        </button>
+                      </div>
+                    </div>
                       <table id="bookingTable" *ngIf="bookingsForAccommodation.length !== 0">
                         <thead>
-                            <tr>
+                          <tr>
                                 <th>Price</th>
                                 <th>Price Type</th>
                                 <th>Number of Guests</th>

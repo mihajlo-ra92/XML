@@ -10,6 +10,7 @@ import { Reservation } from '../model/reservation';
 import { CreateAccommodation } from '../model/createAccommodation';
 import { Jwt } from '../model/jwt';
 import { AccommodationIdWithJwt } from '../model/accommodationIdWithJwt';
+import { CustomPrice } from '../model/CustomPrice';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +61,9 @@ export class AccommodationService {
     request.accommodationId = accomodationId;
     request.jwt = jwtString;
     return this.http.post(this.apiServerUrl +'/get-bookings-by-accommodation',request,{headers: this.headers})
+  }
+  defineCustomPrice(customPrice: CustomPrice):Observable<any>{
+    return this.http.post(this.apiServerUrl +'/custom-price-define',customPrice,{headers: this.headers})
   }
 
 
