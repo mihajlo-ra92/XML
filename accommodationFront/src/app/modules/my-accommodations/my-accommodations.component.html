@@ -1,71 +1,79 @@
-     <div style="background-color: #9a616d">
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col">
-            <div class="card card-registration my-4"> 
-              <div class="row g-0">
-                <table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Minimum Guests</th>
-                        <th>Maximum Guests</th>
-                        <th>Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let accommodation of accommodations" >
-                        <td (click)="select(accommodation)">{{ accommodation.name }}</td>
-                        <td (click)="select(accommodation)">{{ accommodation.location }}</td>
-                        <td (click)="select(accommodation)">{{ accommodation.minGuests }}</td>
-                        <td (click)="select(accommodation)">{{ accommodation.maxGuests }}</td>
-                        <td (click)="select(accommodation)">{{ accommodation.price }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div *ngIf="selected">
-                  <br>
-                  <br>
-                  <br>
-                    <h3 class="mb-5 text-uppercase">DETAILS OF ACCOMMODATION</h3>
-                    <button (click)="unselect()">UNSELECT</button>
-                    <button (click)="selectCustomPrice()">CUSTOM PRICE</button>
-                    
-                    <div class="container">
-                      <table>                    
-                        <tr>
-                          <td>Name</td>
-                          <td>{{ selectedAccommodation.name }}</td>
-                        </tr>
-                        <tr>
-                          <td>Location</td>
-                          <td>{{ selectedAccommodation.location }}</td>
-                        </tr>
-                        <tr>
-                          <td>Benefits</td>
-                          <td>
-                            <ul>
-                              <li *ngFor="let benefit of selectedAccommodation.benefits">{{ benefit }}</li>
-                            </ul>
-                          </td>
-                        </tr>
-                        <tr>
-                            <td>Minimum Guests</td>
-                            <td>{{ selectedAccommodation.minGuests }}</td>
-                        </tr>
-                        <tr>
-                            <td>Maximum Guests</td>
-                            <td>{{ selectedAccommodation.maxGuests }}</td>
-                        </tr>
-                        <tr>
-                            <td>Price</td>
-                            <td>{{ selectedAccommodation.price }}</td>
-                        </tr>
-                        
-                      </table>
+<div style="background-color: #9a616d">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="card card-registration my-4"> 
+          <div class="row g-0">
+            <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Minimum Guests</th>
+                    <th>Maximum Guests</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let accommodation of accommodations" >
+                    <td (click)="select(accommodation)">{{ accommodation.name }}</td>
+                    <td (click)="select(accommodation)">{{ accommodation.location }}</td>
+                    <td (click)="select(accommodation)">{{ accommodation.minGuests }}</td>
+                    <td (click)="select(accommodation)">{{ accommodation.maxGuests }}</td>
+                    <td (click)="select(accommodation)">{{ accommodation.price }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div *ngIf="selected">
+              <br>
+              <br>
+              <br>
+                <h3 class="mb-5 text-uppercase">DETAILS OF ACCOMMODATION</h3>
+                <button (click)="unselect()">UNSELECT</button>
+                <div>
 
-                      <div *ngIf="selectedCustomPrice">
+                  <table>                    
+                    <tr>
+                      <td>Name</td>
+                      <td>{{ selectedAccommodation.name }}</td>
+                    </tr>
+                    <tr>
+                      <td>Location</td>
+                      <td>{{ selectedAccommodation.location }}</td>
+                    </tr>
+                    <tr>
+                      <td>Benefits</td>
+                      <td>
+                        <ul>
+                          <li *ngFor="let benefit of selectedAccommodation.benefits">{{ benefit }}</li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                        <td>Minimum Guests</td>
+                        <td>{{ selectedAccommodation.minGuests }}</td>
+                    </tr>
+                    <tr>
+                      <td>Maximum Guests</td>
+                      <td>{{ selectedAccommodation.maxGuests }}</td>
+                    </tr>
+                    <tr>
+                      <td>Price</td>
+                      <td>{{ selectedAccommodation.price }}</td>
+                    </tr>
+                    <tr>
+                      <td>Pictures</td>
+                      
+                      <td>
+                        <img [src]="imageUrl1" />
+                        <img [src]="imageUrl2" />
+                        <img [src]="imageUrl3" />
+                      </td>
+                    </tr>
+                  </table>
+                  
+                <button (click)="selectCustomPrice()">CUSTOM PRICE</button>
+                  <div *ngIf="selectedCustomPrice">
                         <div class="form-outline">
                           <input
                             type="date"
@@ -106,36 +114,37 @@
                           Add custom price
                         </button>
                       </div>
-                    </div>
-                      <table id="bookingTable" *ngIf="bookingsForAccommodation.length !== 0">
-                        <thead>
-                          <tr>
-                                <th>Price</th>
-                                <th>Price Type</th>
-                                <th>Number of Guests</th>
-                                <th>Booking Type</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let booking of bookingsForAccommodation" >
-                                <td >{{ booking.price }}</td>
-                                <td >{{ booking.priceType }}</td>
-                                <td >{{ booking.numberOfGuests }}</td>
-                                <td >{{ booking.bookingType }}</td>
-                                <td >{{ booking.startDate }}</td>
-                                <td >{{ booking.endDate }}</td>
-                              </tr>
-                        </tbody>
-                    </table>
-                      
-                  </div>
+                </div>
+                  <table id="bookingTable" *ngIf="bookingsForAccommodation.length !== 0">
+                    <thead>
+                        <tr>
+                            <th>Price</th>
+                            <th>Price Type</th>
+                            <th>Number of Guests</th>
+                            <th>Booking Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let booking of bookingsForAccommodation" >
+                            <td >{{ booking.price }}</td>
+                            <td >{{ booking.priceType }}</td>
+                            <td >{{ booking.numberOfGuests }}</td>
+                            <td >{{ booking.bookingType }}</td>
+                            <td >{{ booking.startDate }}</td>
+                            <td >{{ booking.endDate }}</td>
+                            <td><button *ngIf="booking.bookingType === 'Reserved'" (click)="Approve(booking.id)">Approve</button></td>
+                            <td><button *ngIf="booking.bookingType === 'Reserved'" (click)="Deny(booking.id)">Deny</button></td>
+                          </tr>
+                    </tbody>
+                </table>
+                  
+              </div>
 
-               </div>
-            </div>
-          </div>
+           </div>
         </div>
-      </div> 
+      </div>
+    </div>
+  </div> 
 
-  
