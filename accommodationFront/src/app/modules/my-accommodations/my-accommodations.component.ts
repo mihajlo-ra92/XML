@@ -18,6 +18,9 @@ export class MyAccommodationsComponent implements OnInit {
   public pictures: Document = new Document;
   public bookingsForAccommodation: Booking[] = new Array;
   public approveBooking: ApproveBooking = new ApproveBooking
+  public imageUrl1: string = '';
+  public imageUrl2: string = '';
+  public imageUrl3: string = '';
 
   constructor(private accommodationService : AccommodationService, private router: Router, private bookingService: BookingService) { }
 
@@ -47,7 +50,37 @@ export class MyAccommodationsComponent implements OnInit {
     }
     // this.pictures = this.decodePicture(this.selectedAccommodation.pictures[0].toString());
     // console.log(this.decodePicture(this.selectedAccommodation.pictures[0].toString()));
-    
+    this.selected = true;
+    this.selectedAccommodation = accommodation;
+    this.imageUrl1 = '';
+    this.imageUrl2 = '';
+    this.imageUrl3 = '';
+    const reader1 = new FileReader();
+    const imageFile1 = this.saveImage(
+      String(this.selectedAccommodation.pictures[0])
+    );
+    reader1.readAsDataURL(imageFile1);
+    reader1.onload = () => {
+      this.imageUrl1 = reader1.result as string;
+    };
+
+    const reader2 = new FileReader();
+    const imageFile2 = this.saveImage(
+      String(this.selectedAccommodation.pictures[1])
+    );
+    reader2.readAsDataURL(imageFile2);
+    reader2.onload = () => {
+      this.imageUrl2 = reader2.result as string;
+    };
+
+    const reader3 = new FileReader();
+    const imageFile3 = this.saveImage(
+      String(this.selectedAccommodation.pictures[2])
+    );
+    reader3.readAsDataURL(imageFile3);
+    reader3.onload = () => {
+      this.imageUrl3 = reader3.result as string;
+    };
   }
   unselect(){
     this.selected = false;
@@ -112,5 +145,26 @@ export class MyAccommodationsComponent implements OnInit {
 
     window.location.href = '/my-accommodations'
     });
+  }
+
+  saveImage(base64Image: String) {
+    console.log('in save image');
+    console.log(base64Image);
+    const imageName = 'name.png';
+    const imageBlob = this.dataURItoBlob(base64Image);
+    const imageFile = new File([imageBlob], imageName, { type: 'image/png' });
+    console.log('imageFile');
+    console.log(imageFile);
+    return imageFile;
+  }
+  dataURItoBlob(dataURI: any) {
+    const byteString = window.atob(dataURI);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([int8Array], { type: 'image/png' });
+    return blob;
   }
 }
