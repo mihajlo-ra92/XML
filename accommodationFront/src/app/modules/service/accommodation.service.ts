@@ -9,6 +9,7 @@ import { Accommodation } from '../model/accommodation';
 import { Reservation } from '../model/reservation';
 import { CreateAccommodation } from '../model/createAccommodation';
 import { Jwt } from '../model/jwt';
+import { AccommodationIdWithJwt } from '../model/accommodationIdWithJwt';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +55,13 @@ export class AccommodationService {
     token.jwt = jwtString;
     return this.http.post(this.apiServerUrl +'/get-accommodations-by-host',token,{headers: this.headers} )
   }
+  getBookibgByAccommodationId(jwtString: string,accomodationId : string):Observable<any>{
+    let request = new AccommodationIdWithJwt();
+    request.accommodationId = accomodationId;
+    request.jwt = jwtString;
+    return this.http.post(this.apiServerUrl +'/get-bookings-by-accommodation',request,{headers: this.headers})
+  }
+
 
 
  

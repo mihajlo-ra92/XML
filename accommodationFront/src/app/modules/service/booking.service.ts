@@ -5,6 +5,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
+import { ApproveBooking } from '../model/approveBooking';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,20 @@ export class BookingService {
 
   get(accommodationId: String): Observable<any> {
     return this.http.post(this.apiServerUrl + '/booking/' + accommodationId, accommodationId, {
+      headers: this.headers3,
+      responseType: 'text',
+    });
+  }
+
+  approve(booking: ApproveBooking){
+    return this.http.post(this.apiServerUrl + '/booking-accept', booking, {
+      headers: this.headers3,
+      responseType: 'text',
+    });
+  }
+
+  deny(booking: ApproveBooking){
+    return this.http.post(this.apiServerUrl + '/booking-deny', booking, {
       headers: this.headers3,
       responseType: 'text',
     });

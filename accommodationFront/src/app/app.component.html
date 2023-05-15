@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" routerLink="/landing-page" style="color:white;">
-    Airport XML</a>
+    Accommodation XML</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
   <span class="navbar-toggler-icon"></span>
   </button>
@@ -9,11 +9,9 @@
         <li *ngIf="loggedUserJwt === null" class="nav-item active">
            <a class="nav-link" routerLink="/register">Sing up</a>
         </li>
-        <li *ngIf="loggedUserRole === 'admin'" class="nav-item active">
-          <a class="nav-link" routerLink="/create-flight">Create flight</a>
+        <li *ngIf="loggedUserRole === '1' " class="nav-item active">
+          <a class="nav-link" routerLink="/my-accommodations">My accommodations</a>
        </li>
-       <li *ngIf="loggedUserRole === 'regular'" class="nav-item active">
-        <a class="nav-link" routerLink="/tickets">Tickets</a>
      
         <li *ngIf="loggedUserJwt === null" class="nav-item active">
           <a class="nav-link" routerLink="/login">Login</a>

@@ -11,6 +11,7 @@ export class AccommodationReserationComponent implements OnInit {
     reservation: Reservation = new Reservation()
     start: string = "";
     end: string = "";
+    loggedUserRole = localStorage.getItem('loggedUserType')
 
   constructor(private accommodationService: AccommodationService) {}
 
@@ -45,6 +46,9 @@ export class AccommodationReserationComponent implements OnInit {
 
         console.log(res);
         console.log(this.reservation);
+
+      alert("Successfully reserved from" + " " + this.start + " " + "to" + " " + this.end)
+
       });
     }
 }
