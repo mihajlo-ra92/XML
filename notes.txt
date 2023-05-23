@@ -18,3 +18,11 @@ Mongodb GetBy_ doesn't retrive any value:
     "message": "mongo: no documents in result",
     "details": []
 }
+
+Defining a new service:
+    1. domain
+    2. infrastructure/persistence
+    3. application
+    4. infrastructure/api
+    5. startup
+    6. main

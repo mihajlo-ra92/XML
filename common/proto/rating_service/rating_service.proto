@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option go_package = "github.com/mihajlo-ra92/XML/common/rating";
+
+package rating;
+
+import "google/api/annotations.proto";
+
+service RatingService{
+    rpc Get(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+                get: "/rating/{id}"
+        };
+    }
+    rpc GetAll(GetAllRequest) returns(GetAllResponse){
+        option (google.api.http) = {
+                get: "/rating"
+        };
+    }
+    rpc CreateRating(CreateRatingRequest) returns(CreateRatingResponse) {
+        option (google.api.http) = {
+            post: "/rating"
+            body: "rating"
+        };
+    }
+}
+message CreateRatingRequest {
+    NewRating rating = 1;
+}
+message CreateRatingResponse {
+    Rating rating = 1;
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    Rating rating = 1;
+}
+
+message GetAllRequest{
+}
+
+message GetAllResponse{
+    repeated Rating ratings = 1;
+}
+
+message Rating {
+    string id = 1;
+    string hostId = 2;
+    string accommodationId = 3;
+    string guestId = 4;
+    uint32 rate = 6;
+}
+
+message NewRating {
+    string hostId = 2;
+    string accommodationId = 3;
+    string guestId = 4;
+    uint32 rate = 6;
+}

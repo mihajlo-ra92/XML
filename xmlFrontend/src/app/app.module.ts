@@ -8,7 +8,6 @@ import { LandingPageComponent } from './modules/landing-page/landing-page.compon
 import { RegisterUserComponent } from './modules/register-user/register-user.component';
 import { UserTicketsComponent } from './modules/user-tickets/user-tickets.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FlightService } from './modules/service/flight.service';
 import { FormsModule } from '@angular/forms';
 import { CreateFlightPageComponent } from './modules/create-flight-page/create-flight-page.component';
 import { BuyTicketsComponent } from './modules/buy-tickets/buy-tickets.component';

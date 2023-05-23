@@ -15,6 +15,7 @@ import (
 	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
+	ratingGw "github.com/mihajlo-ra92/XML/common/proto/rating_service"
 	shippingGw "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
 	userGw "github.com/mihajlo-ra92/XML/common/proto/user_service"
 	"google.golang.org/grpc"
@@ -90,6 +91,14 @@ func (server *Server) initHandlers() {
 	fmt.Print("bookingEndpoint: ")
 	fmt.Println(bookingEndpoint)
 	err = bookingGw.RegisterBookingServiceHandlerFromEndpoint(context.TODO(), server.mux, bookingEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	ratingEndpoint := fmt.Sprintf("%s:%s", server.config.RatingHost, server.config.RatingPort)
+	fmt.Print("ratingEndpoint: ")
+	fmt.Println(ratingEndpoint)
+	err = ratingGw.RegisterRatingServiceHandlerFromEndpoint(context.TODO(), server.mux, ratingEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
