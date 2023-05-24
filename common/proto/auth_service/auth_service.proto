@@ -74,6 +74,12 @@ service AuthService{
             body: "*"
         };
     }
+        rpc AuthCreateRating(AuthCreateRatingRequest) returns(AuthCreateRatingResponse){
+        option (google.api.http) = {
+            post: "/rating"
+            body: "*"
+        };
+    }
 }
 
 message AuthGetBookingsByAccommodationIdRequest{
@@ -84,6 +90,7 @@ message AuthGetBookingsByAccommodationIdRequest{
 message AuthGetBookingsByAccommodationIdResponse{
     repeated Booking bookings = 1;
 }
+
 message AuthGetAccommodationsByHostIdRequest{
     string jwt = 1;
 }
@@ -145,6 +152,23 @@ message AuthCreateAccommodationResponse{
     Accommodation accomodation = 1;
 }
 
+message AuthCreateRatingRequest{
+    string jwt = 1;
+    string hostId = 2;
+    string accommodationId = 3;
+    uint32 rate = 4;
+
+}
+message AuthCreateRatingResponse{
+    Rating rating = 1;
+}
+message Rating {
+    string id = 1;
+    string hostId = 2;
+    string accommodationId = 3;
+    string guestId = 4;
+    uint32 rate = 5;
+}
 message AuthBookingAcceptRequest{
     string jwt = 1;
     string bookingId = 2;

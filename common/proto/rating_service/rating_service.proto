@@ -18,10 +18,6 @@ service RatingService{
         };
     }
     rpc CreateRating(CreateRatingRequest) returns(CreateRatingResponse) {
-        option (google.api.http) = {
-            post: "/rating"
-            body: "rating"
-        };
     }
 }
 message CreateRatingRequest {
@@ -51,12 +47,12 @@ message Rating {
     string hostId = 2;
     string accommodationId = 3;
     string guestId = 4;
-    uint32 rate = 6;
+    uint32 rate = 5;
 }
 
 message NewRating {
     string hostId = 2;
     string accommodationId = 3;
     string guestId = 4;
-    uint32 rate = 6;
+    uint32 rate = 5;
 }

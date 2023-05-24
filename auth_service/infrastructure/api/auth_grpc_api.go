@@ -123,6 +123,30 @@ func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, r
 
 }
 
+func (handler *AuthHandler) AuthCreateRating(ctx context.Context, request *pb.AuthCreateRatingRequest) (*pb.AuthCreateRatingResponse, error) {
+	fmt.Println("In AuthCreateRating")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 0 {
+		return nil, fmt.Errorf("user must be of guest type")
+	}
+	ratingResponse, err := handler.service.AuthCreateRating(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return ratingResponse, nil
+
+}
+
 func (handler *AuthHandler) AuthBookingAccept(ctx context.Context, request *pb.AuthBookingAcceptRequest) (*pb.AuthBookingAcceptResponse, error) {
 	fmt.Println("In AuthBookingAccept")
 	fmt.Print("request: ")
@@ -195,7 +219,7 @@ func (handler *AuthHandler) AuthReservationCanceling(ctx context.Context, reques
 
 }
 
-func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, request *pb.AuthGetAccommodationsByHostIdRequest) (*pb.AuthGetAccommodationsByHostIdResponse, error){
+func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, request *pb.AuthGetAccommodationsByHostIdRequest) (*pb.AuthGetAccommodationsByHostIdResponse, error) {
 	fmt.Println("In AuthGetAccommodationByHostId")
 	fmt.Print("request: ")
 	fmt.Println(request)
@@ -217,7 +241,7 @@ func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, re
 	return response, nil
 }
 
-func (handler *AuthHandler) AuthGetBookingsByAccommodationId(ctx context.Context, request *pb.AuthGetBookingsByAccommodationIdRequest) (*pb.AuthGetBookingsByAccommodationIdResponse, error){
+func (handler *AuthHandler) AuthGetBookingsByAccommodationId(ctx context.Context, request *pb.AuthGetBookingsByAccommodationIdRequest) (*pb.AuthGetBookingsByAccommodationIdResponse, error) {
 	fmt.Println("In AuthGetBookingsByAccommodationId")
 	fmt.Print("request: ")
 	fmt.Println(request)
@@ -237,10 +261,10 @@ func (handler *AuthHandler) AuthGetBookingsByAccommodationId(ctx context.Context
 		return nil, err
 	}
 	return bookingResponse, nil
-	
+
 }
 
-func (handler *AuthHandler) AuthDefineCustomPrice(ctx context.Context, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error){
+func (handler *AuthHandler) AuthDefineCustomPrice(ctx context.Context, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error) {
 	fmt.Println("In AuthDefineCustomPrice")
 	fmt.Print("request: ")
 	fmt.Println(request)
