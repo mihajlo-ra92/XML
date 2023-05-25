@@ -18,4 +18,5 @@ type BookingStore interface {
 	DeleteByGuestId(guestId string) error
 	DeleteByAccommodationId(accommodationId string) error
 	GetByAccomodationIdandDataRange(accommodationId string, startDate time.Time, endDate time.Time) ([]*Booking, error)
+	GetByAccomodationAndGuestId(accommodationId string, guestId string) ([]*Booking, error)
 }

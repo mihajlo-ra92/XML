@@ -44,6 +44,8 @@ service BookingService{
     }
     rpc GetByAccommodationId(GetByAccommodationIdRequest) returns(GetByAccommodationIdResponse){
     }
+    rpc GetBookingByAccommodationAndGuestId(GetBookingByAccommodationAndGuestIdRequest) returns(GetBookingByAccommodationAndGuestIdResponse){
+    }
 }
 
 message GetByAccommodationIdRequest{
@@ -51,6 +53,15 @@ message GetByAccommodationIdRequest{
 }
 
 message GetByAccommodationIdResponse{
+    repeated Booking bookings = 1;
+}
+
+message GetBookingByAccommodationAndGuestIdRequest{
+    string accommodationId = 1;
+    string guestId = 2;
+}
+
+message GetBookingByAccommodationAndGuestIdResponse{
     repeated Booking bookings = 1;
 }
 
