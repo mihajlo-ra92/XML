@@ -74,9 +74,15 @@ service AuthService{
             body: "*"
         };
     }
-        rpc AuthCreateRating(AuthCreateRatingRequest) returns(AuthCreateRatingResponse){
+    rpc AuthCreateRating(AuthCreateRatingRequest) returns(AuthCreateRatingResponse){
         option (google.api.http) = {
             post: "/rating"
+            body: "*"
+        };
+    }
+    rpc AuthDeleteRating(AuthDeleteRatingRequest) returns(AuthDeleteRatingResponse){
+        option (google.api.http) = {
+            post: "/delete-rating"
             body: "*"
         };
     }
@@ -184,6 +190,15 @@ message AuthBookingDenyRequest{
 }
 
 message AuthBookingDenyResponse{
+    string message = 1;
+}
+
+message AuthDeleteRatingRequest{
+    string jwt = 1;
+    string ratingId = 2;
+}
+
+message AuthDeleteRatingResponse{
     string message = 1;
 }
 

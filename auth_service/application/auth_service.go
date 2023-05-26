@@ -233,6 +233,24 @@ func (service *AuthService) BookingDeny(jwtData *domain.JwtData, request *pb.Aut
 	return &authBookingDenyResponse, nil
 }
 
+func (service *AuthService) DeleteRating(jwtData *domain.JwtData, request *pb.AuthDeleteRatingRequest) (*pb.AuthDeleteRatingResponse, error) {
+	ratingClient := services.NewRatingClient(service.ratingClientAddress)
+	ratingDeleteRequest := rating.DeleteRatingRequest{Jwt: request.Jwt, RatingId: request.RatingId}
+	fmt.Print("ratingDeleteRequest: ")
+	fmt.Println(ratingDeleteRequest)
+	ratingDeleteResponse, err := ratingClient.DeleteRating(context.TODO(), &ratingDeleteRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingDeleteResponse: ")
+	fmt.Println(ratingDeleteResponse)
+
+	authDeleteRatingResposne := pb.AuthDeleteRatingResponse{}
+	fmt.Print("authDeleteRatingResposne: ")
+	fmt.Println(authDeleteRatingResposne)
+	return &authDeleteRatingResposne, nil
+}
+
 func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, request *pb.AuthReservationCancelingRequest) (*pb.AuthReservationCancelingResponse, error) {
 	fmt.Println("In reserve accommodation")
 	bookingRequest := booking.ReservationCancelingRequest{Id: request.Id}

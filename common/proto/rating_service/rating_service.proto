@@ -19,12 +19,23 @@ service RatingService{
     }
     rpc CreateRating(CreateRatingRequest) returns(CreateRatingResponse) {
     }
+    rpc DeleteRating(DeleteRatingRequest) returns(DeleteRatingResponse) {
+    }
 }
 message CreateRatingRequest {
     NewRating rating = 1;
 }
 message CreateRatingResponse {
     Rating rating = 1;
+}
+
+message DeleteRatingRequest{
+    string jwt = 1;
+    string ratingId = 2;
+}
+
+message DeleteRatingResponse{
+    string message = 1;
 }
 
 message GetRequest {

@@ -9,4 +9,5 @@ type RatingStore interface {
 	GetAll() ([]*Rating, error)
 	Insert(user *Rating) error
 	DeleteAll()
+	Delete(rating *Rating) error
 }

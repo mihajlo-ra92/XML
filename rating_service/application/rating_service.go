@@ -36,6 +36,12 @@ func (service *RatingService) GetAll() ([]*domain.Rating, error) {
 	return service.store.GetAll()
 }
 
+func (service *RatingService) Delete(ratingId string) error {
+	id, _ := primitive.ObjectIDFromHex(ratingId)
+	rating := domain.Rating{Id: id}
+	return service.store.Delete(&rating)
+}
+
 func (service *RatingService) Create(rating *domain.Rating) error {
 
 	fmt.Print("Rating for creating: ")

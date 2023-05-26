@@ -99,6 +99,23 @@ func (handler *AuthHandler) AuthDeleteUser(ctx context.Context, request *pb.Auth
 	return userResponse, nil
 }
 
+func (handler *AuthHandler) AuthDeleteRating(ctx context.Context, request *pb.AuthDeleteRatingRequest) (*pb.AuthDeleteRatingResponse, error) {
+	fmt.Println("In AuthDeleteRating")
+	fmt.Print("request : ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData in AuthDeleteRating: ")
+	fmt.Println(jwtData)
+	userResponse, err := handler.service.DeleteRating(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return userResponse, nil
+}
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
 	fmt.Println("In AuthGuestReserveAccommodation")
 	fmt.Print("request: ")

@@ -71,3 +71,19 @@ func (handler *RatingHandler) CreateRating(ctx context.Context, request *pb.Crea
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *RatingHandler) DeleteRating(ctx context.Context, request *pb.DeleteRatingRequest) (*pb.DeleteRatingResponse, error) {
+	fmt.Println("In DeleteRating grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	err := handler.service.Delete(request.RatingId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := pb.DeleteRatingResponse{}
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}

@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/rating_service/domain"
 
@@ -63,6 +64,18 @@ func (store *RatingMongoDBStore) filterOne(filter interface{}) (Rating *domain.R
 
 func (store *RatingMongoDBStore) DeleteAll() {
 	store.ratings.DeleteMany(context.TODO(), bson.D{{}})
+}
+
+func (store *RatingMongoDBStore) Delete(Rating *domain.Rating) error {
+	filter := bson.M{"_id": Rating.Id}
+	result, err := store.ratings.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("no document found with ID %s", Rating.Id)
+	}
+	return nil
 }
 
 func decode(cursor *mongo.Cursor) (ratings []*domain.Rating, err error) {
