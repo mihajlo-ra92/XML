@@ -12,6 +12,7 @@ import (
 	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
 	pb "github.com/mihajlo-ra92/XML/common/proto/auth_service"
 	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
+	rating "github.com/mihajlo-ra92/XML/common/proto/rating_service"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
 
@@ -19,13 +20,15 @@ type AuthService struct {
 	userClientAddress          string
 	accommodationClientAddress string
 	bookingClientAddress       string
+	ratingClientAddress        string
 }
 
-func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string) *AuthService {
+func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string, ratingClientAddress string) *AuthService {
 	return &AuthService{
 		userClientAddress:          userClientAddress,
 		accommodationClientAddress: accommodationClientAddress,
 		bookingClientAddress:       bookingClientAddress,
+		ratingClientAddress:        ratingClientAddress,
 	}
 }
 
@@ -163,6 +166,27 @@ func (service *AuthService) GuestReserveAccommodation(jwtData *domain.JwtData, r
 	return &authReserveAccommodationResponse, nil
 }
 
+func (service *AuthService) AuthCreateRating(jwtData *domain.JwtData, request *pb.AuthCreateRatingRequest) (*pb.AuthCreateRatingResponse, error) {
+	fmt.Println("In create rating")
+	ratingClient := services.NewRatingClient(service.ratingClientAddress)
+	ratingStruct := rating.NewRating{HostId: request.HostId, AccommodationId: request.AccommodationId, GuestId: jwtData.UserId, Rate: request.Rate}
+	ratingRequest := rating.CreateRatingRequest{Rating: &ratingStruct}
+	guestId := jwtData.UserId
+	fmt.Print(guestId)
+	fmt.Print("ratingRequest: ")
+	fmt.Println(ratingRequest)
+	ratingResponse, err := ratingClient.CreateRating(context.TODO(), &ratingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingResponse: ")
+	fmt.Println(ratingResponse)
+	authCreateRatingResponse := pb.AuthCreateRatingResponse{Rating: &pb.Rating{Id: ratingResponse.Rating.Id, HostId: ratingResponse.Rating.HostId, AccommodationId: ratingResponse.Rating.AccommodationId, GuestId: guestId, Rate: ratingResponse.Rating.Rate}}
+	fmt.Print("authCreateRatingResponse: ")
+	fmt.Println(authCreateRatingResponse)
+	return &authCreateRatingResponse, nil
+}
+
 func (service *AuthService) BookingAccept(jwtData *domain.JwtData, request *pb.AuthBookingAcceptRequest) (*pb.AuthBookingAcceptResponse, error) {
 	fmt.Println("In booking accept")
 	bookingClient := services.NewBookingClient(service.bookingClientAddress)
@@ -239,17 +263,17 @@ func (service *AuthService) GetAccommodationsByHostId(jwtData *domain.JwtData) (
 	fmt.Print("accommodationResponse: ")
 	fmt.Println(accommodationResponse)
 	var respAccommodations []*pb.Accommodation
-	for _, accommodationIt := range accommodationResponse.Acccommodations{
+	for _, accommodationIt := range accommodationResponse.Acccommodations {
 		temp := pb.Accommodation{
-			Id: accommodationIt.Id,
-			HostId: accommodationIt.HostId,
-			Name: accommodationIt.Name,
-			Location: accommodationIt.Location,
-			Benefits: accommodationIt.Benefits,
-			Pictures: accommodationIt.Pictures,
+			Id:        accommodationIt.Id,
+			HostId:    accommodationIt.HostId,
+			Name:      accommodationIt.Name,
+			Location:  accommodationIt.Location,
+			Benefits:  accommodationIt.Benefits,
+			Pictures:  accommodationIt.Pictures,
 			MinGuests: accommodationIt.MinGuests,
 			MaxGuests: accommodationIt.MaxGuests,
-			Price: accommodationIt.Price,
+			Price:     accommodationIt.Price,
 			PriceType: pb.Accommodation_PriceType(accommodationIt.PriceType),
 		}
 		respAccommodations = append(respAccommodations, &temp)
@@ -273,7 +297,7 @@ func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *
 	}
 	fmt.Print("accommodationResponse: ")
 	fmt.Println(accommodationResponse)
-	authDefineCustomPriceResponse := pb.AuthDefineCustomPriceResponse{Accommodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests }}
+	authDefineCustomPriceResponse := pb.AuthDefineCustomPriceResponse{Accommodation: &pb.Accommodation{Id: accommodationResponse.Accommodation.Id, HostId: accommodationResponse.Accommodation.HostId, Name: accommodationResponse.Accommodation.Name, Location: accommodationResponse.Accommodation.Location, Benefits: accommodationResponse.Accommodation.Benefits, Pictures: accommodationResponse.Accommodation.Pictures, MinGuests: accommodationResponse.Accommodation.MinGuests, MaxGuests: accommodationResponse.Accommodation.MaxGuests}}
 	fmt.Print("authDefineCustomPriceResponse: ")
 	fmt.Println(authDefineCustomPriceResponse)
 	return &authDefineCustomPriceResponse, nil
@@ -289,17 +313,17 @@ func (service *AuthService) GetBookingsByAccommodationId(jwtData *domain.JwtData
 	fmt.Print("bookingResponse: ")
 	fmt.Println(bookingResponse)
 	var respBookings []*pb.Booking
-	for _, bookingIt := range bookingResponse.Bookings{
+	for _, bookingIt := range bookingResponse.Bookings {
 		temp := pb.Booking{
-			Id: bookingIt.Id,
+			Id:              bookingIt.Id,
 			AccommodationId: bookingIt.AccommodationId,
-			GuestId: bookingIt.GuestId,
-			Price: bookingIt.Price,
-			PriceType: pb.Booking_PriceType(bookingIt.PriceType),
-			NumberOfGuests: bookingIt.NumberOfGuests,
-			BookingType: pb.Booking_BookingType(bookingIt.BookingType),
-			StartDate: bookingIt.StartDate,
-			EndDate: bookingIt.EndDate,
+			GuestId:         bookingIt.GuestId,
+			Price:           bookingIt.Price,
+			PriceType:       pb.Booking_PriceType(bookingIt.PriceType),
+			NumberOfGuests:  bookingIt.NumberOfGuests,
+			BookingType:     pb.Booking_BookingType(bookingIt.BookingType),
+			StartDate:       bookingIt.StartDate,
+			EndDate:         bookingIt.EndDate,
 		}
 		respBookings = append(respBookings, &temp)
 	}

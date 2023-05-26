@@ -15,7 +15,6 @@ import { CreateAccommodationComponent } from './modules/create-accommodation/cre
 import { MyAccommodationsComponent } from './modules/my-accommodations/my-accommodations.component';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +25,7 @@ import { MyAccommodationsComponent } from './modules/my-accommodations/my-accomm
     EditUserComponent,
     AccommodationReserationComponent,
     CreateAccommodationComponent,
-    MyAccommodationsComponent
+    MyAccommodationsComponent,
   ],
   imports: [
     BrowserModule,

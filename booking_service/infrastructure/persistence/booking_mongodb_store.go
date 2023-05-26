@@ -129,6 +129,20 @@ func (store *BookingMongoDBStore) GetByAccomodationIdandDataRange(accommodationI
 	return decode(cursor)
 }
 
+func (store *BookingMongoDBStore) GetByAccomodationAndGuestId(accommodationId string, guestId string) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"guest_id":         guestId,
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
 func (store *BookingMongoDBStore) GetAllByUser(guestId string, bookingType domain.BookingType) ([]*domain.Booking, error) {
 	filter := bson.M{
 		"guest_id":     guestId,
@@ -145,7 +159,7 @@ func (store *BookingMongoDBStore) GetAllByUser(guestId string, bookingType domai
 
 func (store *BookingMongoDBStore) GetByAccommodationId(accommodationId string) ([]*domain.Booking, error) {
 	filter := bson.M{
-		"accommodation_id":     accommodationId,
+		"accommodation_id": accommodationId,
 	}
 	cursor, err := store.bookings.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())

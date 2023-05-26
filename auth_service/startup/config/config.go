@@ -10,6 +10,8 @@ type Config struct {
 	AccommodationHost string
 	BookingPort       string
 	BookingHost       string
+	RatingPort        string
+	RatingHost        string
 }
 
 func NewConfig() *Config {
@@ -21,5 +23,7 @@ func NewConfig() *Config {
 		AccommodationHost: os.Getenv("ACCOMMODATION_SERVICE_HOST"),
 		BookingPort:       os.Getenv("BOOKING_SERVICE_PORT"),
 		BookingHost:       os.Getenv("BOOKING_SERVICE_HOST"),
+		RatingPort:        os.Getenv("RATING_SERVICE_PORT"),
+		RatingHost:        os.Getenv("RATING_SERVICE_HOST"),
 	}
 }

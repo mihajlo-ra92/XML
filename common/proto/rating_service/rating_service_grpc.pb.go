@@ -25,7 +25,6 @@ type RatingServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	CreateRating(ctx context.Context, in *CreateRatingRequest, opts ...grpc.CallOption) (*CreateRatingResponse, error)
-	DeleteRating(ctx context.Context, in *DeleteRatingRequest, opts ...grpc.CallOption) (*DeleteRatingResponse, error)
 }
 
 type ratingServiceClient struct {
@@ -63,15 +62,6 @@ func (c *ratingServiceClient) CreateRating(ctx context.Context, in *CreateRating
 	return out, nil
 }
 
-func (c *ratingServiceClient) DeleteRating(ctx context.Context, in *DeleteRatingRequest, opts ...grpc.CallOption) (*DeleteRatingResponse, error) {
-	out := new(DeleteRatingResponse)
-	err := c.cc.Invoke(ctx, "/rating.RatingService/DeleteRating", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RatingServiceServer is the server API for RatingService service.
 // All implementations must embed UnimplementedRatingServiceServer
 // for forward compatibility
@@ -79,7 +69,6 @@ type RatingServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	CreateRating(context.Context, *CreateRatingRequest) (*CreateRatingResponse, error)
-	DeleteRating(context.Context, *DeleteRatingRequest) (*DeleteRatingResponse, error)
 	mustEmbedUnimplementedRatingServiceServer()
 }
 
@@ -95,9 +84,6 @@ func (UnimplementedRatingServiceServer) GetAll(context.Context, *GetAllRequest) 
 }
 func (UnimplementedRatingServiceServer) CreateRating(context.Context, *CreateRatingRequest) (*CreateRatingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateRating not implemented")
-}
-func (UnimplementedRatingServiceServer) DeleteRating(context.Context, *DeleteRatingRequest) (*DeleteRatingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRating not implemented")
 }
 func (UnimplementedRatingServiceServer) mustEmbedUnimplementedRatingServiceServer() {}
 
@@ -166,24 +152,6 @@ func _RatingService_CreateRating_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RatingService_DeleteRating_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRatingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RatingServiceServer).DeleteRating(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/rating.RatingService/DeleteRating",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RatingServiceServer).DeleteRating(ctx, req.(*DeleteRatingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // RatingService_ServiceDesc is the grpc.ServiceDesc for RatingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,10 +170,6 @@ var RatingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateRating",
 			Handler:    _RatingService_CreateRating_Handler,
-		},
-		{
-			MethodName: "DeleteRating",
-			Handler:    _RatingService_DeleteRating_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

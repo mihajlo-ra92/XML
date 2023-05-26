@@ -14,15 +14,12 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarColor02">
+
     <ul class="navbar-nav mr-auto">
       <li *ngIf="loggedUserJwt === null" class="nav-item active">
         <a class="nav-link" routerLink="/register">Sing up</a>
       </li>
-      <li *ngIf="loggedUserRole === '1'" class="nav-item active">
-        <a class="nav-link" routerLink="/my-accommodations"
-          >My accommodations</a
-        >
-      </li>
+
       <li *ngIf="loggedUserRole === '0'" class="nav-item active">
         <a class="nav-link" routerLink="/canceling-reservation"
           >Canceling reservation</a
