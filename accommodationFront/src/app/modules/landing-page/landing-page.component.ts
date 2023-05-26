@@ -3,6 +3,10 @@ import { Accommodation } from '../model/accommodation';
 import { AccommodationService} from '../service/accommodation.service';
 import { BookingService } from '../service/booking.service'
 import { Reservation } from '../model/reservation';
+import { UserService } from '../service/user.service';
+import { RatingService } from '../service/rating.service';
+import { Rating } from '../model/rating';
+import { AccommodationWithRate } from '../model/accommodationWithRate';
 
 @Component({
   selector: 'app-landing-page',
@@ -15,13 +19,69 @@ export class LandingPageComponent implements OnInit {
   loggedUserRole = localStorage.getItem('loggedUserType')
   userJwt = localStorage.getItem('token')
   reservation: Reservation = new Reservation
-  constructor(private accommodationService: AccommodationService, private bookingService: BookingService) {}
+  selectedAccommodation : Accommodation = new Accommodation
+  rateSelectedAccommodation : number = 0
+  rateSelectedHost : number = 0
+  accommodationWithRate : AccommodationWithRate = new AccommodationWithRate
+  allAccommodationsWithRate: Array<AccommodationWithRate> = new Array();
+
+  constructor(private accommodationService: AccommodationService, private ratingService: RatingService) {}
 
   ngOnInit(): void {
 
     this.AllAccommodations();
   }
 
+  rateAccommodation(id: String) {
+
+    let rating : Rating = new Rating
+    rating.jwt = localStorage.getItem('token')!
+    rating.accommodationId = id
+    rating.rate = this.rateSelectedAccommodation
+
+    if(this.rateSelectedAccommodation != 0){
+        this.ratingService.createRating(rating).subscribe((res) => {
+          let resJSON = JSON.parse(res);
+          console.log(resJSON)
+        },
+        (error) => {
+          // alert(error.error.message)
+          let errorJSON = JSON.parse(error.error);
+          alert(errorJSON.message)
+        });
+        alert("Successfully rated this accommodation")
+    }
+    else{
+      alert("You didn't rate this accommodation")
+
+    }
+  }
+
+  rateHost(id: String) {
+
+    let rating : Rating = new Rating
+    rating.jwt = localStorage.getItem('token')!
+    rating.hostId = id
+    rating.rate = this.rateSelectedHost
+
+    if(this.rateSelectedHost != 0){
+        this.ratingService.createRating(rating).subscribe((res) => {
+          let resJSON = JSON.parse(res);
+          console.log(resJSON)
+        },
+        (error) => {
+          // alert(error.error.message)
+          let errorJSON = JSON.parse(error.error);
+          alert(errorJSON.message)
+        });
+        alert("Successfully rated this host")
+
+    }
+    else{
+      alert("You didn't rate this host")
+
+    }
+  }
   // allUsers() {
   //   var loggedUserType = localStorage.getItem('loggedUserType');
   //   console.log(loggedUserType);
@@ -50,18 +110,13 @@ AllAccommodations() {
   this.accommodationService.getAllAccommodations().subscribe((res) => {
     let resJSON = JSON.parse(res);
     this.allAccommodations = resJSON.accommodations;
-    // this.allFlights.map((x) => {
-    //   const myDate = new Date(x.date);
-    //   // myDate.setHours(myDate.getHours() + 2)
-    //   console.log(myDate);
-    //   x.date = myDate.toLocaleString('en-US', {
-    //     timeZone: 'America/New_York',
-    //   });
-    //   console.log(x.date);
-    // });
+
     console.log(this.allAccommodations);
   });
 }
+
+
+
 
 ReserveAccommodation(accommodation: Accommodation){
 

@@ -53,13 +53,14 @@
                     <div class="mask team_quote">
                         <div class="port-zoom-link">
                             <p>
-                                <span class="accentcolor" style="font-weight:700;">Informations about flight</span>
+                                <span class="accentcolor" style="font-weight:700;">Informations about accommodation</span>
                                 <br>
                                 Name : {{accommodation.name}}<br>
-                                Name : {{accommodation.id}}<br>
                                 <i>Price : {{accommodation.price}}e<br>
                                     Location : {{accommodation.location}}<br>
                                     Benefits : {{accommodation.benefits}}<br>
+                                    
+
                                 </i>
                             </p>
                         </div>
@@ -78,6 +79,45 @@
                 <button  *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="ReserveAccommodation(accommodation)">
                     Reserve accommodation
                 </button>
+
+                <label>Rate accommodation</label>
+                <select  [(ngModel)]="rateSelectedAccommodation" class="form-control form-control-lg" name="rateSelectedAccommodation">
+                    <option value="1">
+                        1
+                    </option>
+                    <option value="2">
+                        2
+                    </option>
+                    <option value="3">
+                        3
+                    </option>
+                    <option value="4">
+                        4
+                    </option>
+                    <option value="5">
+                        5
+                    </option>
+                </select>
+                <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="rateAccommodation(accommodation.id)">Rate</button>
+                <label>Rate host</label>
+                <select  [(ngModel)]="rateSelectedHost" class="form-control form-control-lg" name="rateSelectedHost">
+                    <option value="1">
+                        1
+                    </option>
+                    <option value="2">
+                        2
+                    </option>
+                    <option value="3">
+                        3
+                    </option>
+                    <option value="4">
+                        4
+                    </option>
+                    <option value="5">
+                        5
+                    </option>
+                </select>
+                <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="rateHost(accommodation.hostId)">Rate</button>
             </div>
         </div>
         

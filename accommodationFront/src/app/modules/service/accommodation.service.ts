@@ -34,12 +34,6 @@ export class AccommodationService {
     return accommodations;
   }
 
-  // deleteFlight(id: String): Observable<any> {
-  //   return this.http.delete(this.apiServerUrl + '/flight/' + id, {
-  //     headers: this.headers,
-  //     responseType: 'text',
-  //   });
-  // }
   reserve(reservation: Reservation): Observable<any> {
     return this.http.post(this.apiServerUrl + '/accomodation-reserve', reservation, {
       headers: this.headers3,
@@ -60,6 +54,10 @@ export class AccommodationService {
     request.accommodationId = accomodationId;
     request.jwt = jwtString;
     return this.http.post(this.apiServerUrl +'/get-bookings-by-accommodation',request,{headers: this.headers})
+  }
+
+  getById(accomodationId : String):Observable<any>{
+    return this.http.get(this.apiServerUrl +'/accommodation/' + accomodationId,{headers: this.headers})
   }
 
 
