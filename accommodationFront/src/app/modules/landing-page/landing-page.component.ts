@@ -7,6 +7,7 @@ import { UserService } from '../service/user.service';
 import { RatingService } from '../service/rating.service';
 import { Rating } from '../model/rating';
 import { AccommodationWithRate } from '../model/accommodationWithRate';
+import { SearchRequest } from '../model/getAllByUserRequest';
 
 @Component({
   selector: 'app-landing-page',
@@ -24,8 +25,10 @@ export class LandingPageComponent implements OnInit {
   rateSelectedHost : number = 0
   accommodationWithRate : AccommodationWithRate = new AccommodationWithRate
   allAccommodationsWithRate: Array<AccommodationWithRate> = new Array();
+  request: SearchRequest=new SearchRequest()
 
   constructor(private accommodationService: AccommodationService, private ratingService: RatingService) {}
+
 
   ngOnInit(): void {
 
@@ -130,6 +133,102 @@ ReserveAccommodation(accommodation: Accommodation){
   window.location.href = '/accommodation-reservation'
 
 }
+Refrash(){
+  this.AllAccommodations();
+  this.request = new SearchRequest()
+}
+Search(){
+  console.log(this.request.end_date)
+  if(this.request.guest===1 && this.request.location ==="" && this.request.start_date === undefined && this.request.end_date === undefined ){
+    this.accommodationService.getAllAccommodations().subscribe((res) => {
+      let resJSON = JSON.parse(res);
+      this.allAccommodations = resJSON.accommodations;
+      // this.allFlights.map((x) => {
+      //   const myDate = new Date(x.date);
+      //   // myDate.setHours(myDate.getHours() + 2)
+      //   console.log(myDate);
+      //   x.date = myDate.toLocaleString('en-US', {
+      //     timeZone: 'America/New_York',
+      //   });
+      //   console.log(x.date);
+      // });
+      console.log(this.allAccommodations);
+      
+    });
+    return
+  }
+  if(this.request.start_date !== undefined && this.request.end_date !== undefined ){
+    if(this.request.end_date < this.request.start_date){return}
+    const currentDate = new Date();
+    if(currentDate < this.request.start_date){return}
+    
+  }
+
+  if(this.request.start_date === undefined && this.request.end_date === undefined ){
+    this.accommodationService.searchAccommodation(this.request).subscribe((res) => {
+      this.allAccommodations = []
+      console.log(this.allAccommodations);
+  
+      var list = res.accommodations;
+      list.forEach((item) => {
+        console.log(item);
+        console.log(item.accommodation, "Ovde b");
+  
+        this.allAccommodations.push(item.accommodation)
+      });
+      
+      // this.allFlights.map((x) => {
+      //   const myDate = new Date(x.date);
+      //   // myDate.setHours(myDate.getHours() + 2)
+      //   console.log(myDate);
+      //   x.date = myDate.toLocaleString('en-US', {
+      //     timeZone: 'America/New_York',
+      //   });
+      //   console.log(x.date);
+      // });
+      console.log(this.allAccommodations);
+    });}
+
+
+
+  if(this.request.start_date === undefined || this.request.end_date === undefined ){
+    return
+  }
+  var startDateString = this.request.start_date.toString();
+  var startDateFormated = startDateString + 'T00:00:00.123Z';
+
+  var endDateString = this.request.end_date.toString();
+  var endDateFormated = endDateString + 'T00:00:00.123Z';
+
+  this.accommodationService.searchAccommodation({
+    "location" : this.request.location,
+    "guest" : this.request.guest,
+    "start_date" :startDateFormated,
+    "end_date" :endDateFormated
+}).subscribe((res) => {
+    this.allAccommodations = []
+    console.log(this.allAccommodations);
+
+    var list = res.accommodations;
+    list.forEach((item) => {
+      console.log(item);
+      console.log(item.accommodation, "Ovde b");
+
+      this.allAccommodations.push(item.accommodation)
+    });
+    
+    // this.allFlights.map((x) => {
+    //   const myDate = new Date(x.date);
+    //   // myDate.setHours(myDate.getHours() + 2)
+    //   console.log(myDate);
+    //   x.date = myDate.toLocaleString('en-US', {
+    //     timeZone: 'America/New_York',
+    //   });
+    //   console.log(x.date);
+    // });
+    console.log(this.allAccommodations);
+  });
+}
   // deleteFlight(flight: Flight) {
   //   console.log(flight.id);
   //   this.flightService.deleteFlight(flight.id).subscribe((res) => {
@@ -146,7 +245,7 @@ ReserveAccommodation(accommodation: Accommodation){
 //       var startDateString = this.startDate.toString();
 //       var startDateFormated = startDateString + 'T00:00:00.123Z';
 
-//       var endDateString = this.endDate.toString();
+//       var endDateString = this.endDate.toString0.();
 //       var endDateFormated = endDateString + 'T00:00:00.123Z';
 
 
