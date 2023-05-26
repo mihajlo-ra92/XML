@@ -1,30 +1,55 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" routerLink="/landing-page" style="color:white;">
-    Accommodation XML</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-  <span class="navbar-toggler-icon"></span>
+  <a class="navbar-brand" routerLink="/landing-page" style="color: white">
+    Accommodation XML</a
+  >
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarColor02"
+    aria-controls="navbarColor02"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarColor02">
-     <ul class="navbar-nav mr-auto" >
-        <li *ngIf="loggedUserJwt === null" class="nav-item active">
-           <a class="nav-link" routerLink="/register">Sing up</a>
-        </li>
-        <li *ngIf="loggedUserRole === '1' " class="nav-item active">
-          <a class="nav-link" routerLink="/my-accommodations">My accommodations</a>
-       </li>
-        <li *ngIf="loggedUserJwt === null" class="nav-item active">
-          <a class="nav-link" routerLink="/login">Login</a>
-       </li>
-       <li *ngIf="loggedUserJwt !== null" class="nav-item active">
+
+    <ul class="navbar-nav mr-auto">
+      <li *ngIf="loggedUserJwt === null" class="nav-item active">
+        <a class="nav-link" routerLink="/register">Sing up</a>
+      </li>
+
+      <li *ngIf="loggedUserRole === '0'" class="nav-item active">
+        <a class="nav-link" routerLink="/canceling-reservation"
+          >Canceling reservation</a
+        >
+      </li>
+
+      <li *ngIf="loggedUserJwt === null" class="nav-item active">
+        <a class="nav-link" routerLink="/login">Login</a>
+      </li>
+      <li *ngIf="loggedUserJwt !== null" class="nav-item active">
         <a class="nav-link" routerLink="/edit-user">Edit user</a>
-     </li>
-     <li *ngIf="loggedUserRole === '1' " class="nav-item active" >
-      <a class="nav-link" routerLink="/create-accommodation">Create new accommodation</a>
-   </li>
-       <li *ngIf="loggedUserJwt !== null" class="nav-item active" (click)="onLogout()">
+      </li>
+      <li *ngIf="loggedUserRole === '1'" class="nav-item active">
+        <a class="nav-link" routerLink="/create-accommodation"
+          >Create new accommodation</a
+        >
+      </li>
+      <li *ngIf="loggedUserRole === '1'" class="nav-item active">
+        <a class="nav-link" routerLink="/my-accommodations"
+          >My accommodations</a
+        >
+      </li>
+      <li
+        *ngIf="loggedUserJwt !== null"
+        class="nav-item active"
+        (click)="onLogout()"
+      >
         <a class="nav-link" routerLink="/login">Logout</a>
-     </li>
-     </ul>
-    </div>
-  </nav>
+      </li>
+    </ul>
+  </div>
+</nav>
 <router-outlet></router-outlet>

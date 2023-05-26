@@ -5,53 +5,61 @@ import { Accommodation } from '../model/accommodation';
 import { Booking } from '../model/booking';
 import { ApproveBooking } from '../model/approveBooking';
 import { BookingService } from '../service/booking.service';
+import { CustomPrice } from '../model/customPrice';
 
 @Component({
   selector: 'app-my-accommodations',
   templateUrl: './my-accommodations.component.html',
-  styleUrls: ['./my-accommodations.component.css']
+  styleUrls: ['./my-accommodations.component.css'],
 })
 export class MyAccommodationsComponent implements OnInit {
   public accommodations: Accommodation[] = [];
-  public selected : boolean = false;
+  public selected: boolean = false;
+  public selectedCustomPrice: boolean = false;
   public selectedAccommodation: Accommodation = new Accommodation();
-  public pictures: Document = new Document;
-  public bookingsForAccommodation: Booking[] = new Array;
-  public approveBooking: ApproveBooking = new ApproveBooking
+  public pictures: Document = new Document();
+  public start: String = '';
+  public end: String = '';
+  public bookingsForAccommodation: Booking[] = new Array();
+  public customPrice: CustomPrice = new CustomPrice();
+  public approveBooking: ApproveBooking = new ApproveBooking();
   public imageUrl1: string = '';
   public imageUrl2: string = '';
   public imageUrl3: string = '';
 
-  constructor(private accommodationService : AccommodationService, private router: Router, private bookingService: BookingService) { }
+  constructor(
+    private accommodationService: AccommodationService,
+    private router: Router,
+    private bookingService: BookingService
+  ) {}
 
   ngOnInit(): void {
-    let token =localStorage.getItem("token");
-    if(token !== null){
-      this.accommodationService.getMyAccommodation(token).subscribe((res) =>{
+    let token = localStorage.getItem('token');
+    if (token !== null) {
+      this.accommodationService.getMyAccommodation(token).subscribe((res) => {
         this.accommodations = res.accommodations;
         console.log(this.accommodations);
-      })
+      });
     }
-    let temp = localStorage.getItem("loggedUserType");
-    if(temp != "1"){
-    this.router.navigate(['/landing-page']);    
+    let temp = localStorage.getItem('loggedUserType');
+    if (temp != '1') {
+      this.router.navigate(['/landing-page']);
     }
   }
 
-  select(accommodation: Accommodation){
+  select(accommodation: Accommodation) {
+    this.selectedCustomPrice = false;
     this.selected = true;
     this.selectedAccommodation = accommodation;
-    let jwt = localStorage.getItem("token")
-    if(jwt !== null){
-      this.accommodationService.getBookibgByAccommodationId(jwt,accommodation.id.toString()).subscribe((res) =>{
-        console.log(res);
-        this.bookingsForAccommodation = res.bookings;
-      })
+    let jwt = localStorage.getItem('token');
+    if (jwt !== null) {
+      this.accommodationService
+        .getBookibgByAccommodationId(jwt, accommodation.id.toString())
+        .subscribe((res) => {
+          console.log(res);
+          this.bookingsForAccommodation = res.bookings;
+        });
     }
-    // this.pictures = this.decodePicture(this.selectedAccommodation.pictures[0].toString());
-    // console.log(this.decodePicture(this.selectedAccommodation.pictures[0].toString()));
-    this.selected = true;
-    this.selectedAccommodation = accommodation;
     this.imageUrl1 = '';
     this.imageUrl2 = '';
     this.imageUrl3 = '';
@@ -82,68 +90,80 @@ export class MyAccommodationsComponent implements OnInit {
       this.imageUrl3 = reader3.result as string;
     };
   }
-  unselect(){
+  unselect() {
     this.selected = false;
     this.selectedAccommodation = new Accommodation();
-    this.pictures  = new Document;
+    this.pictures = new Document();
     this.bookingsForAccommodation = [];
+    this.selectedCustomPrice = false;
   }
 
-//   decodePicture(base64String: string):any{
-//     const byteArray = Uint8Array.from(atob(base64String), c => c.charCodeAt(0));
-
-// // Kreirajte Blob objekat od ByteArray
-// const blob = new Blob([byteArray], { type: "image/jpeg" });
-
-// // Kreirajte URL za prikaz slike
-// const imageUrl = URL.createObjectURL(blob);
-
-// // Kako biste prikazali sliku u HTML-u, možete koristiti <img> tag
-// const img = document.createElement("img");
-// img.src = imageUrl;
-// document.body.appendChild(img);
-// return document;
-//   }
-  selectCustomPrice(){
-
+  selectCustomPrice() {
+    this.selectedCustomPrice = true;
   }
 
-  Approve(bookingId: String){
+  addCustomPrice() {
+    this.customPrice.accommodationId = this.selectedAccommodation.id;
+    let temp = localStorage.getItem('token');
+    if (temp !== null) {
+      this.customPrice.jwt = temp;
+    }
 
+    const startDateString = new Date(
+      String(this.start) + 'T12:00:42.123Z'
+    ).toISOString();
+
+    const endDateString = new Date(
+      String(this.end) + 'T12:00:42.123Z'
+    ).toISOString();
+
+    this.customPrice.start_date = startDateString;
+    this.customPrice.end_date = endDateString;
+    this.customPrice.priceType = 'Regular';
+    console.log(this.customPrice);
+    this.accommodationService
+      .defineCustomPrice(this.customPrice)
+      .subscribe((res) => {
+        console.log(res);
+      });
+    this.start = '';
+    this.end = '';
+    this.customPrice = new CustomPrice();
+    this.selectedCustomPrice = false;
+  }
+
+  Approve(bookingId: String) {
     this.approveBooking.bookingId = bookingId;
-    this.approveBooking.jwt = localStorage.getItem('token')!
-    
-      this.bookingService.approve(this.approveBooking).subscribe((res) => {
+    this.approveBooking.jwt = localStorage.getItem('token')!;
 
+    this.bookingService.approve(this.approveBooking).subscribe(
+      (res) => {
         console.log(res);
         console.log(this.approveBooking);
 
-      alert("Successfully approved")
+        alert('Successfully approved');
 
-      window.location.href = '/my-accommodations'
+        window.location.href = '/my-accommodations';
+      },
+      (error) => {
+        console.log(error);
+
+        alert(JSON.parse(error.error).message);
       }
-      ,(error) =>{
-        console.log(error)
-        
-        alert(JSON.parse(error.error).message)
-      });
-    
-    
+    );
   }
 
-  Deny(bookingId: String){
-
+  Deny(bookingId: String) {
     this.approveBooking.bookingId = bookingId;
-    this.approveBooking.jwt = localStorage.getItem('token')!
+    this.approveBooking.jwt = localStorage.getItem('token')!;
 
     this.bookingService.deny(this.approveBooking).subscribe((res) => {
-
       console.log(res);
       console.log(this.approveBooking);
 
-    alert("Successfully denied")
+      alert('Successfully denied');
 
-    window.location.href = '/my-accommodations'
+      window.location.href = '/my-accommodations';
     });
   }
 

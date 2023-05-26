@@ -5,12 +5,14 @@
 <div style="background-color: #9A616D;">
 <div class="container">
     <div class="row" >
-        <!-- <div class="search-fields" style="position: absolute; left: 0">
-            <input class="search-inputs" type="text" placeholder="Start place" [(ngModel)]="startPlace" />
-            <button style="width: 100px; height: 40px;" class="btn btn-dark btn-lg btn-block search-inputs" (click)="switchPlaces()">
-              <i class="fas fa-sync-alt"></i>
-            </button>
-            <input class="search-inputs" type="text" placeholder="End place" [(ngModel)]="endPlace" />
+        <div class="search-fields" style="position: relative; left: 0">
+            <button style="width: 100px; height: 40px;" class="btn btn-dark btn-lg btn-block" (click)="Refrash()">
+                <i fas >Refresh</i>
+             </button>
+        
+            <input class="search-inputs" type="text" placeholder="Place" [(ngModel)]="request.location" />
+            
+            &nbsp;&nbsp;&nbsp;
             <label>From date:</label><br>
             <input 
               type="date"
@@ -18,32 +20,34 @@
               class="form-control form-control-lg search-inputs"
               value="0001-01-01T08:30:00"
               placeholder="Start date"
-              [(ngModel)]="this.startDate"
+              [(ngModel)]="request.start_date"
             />
-            <label>To date:</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <label>To date:</label><br>
             <input
               type="date"
               #dateTimeInput
               class="form-control form-control-lg search-inputs"
               value="0001-01-01T08:30:00"
               placeholder="End date "
-              [(ngModel)]="this.endDate"
+              [(ngModel)]="request.end_date"
             />
-            <label>Number of passengers:</label><br>
+            &nbsp;
             <input 
               type="number"
               #numberInput
-              max="200"
-              min="0"
+              max="2000"
+              min="1"
               class="form-control form-control-lg search-inputs"
-              value="0001-01-01T08:30:00"
-              placeholder="Start date"
-              [(ngModel)]="this.quantity"
+              placeholder="Guests number"
+              [(ngModel)]="request.guest"
             />
-            <button style="width: 100px; height: 40px;" class="btn btn-dark btn-lg btn-block" (click)="search()">
+            <button style="width: 100px; height: 40px;" class="btn btn-dark btn-lg btn-block" (click)="Search()">
                <i class="fas fa-search">Search</i>
             </button>
-          </div> -->
+          </div>
+
+
         <div class="col-md-4 col-sm-4 col-xs-12"  style="margin-top: 100px;">
             <div class="team-boxes" *ngFor="let accommodation of allAccommodations">
                 <div class="team-thumb overlay-image view-overlay">
