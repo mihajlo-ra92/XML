@@ -36,6 +36,20 @@ func (service *RatingService) GetAll() ([]*domain.Rating, error) {
 	return service.store.GetAll()
 }
 
+func (service *RatingService) Delete(ratingId string) error {
+	id, _ := primitive.ObjectIDFromHex(ratingId)
+	rating := domain.Rating{Id: id}
+	return service.store.Delete(&rating)
+}
+
+func (service *RatingService) GetUserRatingByAccommodationId(accommodationId string, guestId string) (*domain.Rating, error) {
+	return service.store.GetUserRatingByAccommodationId(accommodationId, guestId)
+}
+
+func (service *RatingService) GetUserRatingByHostId(hostId string, guestId string) (*domain.Rating, error) {
+	return service.store.GetUserRatingByHostId(hostId, guestId)
+}
+
 func (service *RatingService) Create(rating *domain.Rating) error {
 
 	fmt.Print("Rating for creating: ")
@@ -52,35 +66,58 @@ func (service *RatingService) Create(rating *domain.Rating) error {
 	accommodationRequest := accommodation.GetByHostIdRequest{HostId: rating.HostId}
 	accommodationResponse, err := accommodationClient.GetByHostId(context.TODO(), &accommodationRequest)
 
+	ratingForUpdateHost, err := service.store.GetUserRatingByHostId(rating.HostId, rating.GuestId)
+	ratingForUpdateAccommodation, err := service.store.GetUserRatingByAccommodationId(rating.AccommodationId, rating.GuestId)
+
 	if rating.AccommodationId == "" {
-		if accommodationResponse.Acccommodations != nil {
+		if ratingForUpdateHost == nil {
+			fmt.Print(rating)
 
-			for _, accommodation := range accommodationResponse.Acccommodations {
-				bookingRequestForAccommodation := booking.GetBookingByAccommodationAndGuestIdRequest{AccommodationId: accommodation.Id, GuestId: rating.GuestId}
-				bookingResponseForAccommodation, err := bookingClient.GetBookingByAccommodationAndGuestId(context.TODO(), &bookingRequestForAccommodation)
-				fmt.Print("bookingResponseForAccommodation: ")
-				fmt.Println(bookingResponseForAccommodation)
+			if accommodationResponse.Acccommodations != nil {
 
-				if err != nil {
-					return err
+				for _, accommodation := range accommodationResponse.Acccommodations {
+					bookingRequestForAccommodation := booking.GetBookingByAccommodationAndGuestIdRequest{AccommodationId: accommodation.Id, GuestId: rating.GuestId}
+					bookingResponseForAccommodation, err := bookingClient.GetBookingByAccommodationAndGuestId(context.TODO(), &bookingRequestForAccommodation)
+					fmt.Print("bookingResponseForAccommodation: ")
+					fmt.Println(bookingResponseForAccommodation)
+
+					if err != nil {
+						return err
+					}
+
+					if bookingResponseForAccommodation.Bookings == nil {
+						return fmt.Errorf("The guest hasn't been in any of this host's accommodations")
+					}
+					fmt.Print("bookingResponseForAccommodation.Bookings: ")
+					fmt.Println(bookingResponseForAccommodation.Bookings)
 				}
-
-				if bookingResponseForAccommodation.Bookings == nil {
-					return fmt.Errorf("The guest hasn't been in any of this host's accommodations")
-				}
-				fmt.Print("bookingResponseForAccommodation.Bookings: ")
-				fmt.Println(bookingResponseForAccommodation.Bookings)
+			} else {
+				fmt.Println("This host doesn't have any accommodations")
 			}
 		} else {
-			fmt.Println("This host doesn't have any accommodations")
+			service.store.Delete(ratingForUpdateHost)
+			err = service.store.Insert(rating)
+
+			return fmt.Errorf("You have already rated this host, we will update your rate with this rating")
+
 		}
 	}
 
 	if rating.HostId == "" {
-		if bookingResponse.Bookings == nil {
-			return fmt.Errorf("The guest hasn't been in this accommodation")
+		if ratingForUpdateAccommodation == nil {
+			fmt.Print(rating)
+
+			if bookingResponse.Bookings == nil {
+				return fmt.Errorf("The guest hasn't been in this accommodation")
+			}
+		} else {
+			fmt.Println("this is rating for update accommodation:")
+			fmt.Println(rating)
+			service.store.Delete(ratingForUpdateAccommodation)
+			err = service.store.Insert(rating)
+
+			return fmt.Errorf("You have already rated this accommodation, we will update your rate with this rating")
 		}
-		fmt.Print("ovde je uslo")
 
 	}
 

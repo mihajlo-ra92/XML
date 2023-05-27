@@ -233,6 +233,24 @@ func (service *AuthService) BookingDeny(jwtData *domain.JwtData, request *pb.Aut
 	return &authBookingDenyResponse, nil
 }
 
+func (service *AuthService) DeleteRating(jwtData *domain.JwtData, request *pb.AuthDeleteRatingRequest) (*pb.AuthDeleteRatingResponse, error) {
+	ratingClient := services.NewRatingClient(service.ratingClientAddress)
+	ratingDeleteRequest := rating.DeleteRatingRequest{Jwt: request.Jwt, RatingId: request.RatingId}
+	fmt.Print("ratingDeleteRequest: ")
+	fmt.Println(ratingDeleteRequest)
+	ratingDeleteResponse, err := ratingClient.DeleteRating(context.TODO(), &ratingDeleteRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingDeleteResponse: ")
+	fmt.Println(ratingDeleteResponse)
+
+	authDeleteRatingResposne := pb.AuthDeleteRatingResponse{}
+	fmt.Print("authDeleteRatingResposne: ")
+	fmt.Println(authDeleteRatingResposne)
+	return &authDeleteRatingResposne, nil
+}
+
 func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, request *pb.AuthReservationCancelingRequest) (*pb.AuthReservationCancelingResponse, error) {
 	fmt.Println("In reserve accommodation")
 	bookingRequest := booking.ReservationCancelingRequest{Id: request.Id}
@@ -283,6 +301,39 @@ func (service *AuthService) GetAccommodationsByHostId(jwtData *domain.JwtData) (
 	fmt.Println(authGetAccommodationsByHostIdResponse)
 	return &authGetAccommodationsByHostIdResponse, nil
 }
+
+func (service *AuthService) GetUserRatingByAccommodationId(jwtData *domain.JwtData, request *pb.AuthGetUserRatingByAccommodationIdRequest) (*pb.AuthGetUserRatingByAccommodationIdResponse, error) {
+	ratingRequest := rating.GetUserRatingByAccommodationIdRequest{AccommodationId: request.AccommodationId, GuestId: jwtData.UserId}
+	ratingClient := services.NewRatingClient(service.ratingClientAddress)
+	ratingResponse, err := ratingClient.GetUserRatingByAccommodationId(context.TODO(), &ratingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingResponse: ")
+	fmt.Println(ratingResponse)
+
+	authGetUserRatingByAccommodationIdResponse := pb.AuthGetUserRatingByAccommodationIdResponse{Rating: &pb.Rating{Id: ratingResponse.Rating.Id, HostId: ratingResponse.Rating.HostId, AccommodationId: ratingResponse.Rating.AccommodationId, GuestId: ratingResponse.Rating.GuestId, Rate: ratingResponse.Rating.Rate}}
+	fmt.Print("authGetUserRatingByAccommodationIdResponse: ")
+	fmt.Println(authGetUserRatingByAccommodationIdResponse)
+	return &authGetUserRatingByAccommodationIdResponse, nil
+}
+
+func (service *AuthService) GetUserRatingByHostId(jwtData *domain.JwtData, request *pb.AuthGetUserRatingByHostIdRequest) (*pb.AuthGetUserRatingByHostIdResponse, error) {
+	ratingRequest := rating.GetUserRatingByHostIdRequest{HostId: request.HostId, GuestId: jwtData.UserId}
+	ratingClient := services.NewRatingClient(service.ratingClientAddress)
+	ratingResponse, err := ratingClient.GetUserRatingByHostId(context.TODO(), &ratingRequest)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingResponse: ")
+	fmt.Println(ratingResponse)
+
+	authGetUserRatingByHostIdResponse := pb.AuthGetUserRatingByHostIdResponse{Rating: &pb.Rating{Id: ratingResponse.Rating.Id, HostId: ratingResponse.Rating.HostId, AccommodationId: ratingResponse.Rating.AccommodationId, GuestId: ratingResponse.Rating.GuestId, Rate: ratingResponse.Rating.Rate}}
+	fmt.Print("authGetUserRatingByHostIdResponse: ")
+	fmt.Println(authGetUserRatingByHostIdResponse)
+	return &authGetUserRatingByHostIdResponse, nil
+}
+
 func (service *AuthService) DefineCustomPrice(jwtData *domain.JwtData, request *pb.AuthDefineCustomPriceRequest) (*pb.AuthDefineCustomPriceResponse, error) {
 	jwtUser := accommodation.AccommodationUser{Id: jwtData.UserId, UserType: accommodation.AccommodationUser_UserType(jwtData.UserType), Username: jwtData.Username}
 	customPriceRequest := accommodation.DefineCustomPriceRequest{User: &jwtUser, AccommodationId: request.AccommodationId, StartDate: request.StartDate, EndDate: request.EndDate, Price: request.Price, PriceType: accommodation.DefineCustomPriceRequest_PriceType(request.PriceType)}

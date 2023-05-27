@@ -99,6 +99,23 @@ func (handler *AuthHandler) AuthDeleteUser(ctx context.Context, request *pb.Auth
 	return userResponse, nil
 }
 
+func (handler *AuthHandler) AuthDeleteRating(ctx context.Context, request *pb.AuthDeleteRatingRequest) (*pb.AuthDeleteRatingResponse, error) {
+	fmt.Println("In AuthDeleteRating")
+	fmt.Print("request : ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData in AuthDeleteRating: ")
+	fmt.Println(jwtData)
+	userResponse, err := handler.service.DeleteRating(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return userResponse, nil
+}
 func (handler *AuthHandler) AuthGuestReserveAccommodation(ctx context.Context, request *pb.AuthGuestReserveAccommodationRequest) (*pb.AuthGuestReserveAccommodationResponse, error) {
 	fmt.Println("In AuthGuestReserveAccommodation")
 	fmt.Print("request: ")
@@ -235,6 +252,44 @@ func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, re
 		return nil, fmt.Errorf("user must be of host type")
 	}
 	response, err := handler.service.GetAccommodationsByHostId(jwtData)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (handler *AuthHandler) AuthGetUserRatingByAccommodationId(ctx context.Context, request *pb.AuthGetUserRatingByAccommodationIdRequest) (*pb.AuthGetUserRatingByAccommodationIdResponse, error) {
+	fmt.Println("In AuthGetUserRatingByAccommodationId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	response, err := handler.service.GetUserRatingByAccommodationId(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (handler *AuthHandler) AuthGetUserRatingByHostId(ctx context.Context, request *pb.AuthGetUserRatingByHostIdRequest) (*pb.AuthGetUserRatingByHostIdResponse, error) {
+	fmt.Println("In AuthGetUserRatingByHostId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	response, err := handler.service.GetUserRatingByHostId(jwtData, request)
 	if err != nil {
 		return nil, err
 	}

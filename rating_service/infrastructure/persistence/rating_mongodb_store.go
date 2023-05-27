@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mihajlo-ra92/XML/rating_service/domain"
 
@@ -28,6 +29,32 @@ func NewRatingMongoDBStore(client *mongo.Client) domain.RatingStore {
 
 func (store *RatingMongoDBStore) Get(id primitive.ObjectID) (*domain.Rating, error) {
 	filter := bson.M{"_id": id}
+	return store.filterOne(filter)
+}
+
+func (store *RatingMongoDBStore) GetUserRatingByAccommodationId(accommodationId string, guestId string) (*domain.Rating, error) {
+	fmt.Println(guestId)
+	fmt.Println(accommodationId)
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"guest_id":         guestId,
+	}
+	fmt.Println("FILTER:")
+	fmt.Println(filter)
+
+	return store.filterOne(filter)
+}
+
+func (store *RatingMongoDBStore) GetUserRatingByHostId(hostId string, guestId string) (*domain.Rating, error) {
+	fmt.Println(guestId)
+	fmt.Println(hostId)
+	filter := bson.M{
+		"host_id":  hostId,
+		"guest_id": guestId,
+	}
+	fmt.Println("FILTER:")
+	fmt.Println(filter)
+
 	return store.filterOne(filter)
 }
 
@@ -63,6 +90,18 @@ func (store *RatingMongoDBStore) filterOne(filter interface{}) (Rating *domain.R
 
 func (store *RatingMongoDBStore) DeleteAll() {
 	store.ratings.DeleteMany(context.TODO(), bson.D{{}})
+}
+
+func (store *RatingMongoDBStore) Delete(Rating *domain.Rating) error {
+	filter := bson.M{"_id": Rating.Id}
+	result, err := store.ratings.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("no document found with ID %s", Rating.Id)
+	}
+	return nil
 }
 
 func decode(cursor *mongo.Cursor) (ratings []*domain.Rating, err error) {

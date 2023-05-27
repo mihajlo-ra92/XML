@@ -33,6 +33,7 @@ export class AccommodationService {
       responseType: 'text',
     });
     // console.log(accommodations)
+
     return accommodations;
   }
 

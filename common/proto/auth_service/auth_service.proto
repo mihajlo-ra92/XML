@@ -74,12 +74,32 @@ service AuthService{
             body: "*"
         };
     }
-        rpc AuthCreateRating(AuthCreateRatingRequest) returns(AuthCreateRatingResponse){
+    rpc AuthCreateRating(AuthCreateRatingRequest) returns(AuthCreateRatingResponse){
         option (google.api.http) = {
             post: "/rating"
             body: "*"
         };
     }
+    rpc AuthDeleteRating(AuthDeleteRatingRequest) returns(AuthDeleteRatingResponse){
+        option (google.api.http) = {
+            post: "/delete-rating"
+            body: "*"
+        };
+    }
+    rpc AuthGetUserRatingByAccommodationId(AuthGetUserRatingByAccommodationIdRequest) returns(AuthGetUserRatingByAccommodationIdResponse){
+        option (google.api.http) = {
+            post: "/get-rating-by-accomodation-id"
+            body: "*"
+        };
+    }
+
+    rpc AuthGetUserRatingByHostId(AuthGetUserRatingByHostIdRequest) returns(AuthGetUserRatingByHostIdResponse){
+        option (google.api.http) = {
+            post: "/get-rating-by-host-id"
+            body: "*"
+        };
+    }
+
 }
 
 message AuthGetBookingsByAccommodationIdRequest{
@@ -97,6 +117,24 @@ message AuthGetAccommodationsByHostIdRequest{
 
 message AuthGetAccommodationsByHostIdResponse{
     repeated Accommodation accommodations = 1;
+}
+
+message AuthGetUserRatingByAccommodationIdRequest{
+    string jwt = 1;
+    string accommodationId = 2;
+}
+
+message AuthGetUserRatingByAccommodationIdResponse{
+    Rating rating = 1;
+}
+
+message AuthGetUserRatingByHostIdRequest{
+    string jwt = 1;
+    string hostId = 2;
+}
+
+message AuthGetUserRatingByHostIdResponse{
+    Rating rating = 1;
 }
 
 message AuthDefineCustomPriceRequest{
@@ -162,6 +200,7 @@ message AuthCreateRatingRequest{
 message AuthCreateRatingResponse{
     Rating rating = 1;
 }
+
 message Rating {
     string id = 1;
     string hostId = 2;
@@ -184,6 +223,15 @@ message AuthBookingDenyRequest{
 }
 
 message AuthBookingDenyResponse{
+    string message = 1;
+}
+
+message AuthDeleteRatingRequest{
+    string jwt = 1;
+    string ratingId = 2;
+}
+
+message AuthDeleteRatingResponse{
     string message = 1;
 }
 
