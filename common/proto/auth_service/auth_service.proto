@@ -93,12 +93,13 @@ service AuthService{
         };
     }
 
-        rpc AuthGetUserRatingByHostId(AuthGetUserRatingByHostIdRequest) returns(AuthGetUserRatingByHostIdResponse){
+    rpc AuthGetUserRatingByHostId(AuthGetUserRatingByHostIdRequest) returns(AuthGetUserRatingByHostIdResponse){
         option (google.api.http) = {
             post: "/get-rating-by-host-id"
             body: "*"
         };
     }
+
 }
 
 message AuthGetBookingsByAccommodationIdRequest{
@@ -199,6 +200,7 @@ message AuthCreateRatingRequest{
 message AuthCreateRatingResponse{
     Rating rating = 1;
 }
+
 message Rating {
     string id = 1;
     string hostId = 2;

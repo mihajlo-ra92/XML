@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Accommodation } from '../model/accommodation';
 import { AccommodationService} from '../service/accommodation.service';
-import { BookingService } from '../service/booking.service'
 import { Reservation } from '../model/reservation';
-import { UserService } from '../service/user.service';
 import { RatingService } from '../service/rating.service';
 import { Rating } from '../model/rating';
 import { AccommodationWithRate } from '../model/accommodationWithRate';
 import { SearchRequest } from '../model/getAllByUserRequest';
+import { AccommodationForRatingUpdateDTO } from '../model/accommodationForRatingUpdateDTO';
 
 @Component({
   selector: 'app-landing-page',
@@ -26,6 +25,7 @@ export class LandingPageComponent implements OnInit {
   accommodationWithRate : AccommodationWithRate = new AccommodationWithRate
   allAccommodationsWithRate: Array<AccommodationWithRate> = new Array();
   request: SearchRequest=new SearchRequest()
+  accommodation : AccommodationForRatingUpdateDTO = new AccommodationForRatingUpdateDTO
 
   constructor(private accommodationService: AccommodationService, private ratingService: RatingService) {}
 
@@ -35,27 +35,38 @@ export class LandingPageComponent implements OnInit {
     this.AllAccommodations();
   }
 
-  rateAccommodation(id: String) {
+  updateRateAccommodation(accommodationId: String){
+    this.accommodationService.getById(accommodationId).subscribe((res) => {
+      let resString = JSON.stringify(res.accomodation);
+      let accommodationString = resString
+      this.accommodation = JSON.parse(accommodationString)
+      this.accommodation.isRated = false
+
+      console.log(this.accommodation)
+    })
+  }
+
+  rateAccommodation(accommodationId: String) {
 
     let rating : Rating = new Rating
     rating.jwt = localStorage.getItem('token')!
-    rating.accommodationId = id
+    rating.accommodationId = accommodationId
     rating.rate = this.rateSelectedAccommodation
 
     if(this.rateSelectedAccommodation != 0){
         this.ratingService.createRating(rating).subscribe((res) => {
           let resJSON = JSON.parse(res);
           console.log(resJSON)
+          alert("Successfully rated this accommodation")
         },
         (error) => {
           // alert(error.error.message)
           let errorJSON = JSON.parse(error.error);
           alert(errorJSON.message)
         });
-        alert("Successfully rated this accommodation")
     }
     else{
-      alert("You didn't rate this accommodation")
+      alert("You need to pick a rate first")
 
     }
   }
@@ -77,7 +88,6 @@ export class LandingPageComponent implements OnInit {
         this.ratingService.deleteRating(guestJwt, rating.id).subscribe((res) => {
           let resJSON = JSON.parse(res);
           console.log(resJSON)
-
           alert("Successfully deleted this rate")
           
         },
@@ -88,9 +98,7 @@ export class LandingPageComponent implements OnInit {
         });
     },
     (error) => {
-      // alert(error.error.message)
-      let errorJSON = JSON.parse(error.error);
-      alert(errorJSON.message)
+      alert("You didn't rate this accommodation")
     });
   }
 
@@ -115,9 +123,7 @@ export class LandingPageComponent implements OnInit {
 
         },
         (error) => {
-          // alert(error.error.message)
-          let errorJSON = JSON.parse(error.error);
-          alert(errorJSON.message)
+          alert("You didn't rate this host")
         });
     },
     (error) => {
@@ -138,44 +144,20 @@ export class LandingPageComponent implements OnInit {
         this.ratingService.createRating(rating).subscribe((res) => {
           let resJSON = JSON.parse(res);
           console.log(resJSON)
+          alert("Successfully rated this host")
         },
         (error) => {
           // alert(error.error.message)
           let errorJSON = JSON.parse(error.error);
           alert(errorJSON.message)
         });
-        alert("Successfully rated this host")
 
     }
     else{
-      alert("You didn't rate this host")
-
+      alert("You need to pick a rate first")
     }
   }
-  // allUsers() {
-  //   var loggedUserType = localStorage.getItem('loggedUserType');
-  //   console.log(loggedUserType);
 
-  //   if (loggedUserType?.toString() === 'admin') {
-  //     console.log(this.isAdmin);
-
-  //     this.isAdmin = true;
-  //   }
-  //   this.flightService.getAllFlights().subscribe((res) => {
-  //     let resJSON = JSON.parse(res);
-  //     this.allFlights = resJSON;
-  //     // this.allFlights.map((x) => {
-  //     //   const myDate = new Date(x.date);
-  //     //   // myDate.setHours(myDate.getHours() + 2)
-  //     //   console.log(myDate);
-  //     //   x.date = myDate.toLocaleString('en-US', {
-  //     //     timeZone: 'America/New_York',
-  //     //   });
-  //     //   console.log(x.date);
-  //     // });
-  //     console.log(this.allFlights);
-  //   });
-  // }
 AllAccommodations() {
   this.accommodationService.getAllAccommodations().subscribe((res) => {
     let resJSON = JSON.parse(res);

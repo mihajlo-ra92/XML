@@ -104,6 +104,7 @@
                 </select>
                 <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="rateAccommodation(accommodation.id)">Rate</button>
                 <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="deleteRateAccommodation(accommodation.id)">Delete rate</button>
+                <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="rateAccommodation(accommodation.id)">Update rate</button>
                 <label>Rate host</label>
                 <select  [(ngModel)]="rateSelectedHost" class="form-control form-control-lg" name="rateSelectedHost">
                     <option value="1">
@@ -124,6 +125,7 @@
                 </select>
                 <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="rateHost(accommodation.hostId)">Rate host</button>
                 <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block" (click)="deleteRateHost(accommodation.hostId)">Delete rate</button>
+                <button *ngIf="loggedUserRole === '0'" class="btn btn-dark btn-lg btn-block">Delete rate</button>
             </div>
         </div>
         

@@ -66,35 +66,53 @@ func (service *RatingService) Create(rating *domain.Rating) error {
 	accommodationRequest := accommodation.GetByHostIdRequest{HostId: rating.HostId}
 	accommodationResponse, err := accommodationClient.GetByHostId(context.TODO(), &accommodationRequest)
 
+	ratingForUpdateHost, err := service.store.GetUserRatingByHostId(rating.HostId, rating.GuestId)
+	ratingForUpdateAccommodation, err := service.store.GetUserRatingByAccommodationId(rating.AccommodationId, rating.GuestId)
+
 	if rating.AccommodationId == "" {
-		if accommodationResponse.Acccommodations != nil {
+		if ratingForUpdateHost == nil {
+			fmt.Print(rating)
 
-			for _, accommodation := range accommodationResponse.Acccommodations {
-				bookingRequestForAccommodation := booking.GetBookingByAccommodationAndGuestIdRequest{AccommodationId: accommodation.Id, GuestId: rating.GuestId}
-				bookingResponseForAccommodation, err := bookingClient.GetBookingByAccommodationAndGuestId(context.TODO(), &bookingRequestForAccommodation)
-				fmt.Print("bookingResponseForAccommodation: ")
-				fmt.Println(bookingResponseForAccommodation)
+			if accommodationResponse.Acccommodations != nil {
 
-				if err != nil {
-					return err
+				for _, accommodation := range accommodationResponse.Acccommodations {
+					bookingRequestForAccommodation := booking.GetBookingByAccommodationAndGuestIdRequest{AccommodationId: accommodation.Id, GuestId: rating.GuestId}
+					bookingResponseForAccommodation, err := bookingClient.GetBookingByAccommodationAndGuestId(context.TODO(), &bookingRequestForAccommodation)
+					fmt.Print("bookingResponseForAccommodation: ")
+					fmt.Println(bookingResponseForAccommodation)
+
+					if err != nil {
+						return err
+					}
+
+					if bookingResponseForAccommodation.Bookings == nil {
+						return fmt.Errorf("The guest hasn't been in any of this host's accommodations")
+					}
+					fmt.Print("bookingResponseForAccommodation.Bookings: ")
+					fmt.Println(bookingResponseForAccommodation.Bookings)
 				}
-
-				if bookingResponseForAccommodation.Bookings == nil {
-					return fmt.Errorf("The guest hasn't been in any of this host's accommodations")
-				}
-				fmt.Print("bookingResponseForAccommodation.Bookings: ")
-				fmt.Println(bookingResponseForAccommodation.Bookings)
+			} else {
+				fmt.Println("This host doesn't have any accommodations")
 			}
 		} else {
-			fmt.Println("This host doesn't have any accommodations")
+			service.store.Delete(ratingForUpdateHost)
+			return fmt.Errorf("You have already rated this host, we will update your rate with this rating")
+
 		}
 	}
 
 	if rating.HostId == "" {
-		if bookingResponse.Bookings == nil {
-			return fmt.Errorf("The guest hasn't been in this accommodation")
+		if ratingForUpdateAccommodation == nil {
+			fmt.Print(rating)
+
+			if bookingResponse.Bookings == nil {
+				return fmt.Errorf("The guest hasn't been in this accommodation")
+			}
+		} else {
+			fmt.Println("You have already rated this accommodation, we will update your rate with this rating")
+			service.store.Delete(ratingForUpdateAccommodation)
+			return fmt.Errorf("You have already rated this accommodation, we will update your rate with this rating")
 		}
-		fmt.Print("ovde je uslo")
 
 	}
 
