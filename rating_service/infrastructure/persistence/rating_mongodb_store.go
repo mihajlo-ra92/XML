@@ -32,6 +32,32 @@ func (store *RatingMongoDBStore) Get(id primitive.ObjectID) (*domain.Rating, err
 	return store.filterOne(filter)
 }
 
+func (store *RatingMongoDBStore) GetUserRatingByAccommodationId(accommodationId string, guestId string) (*domain.Rating, error) {
+	fmt.Println(guestId)
+	fmt.Println(accommodationId)
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"guest_id":         guestId,
+	}
+	fmt.Println("FILTER:")
+	fmt.Println(filter)
+
+	return store.filterOne(filter)
+}
+
+func (store *RatingMongoDBStore) GetUserRatingByHostId(hostId string, guestId string) (*domain.Rating, error) {
+	fmt.Println(guestId)
+	fmt.Println(hostId)
+	filter := bson.M{
+		"host_id":  hostId,
+		"guest_id": guestId,
+	}
+	fmt.Println("FILTER:")
+	fmt.Println(filter)
+
+	return store.filterOne(filter)
+}
+
 func (store *RatingMongoDBStore) GetAll() ([]*domain.Rating, error) {
 	filter := bson.D{{}}
 	return store.filter(filter)

@@ -42,6 +42,14 @@ func (service *RatingService) Delete(ratingId string) error {
 	return service.store.Delete(&rating)
 }
 
+func (service *RatingService) GetUserRatingByAccommodationId(accommodationId string, guestId string) (*domain.Rating, error) {
+	return service.store.GetUserRatingByAccommodationId(accommodationId, guestId)
+}
+
+func (service *RatingService) GetUserRatingByHostId(hostId string, guestId string) (*domain.Rating, error) {
+	return service.store.GetUserRatingByHostId(hostId, guestId)
+}
+
 func (service *RatingService) Create(rating *domain.Rating) error {
 
 	fmt.Print("Rating for creating: ")

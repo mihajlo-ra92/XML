@@ -10,4 +10,6 @@ type RatingStore interface {
 	Insert(user *Rating) error
 	DeleteAll()
 	Delete(rating *Rating) error
+	GetUserRatingByAccommodationId(accommodationId string, guestId string) (*Rating, error)
+	GetUserRatingByHostId(hostId string, guestId string) (*Rating, error)
 }

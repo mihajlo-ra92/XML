@@ -21,7 +21,30 @@ service RatingService{
     }
     rpc DeleteRating(DeleteRatingRequest) returns(DeleteRatingResponse) {
     }
+    rpc GetUserRatingByAccommodationId(GetUserRatingByAccommodationIdRequest) returns(GetUserRatingByAccommodationIdResponse) {
+    }
+    rpc GetUserRatingByHostId(GetUserRatingByHostIdRequest) returns(GetUserRatingByHostIdResponse) {
+    }
 }
+
+message GetUserRatingByAccommodationIdRequest{
+    string accommodationId = 1;
+    string guestId = 2;
+}
+
+message GetUserRatingByAccommodationIdResponse{
+    Rating rating = 1;
+}
+
+message GetUserRatingByHostIdRequest{
+    string hostId = 1;
+    string guestId = 2;
+}
+
+message GetUserRatingByHostIdResponse{
+    Rating rating = 1;
+}
+
 message CreateRatingRequest {
     NewRating rating = 1;
 }

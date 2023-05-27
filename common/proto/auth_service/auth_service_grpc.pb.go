@@ -35,6 +35,8 @@ type AuthServiceClient interface {
 	AuthGetBookingsByAccommodationId(ctx context.Context, in *AuthGetBookingsByAccommodationIdRequest, opts ...grpc.CallOption) (*AuthGetBookingsByAccommodationIdResponse, error)
 	AuthCreateRating(ctx context.Context, in *AuthCreateRatingRequest, opts ...grpc.CallOption) (*AuthCreateRatingResponse, error)
 	AuthDeleteRating(ctx context.Context, in *AuthDeleteRatingRequest, opts ...grpc.CallOption) (*AuthDeleteRatingResponse, error)
+	AuthGetUserRatingByAccommodationId(ctx context.Context, in *AuthGetUserRatingByAccommodationIdRequest, opts ...grpc.CallOption) (*AuthGetUserRatingByAccommodationIdResponse, error)
+	AuthGetUserRatingByHostId(ctx context.Context, in *AuthGetUserRatingByHostIdRequest, opts ...grpc.CallOption) (*AuthGetUserRatingByHostIdResponse, error)
 }
 
 type authServiceClient struct {
@@ -162,6 +164,24 @@ func (c *authServiceClient) AuthDeleteRating(ctx context.Context, in *AuthDelete
 	return out, nil
 }
 
+func (c *authServiceClient) AuthGetUserRatingByAccommodationId(ctx context.Context, in *AuthGetUserRatingByAccommodationIdRequest, opts ...grpc.CallOption) (*AuthGetUserRatingByAccommodationIdResponse, error) {
+	out := new(AuthGetUserRatingByAccommodationIdResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGetUserRatingByAccommodationId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) AuthGetUserRatingByHostId(ctx context.Context, in *AuthGetUserRatingByHostIdRequest, opts ...grpc.CallOption) (*AuthGetUserRatingByHostIdResponse, error) {
+	out := new(AuthGetUserRatingByHostIdResponse)
+	err := c.cc.Invoke(ctx, "/user.AuthService/AuthGetUserRatingByHostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -179,6 +199,8 @@ type AuthServiceServer interface {
 	AuthGetBookingsByAccommodationId(context.Context, *AuthGetBookingsByAccommodationIdRequest) (*AuthGetBookingsByAccommodationIdResponse, error)
 	AuthCreateRating(context.Context, *AuthCreateRatingRequest) (*AuthCreateRatingResponse, error)
 	AuthDeleteRating(context.Context, *AuthDeleteRatingRequest) (*AuthDeleteRatingResponse, error)
+	AuthGetUserRatingByAccommodationId(context.Context, *AuthGetUserRatingByAccommodationIdRequest) (*AuthGetUserRatingByAccommodationIdResponse, error)
+	AuthGetUserRatingByHostId(context.Context, *AuthGetUserRatingByHostIdRequest) (*AuthGetUserRatingByHostIdResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -224,6 +246,12 @@ func (UnimplementedAuthServiceServer) AuthCreateRating(context.Context, *AuthCre
 }
 func (UnimplementedAuthServiceServer) AuthDeleteRating(context.Context, *AuthDeleteRatingRequest) (*AuthDeleteRatingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthDeleteRating not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthGetUserRatingByAccommodationId(context.Context, *AuthGetUserRatingByAccommodationIdRequest) (*AuthGetUserRatingByAccommodationIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthGetUserRatingByAccommodationId not implemented")
+}
+func (UnimplementedAuthServiceServer) AuthGetUserRatingByHostId(context.Context, *AuthGetUserRatingByHostIdRequest) (*AuthGetUserRatingByHostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthGetUserRatingByHostId not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -472,6 +500,42 @@ func _AuthService_AuthDeleteRating_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AuthGetUserRatingByAccommodationId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthGetUserRatingByAccommodationIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthGetUserRatingByAccommodationId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthGetUserRatingByAccommodationId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthGetUserRatingByAccommodationId(ctx, req.(*AuthGetUserRatingByAccommodationIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_AuthGetUserRatingByHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthGetUserRatingByHostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AuthGetUserRatingByHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.AuthService/AuthGetUserRatingByHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AuthGetUserRatingByHostId(ctx, req.(*AuthGetUserRatingByHostIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -530,6 +594,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthDeleteRating",
 			Handler:    _AuthService_AuthDeleteRating_Handler,
+		},
+		{
+			MethodName: "AuthGetUserRatingByAccommodationId",
+			Handler:    _AuthService_AuthGetUserRatingByAccommodationId_Handler,
+		},
+		{
+			MethodName: "AuthGetUserRatingByHostId",
+			Handler:    _AuthService_AuthGetUserRatingByHostId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

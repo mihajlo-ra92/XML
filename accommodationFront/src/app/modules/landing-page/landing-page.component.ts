@@ -60,6 +60,73 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  deleteRateAccommodation(accommodationId: String){
+
+    let rating : Rating = new Rating
+    let guestJwt = localStorage.getItem('token')! 
+    console.log(guestJwt)
+    console.log(accommodationId)
+
+
+    this.ratingService.getRatingByAccommodationAndGuestId(guestJwt, accommodationId).subscribe((res) => {
+      let resJSON = JSON.parse(res);
+      rating = resJSON.rating
+      console.log(resJSON.rating)
+      console.log(resJSON.rating.id)
+
+        this.ratingService.deleteRating(guestJwt, rating.id).subscribe((res) => {
+          let resJSON = JSON.parse(res);
+          console.log(resJSON)
+
+          alert("Successfully deleted this rate")
+          
+        },
+        (error) => {
+          // alert(error.error.message)
+          let errorJSON = JSON.parse(error.error);
+          alert(errorJSON.message)
+        });
+    },
+    (error) => {
+      // alert(error.error.message)
+      let errorJSON = JSON.parse(error.error);
+      alert(errorJSON.message)
+    });
+  }
+
+  deleteRateHost(hostId: String){
+
+    let rating : Rating = new Rating
+    let guestJwt = localStorage.getItem('token')! 
+    console.log(guestJwt)
+    console.log(hostId)
+
+
+    this.ratingService.getRatingByHostAndGuestId(guestJwt, hostId).subscribe((res) => {
+      let resJSON = JSON.parse(res);
+      rating = resJSON.rating
+      console.log(resJSON.rating)
+      console.log(resJSON.rating.id)
+
+        this.ratingService.deleteRating(guestJwt, rating.id).subscribe((res) => {
+          let resJSON = JSON.parse(res);
+          console.log(resJSON)
+          alert("Successfully deleted this rate")
+
+        },
+        (error) => {
+          // alert(error.error.message)
+          let errorJSON = JSON.parse(error.error);
+          alert(errorJSON.message)
+        });
+    },
+    (error) => {
+      // alert(error.error.message)
+      let errorJSON = JSON.parse(error.error);
+      alert(errorJSON.message)
+    });
+  }
+
   rateHost(id: String) {
 
     let rating : Rating = new Rating

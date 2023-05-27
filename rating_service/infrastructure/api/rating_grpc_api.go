@@ -87,3 +87,33 @@ func (handler *RatingHandler) DeleteRating(ctx context.Context, request *pb.Dele
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *RatingHandler) GetUserRatingByAccommodationId(ctx context.Context, request *pb.GetUserRatingByAccommodationIdRequest) (*pb.GetUserRatingByAccommodationIdResponse, error) {
+	fmt.Println("In GetUserRatingByAccommodationId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	rating, err := handler.service.GetUserRatingByAccommodationId(request.AccommodationId, request.GuestId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.GetUserRatingByAccommodationIdResponse{Rating: &pb.Rating{Id: rating.Id.Hex(), HostId: rating.HostId, AccommodationId: rating.AccommodationId, GuestId: rating.GuestId, Rate: rating.Rate}}
+
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}
+
+func (handler *RatingHandler) GetUserRatingByHostId(ctx context.Context, request *pb.GetUserRatingByHostIdRequest) (*pb.GetUserRatingByHostIdResponse, error) {
+	fmt.Println("In GetUserRatingByHostId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	rating, err := handler.service.GetUserRatingByHostId(request.HostId, request.GuestId)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.GetUserRatingByHostIdResponse{Rating: &pb.Rating{Id: rating.Id.Hex(), HostId: rating.HostId, AccommodationId: rating.AccommodationId, GuestId: rating.GuestId, Rate: rating.Rate}}
+
+	fmt.Print("response: ")
+	fmt.Println(response)
+	return &response, nil
+}

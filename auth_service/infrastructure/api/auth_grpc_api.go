@@ -258,6 +258,44 @@ func (handler *AuthHandler) AuthGetAccommodationByHostId(ctx context.Context, re
 	return response, nil
 }
 
+func (handler *AuthHandler) AuthGetUserRatingByAccommodationId(ctx context.Context, request *pb.AuthGetUserRatingByAccommodationIdRequest) (*pb.AuthGetUserRatingByAccommodationIdResponse, error) {
+	fmt.Println("In AuthGetUserRatingByAccommodationId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	response, err := handler.service.GetUserRatingByAccommodationId(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (handler *AuthHandler) AuthGetUserRatingByHostId(ctx context.Context, request *pb.AuthGetUserRatingByHostIdRequest) (*pb.AuthGetUserRatingByHostIdResponse, error) {
+	fmt.Println("In AuthGetUserRatingByHostId")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	response, err := handler.service.GetUserRatingByHostId(jwtData, request)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (handler *AuthHandler) AuthGetBookingsByAccommodationId(ctx context.Context, request *pb.AuthGetBookingsByAccommodationIdRequest) (*pb.AuthGetBookingsByAccommodationIdResponse, error) {
 	fmt.Println("In AuthGetBookingsByAccommodationId")
 	fmt.Print("request: ")

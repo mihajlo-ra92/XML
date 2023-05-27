@@ -34,5 +34,40 @@ export class RatingService {
       });
   }
 
+  getRatingByAccommodationAndGuestId(jwt: String, accommodationId: String): Observable<any>{
+    var combinedObject = {
+      jwt: jwt,
+      accommodationId: accommodationId
+    };
+    console.log(combinedObject)
+    return this.http.post(this.apiServerUrl + '/get-rating-by-accomodation-id', combinedObject, {
+        headers: this.headers,
+        responseType: 'text',
+      });
+  }
+
+  getRatingByHostAndGuestId(jwt: String, hostId: String): Observable<any>{
+    var combinedObject = {
+      jwt: jwt,
+      hostId: hostId
+    };
+    console.log(combinedObject)
+    return this.http.post(this.apiServerUrl + '/get-rating-by-host-id', combinedObject, {
+        headers: this.headers,
+        responseType: 'text',
+      });
+  }
+
+  deleteRating(jwt: String, ratingId: String): Observable<any>{
+    var combinedObject = {
+      jwt: jwt,
+      ratingId: ratingId
+    };
+    console.log(combinedObject)
+    return this.http.post(this.apiServerUrl + '/delete-rating', combinedObject, {
+      headers: this.headers,
+      responseType: 'text',
+    });
+  }
 
 }
