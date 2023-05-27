@@ -35,16 +35,30 @@ export class LandingPageComponent implements OnInit {
     this.AllAccommodations();
   }
 
-  updateRateAccommodation(accommodationId: String){
-    this.accommodationService.getById(accommodationId).subscribe((res) => {
-      let resString = JSON.stringify(res.accomodation);
-      let accommodationString = resString
-      this.accommodation = JSON.parse(accommodationString)
-      this.accommodation.isRated = false
+  // updateRateAccommodation(accommodationId: String){
 
-      console.log(this.accommodation)
-    })
-  }
+  //   let rating : Rating = new Rating
+  //   rating.jwt = localStorage.getItem('token')!
+  //   rating.accommodationId = accommodationId
+  //   rating.rate = this.rateSelectedAccommodation
+
+  //   this.ratingService.getRatingByAccommodationAndGuestId(rating.jwt, accommodationId).subscribe((res) => {
+  //     this.ratingService.createRating(rating).subscribe((res) => {
+  //       let resJSON = JSON.parse(res);
+  //       console.log(resJSON)
+  //       alert("Successfully rated this accommodation")
+  //     },
+  //     (error) => {
+  //       // alert(error.error.message)
+  //       console.log(rating)
+  //       let errorJSON = JSON.parse(error.error);
+  //       alert(errorJSON.message)
+  //     });
+
+  //   }, (error) => {
+  //     alert("You haven't rated this accommodation yet")
+  //   })
+  // }
 
   rateAccommodation(accommodationId: String) {
 

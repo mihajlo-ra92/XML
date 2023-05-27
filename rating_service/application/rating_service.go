@@ -96,6 +96,8 @@ func (service *RatingService) Create(rating *domain.Rating) error {
 			}
 		} else {
 			service.store.Delete(ratingForUpdateHost)
+			err = service.store.Insert(rating)
+
 			return fmt.Errorf("You have already rated this host, we will update your rate with this rating")
 
 		}
@@ -109,8 +111,11 @@ func (service *RatingService) Create(rating *domain.Rating) error {
 				return fmt.Errorf("The guest hasn't been in this accommodation")
 			}
 		} else {
-			fmt.Println("You have already rated this accommodation, we will update your rate with this rating")
+			fmt.Println("this is rating for update accommodation:")
+			fmt.Println(rating)
 			service.store.Delete(ratingForUpdateAccommodation)
+			err = service.store.Insert(rating)
+
 			return fmt.Errorf("You have already rated this accommodation, we will update your rate with this rating")
 		}
 
