@@ -32,6 +32,24 @@ func (store *RatingMongoDBStore) Get(id primitive.ObjectID) (*domain.Rating, err
 	return store.filterOne(filter)
 }
 
+func (store *RatingMongoDBStore) GetAerageRatingByHostId(hostId string) (float32, error) {
+
+	filter := bson.M{"host_id": hostId}
+
+	ratings, err := store.filter(filter)
+	if err != nil {
+		return 0, err
+	}
+
+	var totalScore float32
+	for _, rating := range ratings {
+		totalScore += float32(rating.Rate)
+	}
+	averageScore := totalScore / float32(len(ratings))
+
+	return averageScore, nil
+}
+
 func (store *RatingMongoDBStore) GetUserRatingByAccommodationId(accommodationId string, guestId string) (*domain.Rating, error) {
 	fmt.Println(guestId)
 	fmt.Println(accommodationId)
