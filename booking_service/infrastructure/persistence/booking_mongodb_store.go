@@ -193,3 +193,46 @@ func (store *BookingMongoDBStore) Update(booking *domain.Booking) (*domain.Booki
 	fmt.Print(updateResult)
 	return booking, nil
 }
+
+func (store *BookingMongoDBStore) GetCancellationBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"booking_type":     "Canceled",
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
+func (store *BookingMongoDBStore) GetNumberPastBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"booking_type":     "Reserved",
+		"start_date":       bson.M{"$lt": time.Now()},
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
+func (store *BookingMongoDBStore) GetReservedBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
+	filter := bson.M{
+		"accommodation_id": accommodationId,
+		"booking_type":     "Reserved",
+	}
+	cursor, err := store.bookings.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
