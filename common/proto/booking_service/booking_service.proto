@@ -46,6 +46,34 @@ service BookingService{
     }
     rpc GetBookingByAccommodationAndGuestId(GetBookingByAccommodationAndGuestIdRequest) returns(GetBookingByAccommodationAndGuestIdResponse){
     }
+    rpc GetCancellationRateForHost(GetCancellationRateForHostRequest) returns(GetCancellationRateForHostResponse){
+        option (google.api.http) = {
+                get: "/cancelationRate/{hostId}"
+        };
+    }
+    rpc GetNumberPastBookingsForHost(GetNumberPastBookingsForHostRequest) returns(GetNumberPastBookingsForHostResponse){
+        option (google.api.http) = {
+                get: "/numberPasstBookings/{hostId}"
+        };
+    }
+}
+
+
+message GetNumberPastBookingsForHostResponse{
+    uint32 number = 1;
+}
+
+message GetNumberPastBookingsForHostRequest{
+    string hostId = 1;
+}
+
+
+message GetCancellationRateForHostResponse{
+    uint32 percentage = 1;
+}
+
+message GetCancellationRateForHostRequest{
+    string hostId = 1;
 }
 
 message GetByAccommodationIdRequest{
