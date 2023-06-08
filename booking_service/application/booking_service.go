@@ -9,12 +9,14 @@ import (
 )
 
 type BookingService struct {
-	store domain.BookingStore
+	store                      domain.BookingStore
+	accommodationClientAddress string
 }
 
-func NewBookingService(store domain.BookingStore) *BookingService {
+func NewBookingService(store domain.BookingStore, accommodationClientAddress string) *BookingService {
 	return &BookingService{
-		store: store,
+		store:                      store,
+		accommodationClientAddress: accommodationClientAddress,
 	}
 }
 
@@ -130,3 +132,19 @@ func (service *BookingService) GetAllByUser(guestId string, bookingType domain.B
 func (service *BookingService) GetByAccommodationId(accommodationId string) ([]*domain.Booking, error) {
 	return service.store.GetByAccommodationId(accommodationId)
 }
+
+func (service *BookingService) GetCancellationRateForHost(hostId string) (uint32, error) {
+
+	bookings, err := service.store.GetCancellationBookingsByAccommodation(hostId)
+	if err != nil {
+		return 0, err
+	}
+
+	if bookings != nil {
+		return 0, err
+	}
+
+	return 0, nil
+}
+
+//func (service *RatingService) GetAerageRatingByHostId(hostId string) (float32, error) {
