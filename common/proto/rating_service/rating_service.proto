@@ -25,6 +25,19 @@ service RatingService{
     }
     rpc GetUserRatingByHostId(GetUserRatingByHostIdRequest) returns(GetUserRatingByHostIdResponse) {
     }
+    rpc GetAverageRatingByHostId(GetAverageRatingByHostIdRequest) returns(GetAverageRatingByHostIdResponse) {
+        option (google.api.http) = {
+                get: "/averageRating/{id}"
+        };
+    }
+}
+
+message GetAverageRatingByHostIdRequest{
+    string id = 1;
+}
+
+message GetAverageRatingByHostIdResponse{
+    float averageRating = 1;
 }
 
 message GetUserRatingByAccommodationIdRequest{
