@@ -1,10 +1,14 @@
 package application
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/mihajlo-ra92/XML/booking_service/domain"
+	"github.com/mihajlo-ra92/XML/booking_service/infrastructure/persistence"
+	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -135,16 +139,44 @@ func (service *BookingService) GetByAccommodationId(accommodationId string) ([]*
 
 func (service *BookingService) GetCancellationRateForHost(hostId string) (uint32, error) {
 
-	bookings, err := service.store.GetCancellationBookingsByAccommodation(hostId)
+	accommodationClient := persistence.NewAccommodationClient(service.accommodationClientAddress)
+	accommodations, err := accommodationClient.GetByHostId(context.TODO(), &accommodation.GetByHostIdRequest{HostId: hostId})
+	fmt.Println("Dosao je do linije 144")
+
 	if err != nil {
 		return 0, err
 	}
+	numberOfCancelation := 0
+	sumBookingsByHost := 0
+	fmt.Println("Dosao je do linije 151")
 
-	if bookings != nil {
-		return 0, err
+	for _, accommodation := range accommodations.Acccommodations {
+		fmt.Println(accommodation)
+		bookings, err := service.store.GetCancellationBookingsByAccommodation("accommodation1Id")
+		fmt.Println(bookings)
+
+		if err != nil {
+			return 0, err
+		}
+		sumBookings, err := service.store.GetByAccommodationId("accommodation1Id")
+
+		sumBookingsByHost = sumBookingsByHost + len(sumBookings)
+		numberOfCancelation = numberOfCancelation + len(bookings)
+
+	}
+	if sumBookingsByHost == 0 {
+		sumBookingsByHost = 1
 	}
 
-	return 0, nil
+	fmt.Println(sumBookingsByHost, "Ovo je suma ")
+	fmt.Println(numberOfCancelation, "Ovo je broj otkazanih")
+
+	percentage := (float64(numberOfCancelation) / float64(sumBookingsByHost)) * 100
+	fmt.Println((numberOfCancelation/sumBookingsByHost)*100, " Ovo je pravi procenat")
+
+	fmt.Println(uint32(percentage))
+
+	return uint32(percentage), nil
 }
 
 //func (service *RatingService) GetAerageRatingByHostId(hostId string) (float32, error) {

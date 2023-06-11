@@ -282,3 +282,17 @@ func (handler *BookingHandler) GetByAccommodationId(ctx context.Context, request
 	}
 	return response, nil
 }
+
+func (handler *BookingHandler) GetCancellationRateForHost(ctx context.Context, request *pb.GetCancellationRateForHostRequest) (*pb.GetCancellationRateForHostResponse, error) {
+	fmt.Println("In GetCancellationRateForHost grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	percentage, err := handler.service.GetCancellationRateForHost(request.HostId)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetCancellationRateForHostResponse{Percentage: percentage}
+
+	return response, nil
+}

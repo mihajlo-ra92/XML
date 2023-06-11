@@ -197,7 +197,7 @@ func (store *BookingMongoDBStore) Update(booking *domain.Booking) (*domain.Booki
 func (store *BookingMongoDBStore) GetCancellationBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
 	filter := bson.M{
 		"accommodation_id": accommodationId,
-		"booking_type":     "Canceled",
+		"booking_type":     3,
 	}
 	cursor, err := store.bookings.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())
@@ -211,7 +211,7 @@ func (store *BookingMongoDBStore) GetCancellationBookingsByAccommodation(accommo
 func (store *BookingMongoDBStore) GetNumberPastBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
 	filter := bson.M{
 		"accommodation_id": accommodationId,
-		"booking_type":     "Reserved",
+		"booking_type":     1,
 		"start_date":       bson.M{"$lt": time.Now()},
 	}
 	cursor, err := store.bookings.Find(context.TODO(), filter)
@@ -226,7 +226,7 @@ func (store *BookingMongoDBStore) GetNumberPastBookingsByAccommodation(accommoda
 func (store *BookingMongoDBStore) GetReservedBookingsByAccommodation(accommodationId string) ([]*domain.Booking, error) {
 	filter := bson.M{
 		"accommodation_id": accommodationId,
-		"booking_type":     "Reserved",
+		"booking_type":     1,
 	}
 	cursor, err := store.bookings.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())
