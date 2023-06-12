@@ -21,4 +21,5 @@ type BookingStore interface {
 	GetByAccomodationAndGuestId(accommodationId string, guestId string) ([]*Booking, error)
 	GetCancellationBookingsByAccommodation(accommodationId string) ([]*Booking, error)
 	GetNumberPastBookingsByAccommodation(accommodationId string) ([]*Booking, error)
+	GetReservedBookingsByAccommodation(accommodationId string) ([]*Booking, error)
 }

@@ -296,3 +296,17 @@ func (handler *BookingHandler) GetCancellationRateForHost(ctx context.Context, r
 
 	return response, nil
 }
+
+func (handler *BookingHandler) GetNumberPastBookingsForHost(ctx context.Context, request *pb.GetNumberPastBookingsForHostRequest) (*pb.GetNumberPastBookingsForHostResponse, error) {
+	fmt.Println("In GetNumberPastBookingsForHost grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+
+	percentage, err := handler.service.GetNumberPastBookingsForHost(request.HostId)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetNumberPastBookingsForHostResponse{Number: percentage}
+
+	return response, nil
+}

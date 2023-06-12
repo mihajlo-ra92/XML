@@ -179,4 +179,58 @@ func (service *BookingService) GetCancellationRateForHost(hostId string) (uint32
 	return uint32(percentage), nil
 }
 
-//func (service *RatingService) GetAerageRatingByHostId(hostId string) (float32, error) {
+func (service *BookingService) GetNumberPastBookingsForHost(hostId string) (uint32, error) {
+
+	accommodationClient := persistence.NewAccommodationClient(service.accommodationClientAddress)
+	accommodations, err := accommodationClient.GetByHostId(context.TODO(), &accommodation.GetByHostIdRequest{HostId: hostId})
+	fmt.Println("Dosao je do linije 187")
+
+	if err != nil {
+		return 0, err
+	}
+	numberOfPastBookings := 0
+	sumBookingsDays := int(0)
+	fmt.Println("Dosao je do linije 194")
+
+	for _, accommodation := range accommodations.Acccommodations {
+		fmt.Println(accommodation)
+		bookings, err := service.store.GetNumberPastBookingsByAccommodation("accommodation1Id")
+		fmt.Println(bookings)
+
+		if err != nil {
+			return 0, err
+		}
+
+		bookings1, err1 := service.store.GetReservedBookingsByAccommodation("accommodation1Id")
+		fmt.Println(bookings)
+
+		if err1 != nil {
+			return 0, err1
+		}
+
+		for _, booking := range bookings1 {
+
+			difference := booking.EndDate.Sub(booking.StartDate)
+
+			sumBookingsDays = sumBookingsDays + int(difference.Hours()/24)
+		}
+
+		numberOfPastBookings = numberOfPastBookings + len(bookings)
+
+	}
+
+	if numberOfPastBookings < 5 {
+		err := fmt.Errorf("The number of reservations is less than 5")
+		return 0, err
+	}
+
+	fmt.Println(sumBookingsDays, "Ovo je suma ")
+
+	if sumBookingsDays < 50 {
+		err := fmt.Errorf("The total number of days of the reservation is less than 50")
+		return 0, err
+	}
+
+	return uint32(numberOfPastBookings), nil
+
+}
