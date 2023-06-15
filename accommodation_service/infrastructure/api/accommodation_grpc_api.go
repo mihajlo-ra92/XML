@@ -146,3 +146,20 @@ func (handler *AccommodationHandler) DefineCustomPrice(ctx context.Context, requ
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *AccommodationHandler) GetHostId(ctx context.Context, request *pb.GetMessageHostReguest) (*pb.GetMessageHostResponse, error) {
+	id := request.Id
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	accommodation, err := handler.service.Get(objectId)
+	if err != nil {
+		return nil, err
+	}
+	accommodationPb := mapAccommodation(accommodation)
+	response := &pb.GetMessageHostResponse{
+		HostId: accommodationPb.HostId,
+	}
+	return response, nil
+}

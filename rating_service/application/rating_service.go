@@ -36,6 +36,10 @@ func (service *RatingService) GetAll() ([]*domain.Rating, error) {
 	return service.store.GetAll()
 }
 
+func (service *RatingService) GetAerageRatingByHostId(hostId string) (float32, error) {
+	return service.store.GetAerageRatingByHostId(hostId)
+}
+
 func (service *RatingService) Delete(ratingId string) error {
 	id, _ := primitive.ObjectIDFromHex(ratingId)
 	rating := domain.Rating{Id: id}

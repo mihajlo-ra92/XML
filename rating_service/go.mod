@@ -6,7 +6,6 @@ replace github.com/mihajlo-ra92/XML/common => ../common
 
 require (
 	github.com/mihajlo-ra92/XML/common v0.0.0-20230501225349-fc650d6022e6
-	github.com/mihajlo-ra92/XML/user_service v0.0.0-20230515005714-739c2e4f1897
 	go.mongodb.org/mongo-driver v1.11.4
 	google.golang.org/grpc v1.55.0
 )
@@ -16,8 +15,11 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rogpeppe/go-internal v1.9.0 // indirect
+	github.com/stretchr/testify v1.8.2 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
