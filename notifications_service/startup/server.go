@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	//notifications "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
+	notification "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
 	"github.com/mihajlo-ra92/XML/rating_service/domain"
 	"github.com/mihajlo-ra92/XML/rating_service/infrastructure/persistence"
 
@@ -32,9 +32,9 @@ func NewServer(config *config.Config) *Server {
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
-	notificationsStore := server.initRatingStore(mongoClient)
-	notificationsService := server.initRatingService(notificationsStore)
-	notificationsHandler := server.initRatingHandler(notificationsService)
+	notificationsStore := server.initNotificationsStore(mongoClient)
+	notificationsService := server.initNotificationsService(notificationsStore)
+	notificationsHandler := server.initNotificationsHandler(notificationsService)
 	server.startGrpcServer(notificationsHandler)
 
 }
@@ -73,7 +73,7 @@ func (server *Server) startGrpcServer(notificationsHandler *api.NotificationsHan
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	rating.RegisterRatingServiceServer(grpcServer, notificationsHandler)
+	notification.RegisterNotificationsServiceServer(grpcServer, notificationsHandler)
 	fmt.Println("Serving...")
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
