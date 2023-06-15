@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option go_package = "github.com/mihajlo-ra92/XML/common/notifications";
+
+package notifications;
+
+import "google/api/annotations.proto";
+
+service NotificationsService{
+    rpc Get(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+                get: "/notifications/{id}"
+        };
+    }
+    rpc GetByUser(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+                get: "/notifications-user/{id}"
+        };
+    }
+    rpc GetAll(GetAllRequest) returns(GetAllResponse){
+        option (google.api.http) = {
+                get: "/notifications"
+        };
+    }
+    rpc CreateNotification(CreateNotificationRequest) returns(CreateNotificationResponse) {
+    }
+    rpc DeleteNotification(DeleteNotificationRequest) returns(DeleteNotificationResponse) {
+    }
+}
+
+message CreateNotificationRequest {
+    NewNotification notification = 1;
+}
+message CreateNotificationResponse {
+    Notification notification = 1;
+}
+
+message DeleteNotificationRequest{
+    string jwt = 1;
+    string notificationId = 2;
+}
+
+message DeleteNotificationResponse{
+    string message = 1;
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    Notification rating = 1;
+}
+
+message GetAllRequest{
+}
+
+message GetAllResponse{
+    repeated Notification ratings = 1;
+}
+
+message Notification {
+    string id = 1;
+    string userId = 2;
+    string hostRequest = 3;
+    string hostCancelation = 4;
+    string hostRate = 5;
+    string hostAccommodationRate = 6;
+    string hostOutstanding = 7;
+    string guestRequest = 8;
+}
+
+message NewNotification {
+    string userId = 1;
+    string hostRequest = 2;
+    string hostCancelation = 3;
+    string hostRate = 4;
+    string hostAccommodationRate = 5;
+    string hostOutstanding = 6;
+    string guestRequest = 7;
+}
