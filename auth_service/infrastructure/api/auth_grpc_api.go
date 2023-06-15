@@ -367,3 +367,28 @@ func checkJwt(tokenString string) (*domain.JwtData, error) {
 	}
 	return jwtData, nil
 }
+
+/*
+func (handler *AuthHandler) AuthGetUser(ctx context.Context, request *pb.AuthGetUserRequest) (*pb.AuthGetUserResponse, error) {
+	fmt.Println("In AuthGetHost")
+	fmt.Print("request: ")
+	fmt.Println(request)
+
+	jwtData, err := checkJwt(request.Jwt)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("jwtData: ")
+	fmt.Println(jwtData)
+
+	if jwtData.UserType != 1 {
+		return nil, fmt.Errorf("user must be of host type")
+	}
+
+	response, err := handler.service.GetHost(request)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+*/

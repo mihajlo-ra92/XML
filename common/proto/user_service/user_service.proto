@@ -84,6 +84,7 @@ message User {
     string FirstName = 6;
     string LastName = 7;
     string Address = 8;
+    string outstanding = 9;
 }
 
 message NewUser {

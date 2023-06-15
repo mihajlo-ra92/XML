@@ -23,13 +23,15 @@ func (userType UserType) String() string {
 	}
 	return "Unknown"
 }
+
 type User struct {
-	Id			primitive.ObjectID `bson:"_id"`
-	UserType	UserType `bson:"user_type"`
-	Username	string		`bson:"username"`
-	Password	string		`bson:"password"`
-	Email		string		`bson:"email"`
-	FirstName	string		`bson:"first_name"`
-	LastName	string		`bson:"last_name"`
-	Address		string		`bson:"address"`
+	Id          primitive.ObjectID `bson:"_id"`
+	UserType    UserType           `bson:"user_type"`
+	Username    string             `bson:"username"`
+	Password    string             `bson:"password"`
+	Email       string             `bson:"email"`
+	FirstName   string             `bson:"first_name"`
+	LastName    string             `bson:"last_name"`
+	Address     string             `bson:"address"`
+	Outstanding string             `bson:"outstanding"`
 }
