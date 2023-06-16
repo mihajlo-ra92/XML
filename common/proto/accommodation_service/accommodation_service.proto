@@ -87,6 +87,9 @@ message SearchRequest{
     uint32 guest = 2;
     google.protobuf.Timestamp start_date = 3;
     google.protobuf.Timestamp end_date = 4;
+    uint32 min_price = 5;
+    uint32 max_price = 6;
+    repeated string benefits = 7;
 }
 
 message SearchResponse{

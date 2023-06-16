@@ -12,5 +12,6 @@ type AccommodationStore interface {
 	DeleteAll()
 	DeleteByHostId(hostId string) error
 	Search(location string, numberGuests uint32) ([]*Accommodation, error)
+	SearchWithFilter(location string, numberGuests uint32, minPrice uint32, maxPrice uint32, benefits []string) ([]*Accommodation, error)
 	// Update()
 }

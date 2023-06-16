@@ -33,3 +33,6 @@ type User struct {
 	LastName	string		`bson:"last_name"`
 	Address		string		`bson:"address"`
 }
+// func (user User) isExtraHost(id primitive.ObjectID) (bool){
+// 	if(user)
+// }

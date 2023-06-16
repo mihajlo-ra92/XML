@@ -88,7 +88,32 @@ func (handler *AccommodationHandler) DeleteAccommodationsByHostId(ctx context.Co
 
 func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
 	fmt.Println("InSearch grpc api")
-	accommodations, err := handler.service.Search(request)
+	var MinPrice uint32
+	fmt.Println("MIN PRICE JE:")
+	fmt.Println(MinPrice)
+	if  (request.MaxPrice != MinPrice){
+		fmt.Println("IMA VREDNOSTI ZA CENE")
+		accommodations,err := handler.service.SearchWithFilter(request)
+		if err != nil {
+			return nil, err
+		}
+	
+		response := &pb.SearchResponse{
+			Accommodations: []*pb.AccommodationWithPrice{},
+		}
+		var accommodationWithPrice pb.AccommodationWithPrice
+	
+		for _, accommodation := range accommodations {
+			current := mapAccommodation(accommodation)
+			accommodationWithPrice.Accommodation = current
+			accommodationWithPrice.Price = current.Price * request.Guest
+			response.Accommodations = append(response.Accommodations, &accommodationWithPrice)
+		}
+		return response, nil
+	}else{
+		fmt.Println("NeMA VREDNOSTI ZA CENE")
+		accommodations, err := handler.service.Search(request)
+	
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +130,7 @@ func (handler *AccommodationHandler) Search(ctx context.Context, request *pb.Sea
 		response.Accommodations = append(response.Accommodations, &accommodationWithPrice)
 	}
 	return response, nil
+}
 }
 
 func (handler *AccommodationHandler) GetByHostId(ctx context.Context, request *pb.GetByHostIdRequest) (*pb.GetByHostIdResponse, error) {
