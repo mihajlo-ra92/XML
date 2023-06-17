@@ -21,14 +21,16 @@ type AuthService struct {
 	accommodationClientAddress string
 	bookingClientAddress       string
 	ratingClientAddress        string
+	notificationsClientAddress string
 }
 
-func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string, ratingClientAddress string) *AuthService {
+func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string, ratingClientAddress string, notificationsClientAddress string) *AuthService {
 	return &AuthService{
 		userClientAddress:          userClientAddress,
 		accommodationClientAddress: accommodationClientAddress,
 		bookingClientAddress:       bookingClientAddress,
 		ratingClientAddress:        ratingClientAddress,
+		notificationsClientAddress: notificationsClientAddress,
 	}
 }
 
@@ -98,6 +100,7 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	fmt.Print("userUpdateRequest: ")
 	fmt.Println(userUpdateRequest)
 	userUpdateResponse, err := userClient.UpdateUser(context.TODO(), &userUpdateRequest)
+	
 	if err != nil {
 		return nil, err
 	}

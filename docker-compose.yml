@@ -55,6 +55,9 @@ services:
       BOOKING_SERVICE_PORT: ${BOOKING_SERVICE_PORT}
       RATING_SERVICE_HOST: ${RATING_SERVICE_HOST}
       RATING_SERVICE_PORT: ${RATING_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+
     networks:
       - network
 
@@ -97,6 +100,22 @@ services:
       BOOKING_SERVICE_PORT: ${BOOKING_SERVICE_PORT}
     depends_on:
       - rating_db
+    networks:
+      - network
+
+  notifications_service:
+    image: notifications_service
+    container_name: notifications_service
+    build:
+      context: .
+      dockerfile: ./notifications_service/Dockerfile
+    restart: on-failure
+    environment:
+      NOTIFICATIONS_DB_HOST: ${NOTIFICATIONS_DB_HOST}
+      NOTIFICATIONS_DB_PORT: ${NOTIFICATIONS_DB_PORT}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+    depends_on:
+      - notifications_db
     networks:
       - network
 
@@ -214,6 +233,8 @@ services:
       BOOKING_SERVICE_PORT: ${BOOKING_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
     networks:
       - network
 
@@ -241,6 +262,13 @@ services:
   booking_db:
     image: mongo
     container_name: booking_db
+    restart: on-failure
+    networks:
+      - network
+  
+  notifications_db:
+    image: mongo
+    container_name: notifications_db
     restart: on-failure
     networks:
       - network

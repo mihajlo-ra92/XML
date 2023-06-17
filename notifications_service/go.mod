@@ -1,10 +1,11 @@
-module github.com/mihajlo-ra92/XML/rating_service
+module github.com/mihajlo-ra92/XML/notifications_service
 
 go 1.17
 
 replace github.com/mihajlo-ra92/XML/common => ../common
 
 require (
+	github.com/gorilla/websocket v1.5.0
 	github.com/mihajlo-ra92/XML/common v0.0.0-20230501225349-fc650d6022e6
 	go.mongodb.org/mongo-driver v1.11.4
 	google.golang.org/grpc v1.55.0

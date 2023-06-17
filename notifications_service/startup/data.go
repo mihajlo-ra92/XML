@@ -1,7 +1,7 @@
 package startup
 
 import (
-	"github.com/mihajlo-ra92/XML/rating_service/domain"
+	"github.com/mihajlo-ra92/XML/notifications_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

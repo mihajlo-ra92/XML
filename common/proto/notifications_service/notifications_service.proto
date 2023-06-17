@@ -17,15 +17,30 @@ service NotificationsService{
                 get: "/notifications-user/{id}"
         };
     }
+    rpc GetConnection(GetRequest) returns(Response) {
+        option (google.api.http) = {
+                get: "/connection/{id}"
+        };
+    }
     rpc GetAll(GetAllRequest) returns(GetAllResponse){
         option (google.api.http) = {
                 get: "/notifications"
         };
     }
+    rpc SendMessage(SendRequest) returns(SendResponse){
+    }
     rpc CreateNotification(CreateNotificationRequest) returns(CreateNotificationResponse) {
     }
     rpc DeleteNotification(DeleteNotificationRequest) returns(DeleteNotificationResponse) {
     }
+}
+
+message SendRequest{
+    string id = 1;
+    string message = 2;
+}
+message SendResponse{
+    string message = 1;
 }
 
 message CreateNotificationRequest {
@@ -46,6 +61,10 @@ message DeleteNotificationResponse{
 
 message GetRequest {
     string id = 1;
+}
+
+message Response{
+    string message = 1;
 }
 
 message GetResponse {
