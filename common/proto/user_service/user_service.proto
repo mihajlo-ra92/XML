@@ -26,6 +26,19 @@ service UserService{
     rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){}
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse){}
     rpc GetByLoginData(GetByLoginDataRequest) returns(GetByLoginDataResponse){}
+    rpc CheckIsOutstandingById(CheckIsOutstandingByIdRequest) returns(CheckIsOutstandingByIdResponse){
+        option (google.api.http) = {
+            post: "/user/outstanding"
+            body: "*"
+        };
+    }
+}
+
+message CheckIsOutstandingByIdRequest{
+    string id = 1;
+}
+message CheckIsOutstandingByIdResponse{
+    bool is_outstanding = 1;
 }
 message DeleteUserRequest{
     string id = 1;
@@ -84,6 +97,7 @@ message User {
     string FirstName = 6;
     string LastName = 7;
     string Address = 8;
+    string outstanding = 9;
 }
 
 message NewUser {

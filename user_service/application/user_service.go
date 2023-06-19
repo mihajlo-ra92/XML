@@ -128,3 +128,23 @@ func (service *UserService) Delete(user *domain.User) error{
 	}
 	return nil
 }
+
+func (service *UserService) CheckIsOutstandingById(userId string) (bool, error){
+	fmt.Println("U servisu smo:")
+	fmt.Println("Id usera:")
+	// fmt.Println(userId)
+	// objectID, err := primitive.ObjectIDFromHex(userId)
+	// fmt.Println("ObjectID je:")
+	// fmt.Println(objectID)
+	//user, err := service.store.Get(objectID)
+	user, err := service.store.GetByUsername(userId)
+	fmt.Println(user)
+	if err != nil{
+		return false,err
+	}
+	if user.Outstanding == "YES"{
+		return true,nil
+	}else{
+		return false,nil
+	}
+}

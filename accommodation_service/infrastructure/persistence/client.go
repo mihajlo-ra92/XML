@@ -6,6 +6,7 @@ import (
 	"log"
 
 	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
+	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
@@ -24,6 +25,13 @@ func NewBookingClient(address string) booking.BookingServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Booking service: %v", err)
 	}
 	return booking.NewBookingServiceClient(conn)
+}
+func NewUserClient(address string) user.UserServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to User service: %v", err)
+	}
+	return user.NewUserServiceClient(conn)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {

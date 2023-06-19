@@ -14,6 +14,27 @@ var ratings = []*domain.Rating{
 		GuestId:         "guest1Id",
 		Rate:            4,
 	},
+	{
+		Id:              getObjectId("rate12"),
+		HostId:          "host1Id",
+		AccommodationId: "accommodation1Id",
+		GuestId:         "guest1Id",
+		Rate:            1,
+	},
+	{
+		Id:              getObjectId("rate123"),
+		HostId:          "host1Id",
+		AccommodationId: "accommodation1Id",
+		GuestId:         "guest1Id",
+		Rate:            3,
+	},
+	{
+		Id:              getObjectId("rate1234"),
+		HostId:          "host12Id",
+		AccommodationId: "accommodation1Id",
+		GuestId:         "guest1Id",
+		Rate:            3,
+	},
 }
 
 func getObjectId(id string) primitive.ObjectID {

@@ -8,6 +8,8 @@ type Config struct {
 	AccommodationDBPort string
 	BookingPort         string
 	BookingHost         string
+	UserPort			string
+	UserHost			string
 	// NatsHost	string
 	// NatsPort	string
 	// NatsUser	string
@@ -23,6 +25,8 @@ func NewConfig() *Config {
 		AccommodationDBPort: os.Getenv("ACCOMMODATION_DB_PORT"),
 		BookingPort:         os.Getenv("BOOKING_SERVICE_PORT"),
 		BookingHost:         os.Getenv("BOOKING_SERVICE_HOST"),
+		UserPort:         os.Getenv("USER_SERVICE_PORT"),
+		UserHost:         os.Getenv("USER_SERVICE_HOST"),
 		// NatsHost:                  os.Getenv("NATS_HOST"),
 		// NatsPort:                  os.Getenv("NATS_PORT"),
 		// NatsUser:                  os.Getenv("NATS_USER"),

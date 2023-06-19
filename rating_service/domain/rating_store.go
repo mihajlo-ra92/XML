@@ -12,4 +12,5 @@ type RatingStore interface {
 	Delete(rating *Rating) error
 	GetUserRatingByAccommodationId(accommodationId string, guestId string) (*Rating, error)
 	GetUserRatingByHostId(hostId string, guestId string) (*Rating, error)
+	GetAerageRatingByHostId(hostId string) (float32, error)
 }

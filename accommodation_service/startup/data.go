@@ -8,8 +8,8 @@ import (
 
 var accommodations = []*domain.Accommodation{
 	{
-		Id: getObjectId("test1_id"),
-		HostId: "host1Id",
+		Id:        getObjectId("test1_id"),
+		HostId:    "test1",
 		Name:      "Name1",
 		Location:  "Location1",
 		Benefits:  []string{"Wifi", "Parking"},

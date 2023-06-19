@@ -5,16 +5,18 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
 var users = []*domain.User{
 	{
-		Id:				getObjectId("test1_id"),
-		UserType: 		domain.Guest,
-		Username:		"test1",
-		Password:		"123",
-		Email:			"test1@gmail.com",
-		FirstName:		"Test1F",
-		LastName:		"Test1L",
-		Address: 		"Addr 1",	
+		Id:          getObjectId("test1_id"),
+		UserType:    domain.Guest,
+		Username:    "test1",
+		Password:    "123",
+		Email:       "test1@gmail.com",
+		FirstName:   "Test1F",
+		LastName:    "Test1L",
+		Address:     "Addr 1",
+		Outstanding: "YES",
 	},
 }
 

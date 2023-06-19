@@ -179,6 +179,33 @@ func (service *AuthService) AuthCreateRating(jwtData *domain.JwtData, request *p
 	if err != nil {
 		return nil, err
 	}
+
+	if err == nil {
+		getAverageRatingByHostIdRequest := rating.GetAverageRatingByHostIdRequest{Id: request.HostId}
+
+		ratingResponse1, err := ratingClient.GetAverageRatingByHostId(context.TODO(), &getAverageRatingByHostIdRequest)
+		if err == nil {
+
+			userClient := services.NewUserClient(service.userClientAddress)
+			userGetRequest := user.GetRequest{Id: request.HostId}
+			host, err := userClient.Get(context.TODO(), &userGetRequest)
+			if err == nil {
+
+				if ratingResponse1.AverageRating > 4.7 {
+					if host.User.Outstanding != "YES" {
+						host.User.Outstanding = "YES"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				} else {
+					if host.User.Outstanding != "NO" {
+						host.User.Outstanding = "NO"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				}
+			}
+		}
+	}
+
 	fmt.Print("ratingResponse: ")
 	fmt.Println(ratingResponse)
 	authCreateRatingResponse := pb.AuthCreateRatingResponse{Rating: &pb.Rating{Id: ratingResponse.Rating.Id, HostId: ratingResponse.Rating.HostId, AccommodationId: ratingResponse.Rating.AccommodationId, GuestId: guestId, Rate: ratingResponse.Rating.Rate}}
@@ -202,6 +229,35 @@ func (service *AuthService) BookingAccept(jwtData *domain.JwtData, request *pb.A
 	if err != nil {
 		return nil, err
 	}
+
+	if err == nil {
+		cancelingRequest := booking.GetCancellationRateForHostRequest{HostId: jwtData.UserId}
+		numberRequest := booking.GetNumberPastBookingsForHostRequest{HostId: jwtData.UserId}
+
+		numberResponse, err := bookingClient.GetNumberPastBookingsForHost(context.TODO(), &numberRequest)
+		ratingResponse, err1 := bookingClient.GetCancellationRateForHost(context.TODO(), &cancelingRequest)
+		if err == nil && err1 == nil {
+
+			userClient := services.NewUserClient(service.userClientAddress)
+			userGetRequest := user.GetRequest{Id: jwtData.UserId}
+			host, err := userClient.Get(context.TODO(), &userGetRequest)
+			if err == nil {
+
+				if ratingResponse.Percentage < 5 && numberResponse.Number >= 5 {
+					if host.User.Outstanding != "YES" {
+						host.User.Outstanding = "YES"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				} else {
+					if host.User.Outstanding != "NO" {
+						host.User.Outstanding = "NO"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				}
+			}
+		}
+	}
+
 	fmt.Print("bookingResponse: ")
 	fmt.Println(bookingResponse)
 	authBookingAcceptResponse := pb.AuthBookingAcceptResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
@@ -245,6 +301,34 @@ func (service *AuthService) DeleteRating(jwtData *domain.JwtData, request *pb.Au
 	fmt.Print("ratingDeleteResponse: ")
 	fmt.Println(ratingDeleteResponse)
 
+	req := rating.GetRequest{Id: request.RatingId}
+
+	response, err := ratingClient.Get(context.TODO(), &req)
+	if err == nil {
+		getAverageRatingByHostIdRequest := rating.GetAverageRatingByHostIdRequest{Id: response.Rating.HostId}
+
+		ratingResponse, err := ratingClient.GetAverageRatingByHostId(context.TODO(), &getAverageRatingByHostIdRequest)
+		if err == nil {
+
+			userClient := services.NewUserClient(service.userClientAddress)
+			userGetRequest := user.GetRequest{Id: response.Rating.HostId}
+			host, err := userClient.Get(context.TODO(), &userGetRequest)
+			if err == nil {
+
+				if ratingResponse.AverageRating > 4.7 {
+					if host.User.Outstanding != "YES" {
+						host.User.Outstanding = "YES"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				} else {
+					if host.User.Outstanding != "NO" {
+						host.User.Outstanding = "NO"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				}
+			}
+		}
+	}
 	authDeleteRatingResposne := pb.AuthDeleteRatingResponse{}
 	fmt.Print("authDeleteRatingResposne: ")
 	fmt.Println(authDeleteRatingResposne)
@@ -263,6 +347,38 @@ func (service *AuthService) CancelingReservation(jwtData *domain.JwtData, reques
 	if err != nil {
 		return nil, err
 	}
+
+	accRequest := accommodation.GetMessageHostReguest{Id: bookingResponse.Booking.AccommodationId}
+
+	accommodationClient := services.NewAccommodationClient(service.accommodationClientAddress)
+
+	accResponse, err := accommodationClient.GetHostId(context.TODO(), &accRequest)
+	if err == nil {
+		cancelingRequest := booking.GetCancellationRateForHostRequest{HostId: accResponse.HostId}
+
+		ratingResponse, err := bookingClient.GetCancellationRateForHost(context.TODO(), &cancelingRequest)
+		if err == nil {
+
+			userClient := services.NewUserClient(service.userClientAddress)
+			userGetRequest := user.GetRequest{Id: accResponse.HostId}
+			host, err := userClient.Get(context.TODO(), &userGetRequest)
+			if err == nil {
+
+				if ratingResponse.Percentage < 5 {
+					if host.User.Outstanding != "YES" {
+						host.User.Outstanding = "YES"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				} else {
+					if host.User.Outstanding != "NO" {
+						host.User.Outstanding = "NO"
+						userClient.UpdateUser(context.TODO(), &user.UpdateUserRequest{User: host.User})
+					}
+				}
+			}
+		}
+	}
+
 	fmt.Print("bookingResponse: ")
 	fmt.Println(bookingResponse)
 	authCanceling := pb.AuthReservationCancelingResponse{Booking: &pb.Booking{Id: bookingResponse.Booking.Id, AccommodationId: bookingResponse.Booking.AccommodationId, GuestId: bookingResponse.Booking.GuestId, Price: bookingResponse.Booking.Price, PriceType: pb.Booking_PriceType(bookingResponse.Booking.PriceType), NumberOfGuests: bookingResponse.Booking.NumberOfGuests, BookingType: pb.Booking_BookingType(bookingResponse.Booking.BookingType), StartDate: bookingResponse.Booking.StartDate, EndDate: bookingResponse.Booking.EndDate}}
@@ -381,3 +497,21 @@ func (service *AuthService) GetBookingsByAccommodationId(jwtData *domain.JwtData
 	authGetBookingByAccommodationIdResponse := pb.AuthGetBookingsByAccommodationIdResponse{Bookings: respBookings}
 	return &authGetBookingByAccommodationIdResponse, nil
 }
+
+/*
+func (service *AuthService) GetHost(request *pb.AuthGetUserRequest) (*pb.AuthGetUserResponse, error) {
+	request := user.GetRequest{Id: request.Id}
+	userClient := services.NewUserClient(service.userClientAddress)
+	ratingResponse, err := userClient.Get(context.TODO(), &request)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("ratingResponse: ")
+	fmt.Println(ratingResponse)
+
+	authGetUserRatingByHostIdResponse := pb.AuthGetUserRatingByHostIdResponse{Rating: &pb.Rating{Id: ratingResponse.Rating.Id, HostId: ratingResponse.Rating.HostId, AccommodationId: ratingResponse.Rating.AccommodationId, GuestId: ratingResponse.Rating.GuestId, Rate: ratingResponse.Rating.Rate}}
+	fmt.Print("authGetUserRatingByHostIdResponse: ")
+	fmt.Println(authGetUserRatingByHostIdResponse)
+	return &authGetUserRatingByHostIdResponse, nil
+}
+*/

@@ -28,6 +28,7 @@ type UserServiceClient interface {
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	GetByLoginData(ctx context.Context, in *GetByLoginDataRequest, opts ...grpc.CallOption) (*GetByLoginDataResponse, error)
+	CheckIsOutstandingById(ctx context.Context, in *CheckIsOutstandingByIdRequest, opts ...grpc.CallOption) (*CheckIsOutstandingByIdResponse, error)
 }
 
 type userServiceClient struct {
@@ -92,6 +93,15 @@ func (c *userServiceClient) GetByLoginData(ctx context.Context, in *GetByLoginDa
 	return out, nil
 }
 
+func (c *userServiceClient) CheckIsOutstandingById(ctx context.Context, in *CheckIsOutstandingByIdRequest, opts ...grpc.CallOption) (*CheckIsOutstandingByIdResponse, error) {
+	out := new(CheckIsOutstandingByIdResponse)
+	err := c.cc.Invoke(ctx, "/user.UserService/CheckIsOutstandingById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type UserServiceServer interface {
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	GetByLoginData(context.Context, *GetByLoginDataRequest) (*GetByLoginDataResponse, error)
+	CheckIsOutstandingById(context.Context, *CheckIsOutstandingByIdRequest) (*CheckIsOutstandingByIdResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserReq
 }
 func (UnimplementedUserServiceServer) GetByLoginData(context.Context, *GetByLoginDataRequest) (*GetByLoginDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByLoginData not implemented")
+}
+func (UnimplementedUserServiceServer) CheckIsOutstandingById(context.Context, *CheckIsOutstandingByIdRequest) (*CheckIsOutstandingByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckIsOutstandingById not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -248,6 +262,24 @@ func _UserService_GetByLoginData_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_CheckIsOutstandingById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckIsOutstandingByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).CheckIsOutstandingById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/CheckIsOutstandingById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).CheckIsOutstandingById(ctx, req.(*CheckIsOutstandingByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByLoginData",
 			Handler:    _UserService_GetByLoginData_Handler,
+		},
+		{
+			MethodName: "CheckIsOutstandingById",
+			Handler:    _UserService_CheckIsOutstandingById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

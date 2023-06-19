@@ -117,3 +117,17 @@ func (handler *RatingHandler) GetUserRatingByHostId(ctx context.Context, request
 	fmt.Println(response)
 	return &response, nil
 }
+
+func (handler *RatingHandler) GetAverageRatingByHostId(ctx context.Context, request *pb.GetAverageRatingByHostIdRequest) (*pb.GetAverageRatingByHostIdResponse, error) {
+	fmt.Println("In GetAverageRatingByHostId grpc api")
+	fmt.Print("Request: ")
+	fmt.Println(request)
+	rating, err := handler.service.GetAerageRatingByHostId(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.GetAverageRatingByHostIdResponse{AverageRating: rating}
+
+	fmt.Println(response)
+	return &response, nil
+}

@@ -29,6 +29,7 @@ type AccommodationServiceClient interface {
 	CreateAccommodation(ctx context.Context, in *CreateAccommodationRequest, opts ...grpc.CallOption) (*CreateAccommodationResponse, error)
 	DefineCustomPrice(ctx context.Context, in *DefineCustomPriceRequest, opts ...grpc.CallOption) (*DefineCustomPriceResponse, error)
 	DeleteAccommodationsByHostId(ctx context.Context, in *DeleteAccommodationsByHostIdRequest, opts ...grpc.CallOption) (*DeleteAccommodationsByHostIdResponse, error)
+	GetHostId(ctx context.Context, in *GetMessageHostReguest, opts ...grpc.CallOption) (*GetMessageHostResponse, error)
 }
 
 type accommodationServiceClient struct {
@@ -102,6 +103,15 @@ func (c *accommodationServiceClient) DeleteAccommodationsByHostId(ctx context.Co
 	return out, nil
 }
 
+func (c *accommodationServiceClient) GetHostId(ctx context.Context, in *GetMessageHostReguest, opts ...grpc.CallOption) (*GetMessageHostResponse, error) {
+	out := new(GetMessageHostResponse)
+	err := c.cc.Invoke(ctx, "/accommodation.AccommodationService/GetHostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccommodationServiceServer is the server API for AccommodationService service.
 // All implementations must embed UnimplementedAccommodationServiceServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type AccommodationServiceServer interface {
 	CreateAccommodation(context.Context, *CreateAccommodationRequest) (*CreateAccommodationResponse, error)
 	DefineCustomPrice(context.Context, *DefineCustomPriceRequest) (*DefineCustomPriceResponse, error)
 	DeleteAccommodationsByHostId(context.Context, *DeleteAccommodationsByHostIdRequest) (*DeleteAccommodationsByHostIdResponse, error)
+	GetHostId(context.Context, *GetMessageHostReguest) (*GetMessageHostResponse, error)
 	mustEmbedUnimplementedAccommodationServiceServer()
 }
 
@@ -140,6 +151,9 @@ func (UnimplementedAccommodationServiceServer) DefineCustomPrice(context.Context
 }
 func (UnimplementedAccommodationServiceServer) DeleteAccommodationsByHostId(context.Context, *DeleteAccommodationsByHostIdRequest) (*DeleteAccommodationsByHostIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccommodationsByHostId not implemented")
+}
+func (UnimplementedAccommodationServiceServer) GetHostId(context.Context, *GetMessageHostReguest) (*GetMessageHostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHostId not implemented")
 }
 func (UnimplementedAccommodationServiceServer) mustEmbedUnimplementedAccommodationServiceServer() {}
 
@@ -280,6 +294,24 @@ func _AccommodationService_DeleteAccommodationsByHostId_Handler(srv interface{},
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccommodationService_GetHostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMessageHostReguest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccommodationServiceServer).GetHostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/accommodation.AccommodationService/GetHostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccommodationServiceServer).GetHostId(ctx, req.(*GetMessageHostReguest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccommodationService_ServiceDesc is the grpc.ServiceDesc for AccommodationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +346,10 @@ var AccommodationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAccommodationsByHostId",
 			Handler:    _AccommodationService_DeleteAccommodationsByHostId_Handler,
+		},
+		{
+			MethodName: "GetHostId",
+			Handler:    _AccommodationService_GetHostId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
