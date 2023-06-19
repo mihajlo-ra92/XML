@@ -200,8 +200,21 @@ Refrash(){
   this.AllAccommodations();
   this.request = new SearchRequest()
 }
+addBenefit(event: any, benefit: string) {
+  if (event.target.checked) {
+    this.request.benefits.push(benefit);
+  } else {
+    const index = this.request.benefits.indexOf(benefit);
+    if (index !== -1) {
+      this.request.benefits.splice(index, 1);
+    }
+  }
+}
 Search(){
-  console.log(this.request.end_date)
+  if(this.request.is_outstanding === true || this.request.benefits.length > 0){
+    this.request.max_price = 100; 
+  }
+  console.log(this.request)
   if(this.request.guest===1 && this.request.location ==="" && this.request.start_date === undefined && this.request.end_date === undefined ){
     this.accommodationService.getAllAccommodations().subscribe((res) => {
       let resJSON = JSON.parse(res);
@@ -228,6 +241,8 @@ Search(){
   }
 
   if(this.request.start_date === undefined && this.request.end_date === undefined ){
+    console.log(this.request);
+    
     this.accommodationService.searchAccommodation(this.request).subscribe((res) => {
       this.allAccommodations = []
       console.log(this.allAccommodations);
@@ -235,7 +250,7 @@ Search(){
       var list = res.accommodations;
       list.forEach((item) => {
         console.log(item);
-        console.log(item.accommodation, "Ovde b");
+        console.log(item.accommodation, "Ovde a");
   
         this.allAccommodations.push(item.accommodation)
       });
@@ -267,7 +282,11 @@ Search(){
     "location" : this.request.location,
     "guest" : this.request.guest,
     "start_date" :startDateFormated,
-    "end_date" :endDateFormated
+    "end_date" :endDateFormated,
+    "max_price": this.request.max_price,
+    "min_price": this.request.min_price,
+    "benefits": this.request.benefits,
+    "is_outsatnding": this.request.is_outstanding
 }).subscribe((res) => {
     this.allAccommodations = []
     console.log(this.allAccommodations);

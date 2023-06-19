@@ -38,7 +38,19 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	}
 	return response, nil
 }
-
+func (handler *UserHandler) CheckIsOutstandingById(ctx context.Context, request *pb.CheckIsOutstandingByIdRequest)(*pb.CheckIsOutstandingByIdResponse, error){
+	fmt.Println("U hendleru smo:")
+	isOutstanding, err := handler.service.CheckIsOutstandingById(request.Id)
+	if err != nil{
+		return nil,err
+	}
+	response := &pb.CheckIsOutstandingByIdResponse{
+		IsOutstanding: isOutstanding,
+	}
+	fmt.Println("Response je:")
+	fmt.Println(response)
+	return response,nil
+}
 func (handler *UserHandler) GetByLoginData(ctx context.Context, request *pb.GetByLoginDataRequest) (*pb.GetByLoginDataResponse, error) {
 	fmt.Println("In GetByLoginData grpc api")
 	fmt.Println(request.Login)
