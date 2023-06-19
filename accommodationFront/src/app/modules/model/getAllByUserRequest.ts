@@ -50,12 +50,20 @@ export class SearchRequest{
     guest : number= 1;
     start_date! :Date;
     end_date! :Date;
+    min_price : number = 0;
+    max_price : number = 0;
+    benefits : string[] = []
+    is_outstanding : boolean = false;
     public constructor(obj?: any) {
         if(obj){
             this.location = obj.location;
             this.guest = obj.guest;
             this.start_date = obj.start_date;
             this.end_date = obj.end_date;
+            this.min_price = obj.min_price;
+            this.max_price = obj.max_price;
+            this.benefits = obj.benefits;
+            this.is_outstanding = obj.is_outstanding;
         }
     }
 }
