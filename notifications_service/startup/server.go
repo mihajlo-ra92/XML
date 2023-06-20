@@ -3,21 +3,18 @@ package startup
 import (
 	"fmt"
 	"log"
-	"net/http"
-
-	"github.com/gorilla/websocket"
-	notification "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
-	"github.com/mihajlo-ra92/XML/notifications_service/domain"
-	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/persistence"
-
-	"github.com/mihajlo-ra92/XML/notifications_service/application"
-	"github.com/mihajlo-ra92/XML/notifications_service/startup/config"
-
-	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/api"
-
 	"net"
 
+	"github.com/nats-io/nats.go"
+
+	notification "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
+	"github.com/mihajlo-ra92/XML/notifications_service/application"
+	"github.com/mihajlo-ra92/XML/notifications_service/domain"
+	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/notifications_service/startup/config"
 	"google.golang.org/grpc"
+
+	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/api"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -68,6 +65,10 @@ func (server *Server) initNotificationsHandler(service *application.Notification
 	return api.NewNotificationsHandler(service)
 }
 
+func (server *Server) initRatingHandler(service *application.NotificationsService) *api.NotificationsHandler {
+	return api.NewNotificationsHandler(service)
+}
+
 func (server *Server) startGrpcServer(ratingHandler *api.NotificationsHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
@@ -76,80 +77,39 @@ func (server *Server) startGrpcServer(ratingHandler *api.NotificationsHandler) {
 	grpcServer := grpc.NewServer()
 	notification.RegisterNotificationsServiceServer(grpcServer, ratingHandler)
 	fmt.Println("Serving...")
-	go func() {
-		if err := grpcServer.Serve(listener); err != nil {
-			log.Fatalf("failed to serve gRPC: %s", err)
-		}
-	}()
-
-	// Definisanje WebSocket endpointa
-	http.HandleFunc("/ws", handleWebSocket)
-
-	fmt.Println("Serving WebSocket...")
-
-	// Pokretanje HTTP servera za WebSocket na istom portu
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", "50800"), nil); err != nil {
-		log.Fatalf("failed to serve WebSocket: %s", err)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
 	}
+	go StartMessageListener()
+	fmt.Println("Messaging nats")
 }
 
-/*
-func (server *Server) startServer(ratingHandler *api.NotificationsHandler) {
-
-
-
-
-	// Pokretanje gRPC servera u pozadini
-	go func() {
-		if err := grpcServer.Serve(listener); err != nil {
-			log.Fatalf("failed to serve gRPC: %s", err)
-		}
-	}()
-
-	// Definisanje WebSocket endpointa
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		// Logika za WebSocket endpoint
-	})
-
-	fmt.Println("Serving WebSocket...")
-
-	// Pokretanje HTTP servera za WebSocket na istom portu
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), nil); err != nil {
-		log.Fatalf("failed to serve WebSocket: %s", err)
-	}
-}
-*/
-
-func handleWebSocket(w http.ResponseWriter, r *http.Request) {
-
-	userID := r.URL.Query().Get("id")
-
-	// Upgradirajte HTTP konekciju na WebSocket
-	conn, err := websocket.Upgrade(w, r, nil, 1024, 1024)
+func StartMessageListener() {
+	// Povežite se na NATS server
+	nc, err := nats.Connect(nats.DefaultURL)
 	if err != nil {
-		log.Println("WebSocket upgrade error:", err)
-		return
+		log.Fatal(err)
 	}
+	defer nc.Close()
 
-	api.Clients[userID] = conn
+	// Kreirajte kanal za primanje poruka
+	msgChan := make(chan *nats.Msg)
 
-	go readWebSocketMessages(userID, conn)
-}
+	// Pretplatite se na teme na kojima želite primati poruke
+	// Ovdje možete dodati više pretplata prema potrebama vašeg mikroservisa
+	sub, err := nc.ChanSubscribe("user.*", msgChan)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sub.Unsubscribe()
 
-func readWebSocketMessages(userID string, conn *websocket.Conn) {
-	defer func() {
-		delete(api.Clients, userID)
-		conn.Close()
-	}()
+	// Obrada primljenih poruka
+	for msg := range msgChan {
+		// Dobijte ID korisnika iz teme poruke
+		topic := msg.Subject
+		userID := topic[len("user."):]
 
-	for {
-
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Println("WebSocket read error:", err)
-			break
-		}
-
-		log.Printf("Received message from user %s: %s\n", userID, string(message))
+		// Ovdje možete implementirati logiku obrade primljene poruke prema ID-u korisnika
+		fmt.Printf("Primljena poruka za korisnika %s: %s\n", userID, string(msg.Data))
 	}
 }

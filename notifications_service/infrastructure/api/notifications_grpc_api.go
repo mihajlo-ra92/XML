@@ -3,18 +3,13 @@ package api
 import (
 	"context"
 	"fmt"
-	"log"
-
-	"github.com/gorilla/websocket"
-
-	"github.com/mihajlo-ra92/XML/notifications_service/application"
 
 	pb "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
+	"github.com/mihajlo-ra92/XML/common/saga/messaging/nats"
+	"github.com/mihajlo-ra92/XML/notifications_service/application"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-var Clients = make(map[string]*websocket.Conn)
 
 type NotificationsHandler struct {
 	pb.UnimplementedNotificationsServiceServer
@@ -139,39 +134,63 @@ func (handler *NotificationsHandler) DeleteNotification(ctx context.Context, req
 	return &response, nil
 }
 
+/*
+	func SendMessageToUser(userID string, message string) error {
+		// Povežite se na NATS server
+		nc, err := nats.Connect(nats.DefaultURL) /*NATS_HOST=nats
+		NATS_PORT=4222
+		NATS_USER=ruser
+		NATS_PASS=T0pS3cr3t
+		if err != nil {
+			return err
+		}
+		defer nc.Close()
+
+		// Generirajte jedinstvenu temu za poruku na temelju ID-a korisnika
+		topic := fmt.Sprintf("user.%s", userID)
+
+		// Pošaljite poruku na generiranu temu
+		err = nc.Publish(topic, []byte(message))
+		if err != nil {
+			return err
+		}
+
+		// Provjerite jesu li poruke uspješno poslane
+		nc.Flush()
+		if err := nc.LastError(); err != nil {
+			return err
+		}
+
+		return nil
+	}
+*/
 func (handler *NotificationsHandler) SendMessage(ctx context.Context, request *pb.SendRequest) (*pb.SendResponse, error) {
 	userID := request.Id
 	message := request.Message
+	nc, err := nats.NewPCublisher("nats", "4222", "ruser", "T0pS3cr3t", "app") //  .getConnection("nats", "4222", "ruser", "T0pS3cr3t") //nats.Connect(nats.DefaultURL)
+	ntas.NewPCublisher()
+	if err != nil {
+		return nil, err
+	}
+	defer nc.Close()
 
-	conn, ok := Clients[userID]
-	if !ok {
-		log.Println("User is not connected:", userID)
-		err1 := fmt.Errorf("User is not connected")
-		return nil, err1
+	// Generirajte jedinstvenu temu za poruku na temelju ID-a korisnika
+	topic := fmt.Sprintf("user.%s", userID)
+
+	// Pošaljite poruku na generiranu temu
+	err = nc.Publish(topic, []byte(message))
+	if err != nil {
+		return nil, err
 	}
 
-	err := conn.WriteMessage(websocket.TextMessage, []byte(message))
-	if err != nil {
-		log.Println("WebSocket write error:", err)
-		err2 := fmt.Errorf("Failed to send message")
-		return nil, err2
+	// Provjerite jesu li poruke uspješno poslane
+	nc.Flush()
+	if err := nc.LastError(); err != nil {
+		return nil, err
 	}
 
 	response := pb.SendResponse{Message: "Success"}
 	fmt.Print("response: ")
 	fmt.Println(response)
 	return &response, nil
-}
-
-func sendNotification(userID string, message []byte) {
-	conn, ok := Clients[userID]
-	if !ok {
-		log.Println("User is not connected:", userID)
-		return
-	}
-
-	err := conn.WriteMessage(websocket.TextMessage, message)
-	if err != nil {
-		log.Println("WebSocket write error:", err)
-	}
 }
