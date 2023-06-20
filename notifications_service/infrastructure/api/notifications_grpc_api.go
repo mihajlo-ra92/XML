@@ -167,8 +167,8 @@ func (handler *NotificationsHandler) DeleteNotification(ctx context.Context, req
 func (handler *NotificationsHandler) SendMessage(ctx context.Context, request *pb.SendRequest) (*pb.SendResponse, error) {
 	userID := request.Id
 	message := request.Message
-	nc, err := nats.NewPCublisher("nats", "4222", "ruser", "T0pS3cr3t", "app") //  .getConnection("nats", "4222", "ruser", "T0pS3cr3t") //nats.Connect(nats.DefaultURL)
-	ntas.NewPCublisher()
+	nc, err := nats.NewPCublisher("nats", "4222", "ruser", "T0pS3cr3t", "app")
+
 	if err != nil {
 		return nil, err
 	}
@@ -189,8 +189,8 @@ func (handler *NotificationsHandler) SendMessage(ctx context.Context, request *p
 		return nil, err
 	}
 
-	response := pb.SendResponse{Message: "Success"}
+	response := pb.SendResponse{Message: "Success messaging"}
 	fmt.Print("response: ")
-	fmt.Println(response)
+	fmt.Println(response.Message)
 	return &response, nil
 }
