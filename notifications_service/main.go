@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/mihajlo-ra92/XML/rating_service/startup"
-	cfg "github.com/mihajlo-ra92/XML/rating_service/startup/config"
+	"github.com/mihajlo-ra92/XML/notifications_service/startup"
+	cfg "github.com/mihajlo-ra92/XML/notifications_service/startup/config"
 )
 
 func main() {

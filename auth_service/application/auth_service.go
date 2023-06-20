@@ -12,6 +12,7 @@ import (
 	accommodation "github.com/mihajlo-ra92/XML/common/proto/accommodation_service"
 	pb "github.com/mihajlo-ra92/XML/common/proto/auth_service"
 	booking "github.com/mihajlo-ra92/XML/common/proto/booking_service"
+	noti "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
 	rating "github.com/mihajlo-ra92/XML/common/proto/rating_service"
 	user "github.com/mihajlo-ra92/XML/common/proto/user_service"
 )
@@ -21,14 +22,16 @@ type AuthService struct {
 	accommodationClientAddress string
 	bookingClientAddress       string
 	ratingClientAddress        string
+	notificationsClientAddress string
 }
 
-func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string, ratingClientAddress string) *AuthService {
+func NewAuthService(userClientAddress string, accommodationClientAddress string, bookingClientAddress string, ratingClientAddress string, notificationsClientAddress string) *AuthService {
 	return &AuthService{
 		userClientAddress:          userClientAddress,
 		accommodationClientAddress: accommodationClientAddress,
 		bookingClientAddress:       bookingClientAddress,
 		ratingClientAddress:        ratingClientAddress,
+		notificationsClientAddress: notificationsClientAddress,
 	}
 }
 
@@ -98,6 +101,7 @@ func (service *AuthService) UpdateUser(request *pb.AuthUpdateUserRequest) (*pb.A
 	fmt.Print("userUpdateRequest: ")
 	fmt.Println(userUpdateRequest)
 	userUpdateResponse, err := userClient.UpdateUser(context.TODO(), &userUpdateRequest)
+
 	if err != nil {
 		return nil, err
 	}
@@ -294,6 +298,16 @@ func (service *AuthService) DeleteRating(jwtData *domain.JwtData, request *pb.Au
 	ratingDeleteRequest := rating.DeleteRatingRequest{Jwt: request.Jwt, RatingId: request.RatingId}
 	fmt.Print("ratingDeleteRequest: ")
 	fmt.Println(ratingDeleteRequest)
+	reqe := noti.SendRequest{Id: "", Message: "Nova poruka za klijenta da je neko obrisao ocenu"}
+	notClient := services.NewNotificationsClient(service.notificationsClientAddress)
+	responsMessage, err := notClient.SendMessage(context.TODO(), &reqe)
+	if err != nil {
+		return nil, err
+	}
+
+	if responsMessage != nil {
+	}
+
 	ratingDeleteResponse, err := ratingClient.DeleteRating(context.TODO(), &ratingDeleteRequest)
 	if err != nil {
 		return nil, err

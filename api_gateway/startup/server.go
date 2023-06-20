@@ -14,6 +14,7 @@ import (
 	bookingGw "github.com/mihajlo-ra92/XML/common/proto/booking_service"
 	catalogueGw "github.com/mihajlo-ra92/XML/common/proto/catalogue_service"
 	inventoryGw "github.com/mihajlo-ra92/XML/common/proto/inventory_service"
+	notificationsGw "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
 	orderingGw "github.com/mihajlo-ra92/XML/common/proto/ordering_service"
 	ratingGw "github.com/mihajlo-ra92/XML/common/proto/rating_service"
 	shippingGw "github.com/mihajlo-ra92/XML/common/proto/shipping_service"
@@ -99,6 +100,14 @@ func (server *Server) initHandlers() {
 	fmt.Print("ratingEndpoint: ")
 	fmt.Println(ratingEndpoint)
 	err = ratingGw.RegisterRatingServiceHandlerFromEndpoint(context.TODO(), server.mux, ratingEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsHost, server.config.NotificationsPort)
+	fmt.Print("notificationsEndpoint: ")
+	fmt.Println(notificationsEndpoint)
+	err = notificationsGw.RegisterNotificationsServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationsEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

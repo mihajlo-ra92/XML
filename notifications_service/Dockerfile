@@ -5,7 +5,7 @@ FROM golang:latest as builder
 WORKDIR /app
 
 # Copy go mod and sum files
-COPY ./notifications_service_service/go.mod ./notifications_service/go.sum ./
+COPY ./notifications_service/go.mod ./notifications_service/go.sum ./
 
 # Copy the local dependency
 COPY /common ../common

@@ -3,19 +3,18 @@ package startup
 import (
 	"fmt"
 	"log"
-
-	notification "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
-	"github.com/mihajlo-ra92/XML/rating_service/domain"
-	"github.com/mihajlo-ra92/XML/rating_service/infrastructure/persistence"
-
-	"github.com/mihajlo-ra92/XML/rating_service/application"
-	"github.com/mihajlo-ra92/XML/rating_service/startup/config"
-
-	"github.com/mihajlo-ra92/XML/rating_service/infrastructure/api"
-
 	"net"
 
+	"github.com/nats-io/nats.go"
+
+	notification "github.com/mihajlo-ra92/XML/common/proto/notifications_service"
+	"github.com/mihajlo-ra92/XML/notifications_service/application"
+	"github.com/mihajlo-ra92/XML/notifications_service/domain"
+	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/persistence"
+	"github.com/mihajlo-ra92/XML/notifications_service/startup/config"
 	"google.golang.org/grpc"
+
+	"github.com/mihajlo-ra92/XML/notifications_service/infrastructure/api"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -36,7 +35,6 @@ func (server *Server) Start() {
 	notificationsService := server.initNotificationsService(notificationsStore)
 	notificationsHandler := server.initNotificationsHandler(notificationsService)
 	server.startGrpcServer(notificationsHandler)
-
 }
 
 func (server *Server) initMongoClient() *mongo.Client {
@@ -67,15 +65,51 @@ func (server *Server) initNotificationsHandler(service *application.Notification
 	return api.NewNotificationsHandler(service)
 }
 
-func (server *Server) startGrpcServer(notificationsHandler *api.NotificationsHandler) {
+func (server *Server) initRatingHandler(service *application.NotificationsService) *api.NotificationsHandler {
+	return api.NewNotificationsHandler(service)
+}
+
+func (server *Server) startGrpcServer(ratingHandler *api.NotificationsHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	notification.RegisterNotificationsServiceServer(grpcServer, notificationsHandler)
+	notification.RegisterNotificationsServiceServer(grpcServer, ratingHandler)
 	fmt.Println("Serving...")
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
+	}
+	go StartMessageListener()
+	fmt.Println("Messaging nats")
+}
+
+func StartMessageListener() {
+	// Povežite se na NATS server
+	nc, err := nats.Connect(nats.DefaultURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer nc.Close()
+
+	// Kreirajte kanal za primanje poruka
+	msgChan := make(chan *nats.Msg)
+
+	// Pretplatite se na teme na kojima želite primati poruke
+	// Ovdje možete dodati više pretplata prema potrebama vašeg mikroservisa
+	sub, err := nc.ChanSubscribe("user.*", msgChan)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sub.Unsubscribe()
+
+	// Obrada primljenih poruka
+	for msg := range msgChan {
+		// Dobijte ID korisnika iz teme poruke
+		topic := msg.Subject
+		userID := topic[len("user."):]
+
+		// Ovdje možete implementirati logiku obrade primljene poruke prema ID-u korisnika
+		fmt.Printf("Primljena poruka za korisnika %s: %s\n", userID, string(msg.Data))
 	}
 }

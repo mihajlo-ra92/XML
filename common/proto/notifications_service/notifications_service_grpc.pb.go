@@ -21,7 +21,9 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	NotificationsService_Get_FullMethodName                = "/notifications.NotificationsService/Get"
 	NotificationsService_GetByUser_FullMethodName          = "/notifications.NotificationsService/GetByUser"
+	NotificationsService_GetConnection_FullMethodName      = "/notifications.NotificationsService/GetConnection"
 	NotificationsService_GetAll_FullMethodName             = "/notifications.NotificationsService/GetAll"
+	NotificationsService_SendMessage_FullMethodName        = "/notifications.NotificationsService/SendMessage"
 	NotificationsService_CreateNotification_FullMethodName = "/notifications.NotificationsService/CreateNotification"
 	NotificationsService_DeleteNotification_FullMethodName = "/notifications.NotificationsService/DeleteNotification"
 )
@@ -32,7 +34,9 @@ const (
 type NotificationsServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetByUser(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	GetConnection(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	SendMessage(ctx context.Context, in *SendRequest, opts ...grpc.CallOption) (*SendResponse, error)
 	CreateNotification(ctx context.Context, in *CreateNotificationRequest, opts ...grpc.CallOption) (*CreateNotificationResponse, error)
 	DeleteNotification(ctx context.Context, in *DeleteNotificationRequest, opts ...grpc.CallOption) (*DeleteNotificationResponse, error)
 }
@@ -63,9 +67,27 @@ func (c *notificationsServiceClient) GetByUser(ctx context.Context, in *GetReque
 	return out, nil
 }
 
+func (c *notificationsServiceClient) GetConnection(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, NotificationsService_GetConnection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *notificationsServiceClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
 	out := new(GetAllResponse)
 	err := c.cc.Invoke(ctx, NotificationsService_GetAll_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notificationsServiceClient) SendMessage(ctx context.Context, in *SendRequest, opts ...grpc.CallOption) (*SendResponse, error) {
+	out := new(SendResponse)
+	err := c.cc.Invoke(ctx, NotificationsService_SendMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +118,9 @@ func (c *notificationsServiceClient) DeleteNotification(ctx context.Context, in 
 type NotificationsServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetByUser(context.Context, *GetRequest) (*GetResponse, error)
+	GetConnection(context.Context, *GetRequest) (*Response, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	SendMessage(context.Context, *SendRequest) (*SendResponse, error)
 	CreateNotification(context.Context, *CreateNotificationRequest) (*CreateNotificationResponse, error)
 	DeleteNotification(context.Context, *DeleteNotificationRequest) (*DeleteNotificationResponse, error)
 	mustEmbedUnimplementedNotificationsServiceServer()
@@ -112,8 +136,14 @@ func (UnimplementedNotificationsServiceServer) Get(context.Context, *GetRequest)
 func (UnimplementedNotificationsServiceServer) GetByUser(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByUser not implemented")
 }
+func (UnimplementedNotificationsServiceServer) GetConnection(context.Context, *GetRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnection not implemented")
+}
 func (UnimplementedNotificationsServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedNotificationsServiceServer) SendMessage(context.Context, *SendRequest) (*SendResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedNotificationsServiceServer) CreateNotification(context.Context, *CreateNotificationRequest) (*CreateNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNotification not implemented")
@@ -170,6 +200,24 @@ func _NotificationsService_GetByUser_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationsService_GetConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationsServiceServer).GetConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationsService_GetConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationsServiceServer).GetConnection(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NotificationsService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +232,24 @@ func _NotificationsService_GetAll_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NotificationsServiceServer).GetAll(ctx, req.(*GetAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotificationsService_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationsServiceServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationsService_SendMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationsServiceServer).SendMessage(ctx, req.(*SendRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -240,8 +306,16 @@ var NotificationsService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NotificationsService_GetByUser_Handler,
 		},
 		{
+			MethodName: "GetConnection",
+			Handler:    _NotificationsService_GetConnection_Handler,
+		},
+		{
 			MethodName: "GetAll",
 			Handler:    _NotificationsService_GetAll_Handler,
+		},
+		{
+			MethodName: "SendMessage",
+			Handler:    _NotificationsService_SendMessage_Handler,
 		},
 		{
 			MethodName: "CreateNotification",
