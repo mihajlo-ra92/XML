@@ -19,7 +19,6 @@ const routes: Routes = [
   { path: 'accommodation-reservation', component: AccommodationReserationComponent },
   { path: 'create-accommodation', component: CreateAccommodationComponent},
   { path: 'my-accommodations', component: MyAccommodationsComponent},
-  
 ];
 
 @NgModule({

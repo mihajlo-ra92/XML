@@ -298,14 +298,16 @@ func (service *AuthService) DeleteRating(jwtData *domain.JwtData, request *pb.Au
 	ratingDeleteRequest := rating.DeleteRatingRequest{Jwt: request.Jwt, RatingId: request.RatingId}
 	fmt.Print("ratingDeleteRequest: ")
 	fmt.Println(ratingDeleteRequest)
-	reqe := noti.SendRequest{Id: "", Message: "Nova poruka za klijenta da je neko obrisao ocenu"}
+
+	reqe := noti.SendRequest{Id: "123", Message: "Nova poruka za klijenta da je neko obrisao ocenu"}
 	notClient := services.NewNotificationsClient(service.notificationsClientAddress)
 	responsMessage, err := notClient.SendMessage(context.TODO(), &reqe)
 	if err != nil {
 		return nil, err
 	}
 
-	if responsMessage != nil {
+	if responsMessage == nil {
+		fmt.Println("Ovde je puklo")
 	}
 
 	ratingDeleteResponse, err := ratingClient.DeleteRating(context.TODO(), &ratingDeleteRequest)
